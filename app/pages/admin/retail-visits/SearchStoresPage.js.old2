@@ -1,0 +1,327 @@
+import React, { useState } from 'react';
+import './SearchStoresPage.css';
+
+const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
+
+function SearchStoresPage() {
+  
+  // Form state
+  const [query, setQuery] = useState('pet store');
+  const [area, setArea] = useState('Tilak Nagar');
+  const [pincode, setPincode] = useState('110018');
+  const [radius, setRadius] = useState(5);
+  const [useArea, setUseArea] = useState(true);
+  
+  // UI state
+  const [loading, setLoading] = useState(false);
+  const [results, setResults] = useState([]);
+  const [cacheInfo, setCacheInfo] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const handleSearch = () => {
+    setShowConfirm(true);
+  };
+
+  const confirmSearch = async () => {
+    setShowConfirm(false);
+    setLoading(true);
+    
+    try {
+      const response = await fetch(`${API_URL}/search/stores`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query: query,
+          area: useArea ? area : '',
+          pincode: useArea ? '' : pincode,
+          radius: radius
+        })
+      });
+
+      const data = await response.json();
+      
+      if (data.error) {
+        alert('❌ Error: ' + data.error);
+      } else {
+        setResults(data.results || []);
+        setCacheInfo({
+          hit: data.hit,
+          cost: data.cost,
+          message: data.message
+        });
+        console.log('✅ Search result:', data);
+      }
+    } catch (error) {
+      console.error('Search error:', error);
+      alert('Error: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className={`min-h-screen p-6 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+      <div className="max-w-6xl mx-auto">
+        
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className={`text-3xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+            <Search className="inline mr-2" size={32} />
+            Search Stores
+          </h1>
+          <p className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>
+            Find retail stores in New Delhi
+          </p>
+        </div>
+
+        {/* Search Form */}
+        <div className={`p-6 rounded-lg mb-6 ${isDarkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg`}>
+          
+          {/* Search Query */}
+          <div className="mb-4">
+            <label className={`block text-sm font-semibold mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+              Search Query *
+            </label>
+            <input
+              type="text"
+              placeholder="e.g., pet store"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className={`w-full px-4 py-2 rounded-lg border ${
+                isDarkMode
+                  ? 'bg-gray-700 border-gray-600 text-white'
+                  : 'bg-white border-gray-300 text-gray-900'
+              } focus:ring-2 focus:ring-purple-500`}
+            />
+          </div>
+
+          {/* State - HARDCODED */}
+          <div className="mb-4">
+            <label className={`block text-sm font-semibold mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+              State
+            </label>
+            <div className={`px-4 py-2 rounded-lg border ${
+              isDarkMode
+                ? 'bg-gray-700 border-gray-600 text-gray-300'
+                : 'bg-gray-100 border-gray-300 text-gray-600'
+            }`}>
+              🏛️ New Delhi (Fixed)
+            </div>
+            <p className={`text-xs mt-1 ${isDarkMode ? 'text-gray-500' : 'text-gray-500'}`}>
+              Currently searching in New Delhi only
+            </p>
+          </div>
+
+          {/* Toggle Area/Pincode */}
+          <div className="mb-4">
+            <label className={`block text-sm font-semibold mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+              Search by:
+            </label>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setUseArea(true)}
+                className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  useArea
+                    ? 'bg-purple-600 text-white'
+                    : isDarkMode
+                    ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                Area Name
+              </button>
+              <button
+                onClick={() => setUseArea(false)}
+                className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  !useArea
+                    ? 'bg-purple-600 text-white'
+                    : isDarkMode
+                    ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                Pincode
+              </button>
+            </div>
+          </div>
+
+          {/* Area Input */}
+          {useArea && (
+            <div className="mb-4">
+              <label className={`block text-sm font-semibold mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+                Area *
+              </label>
+              <input
+                type="text"
+                placeholder="e.g., Tilak Nagar"
+                value={area}
+                onChange={(e) => setArea(e.target.value)}
+                className={`w-full px-4 py-2 rounded-lg border ${
+                  isDarkMode
+                    ? 'bg-gray-700 border-gray-600 text-white'
+                    : 'bg-white border-gray-300 text-gray-900'
+                } focus:ring-2 focus:ring-purple-500`}
+              />
+              <p className={`text-xs mt-1 ${isDarkMode ? 'text-gray-500' : 'text-gray-500'}`}>
+                📌 Pincode: {pincode}
+              </p>
+            </div>
+          )}
+
+          {/* Pincode Input */}
+          {!useArea && (
+            <div className="mb-4">
+              <label className={`block text-sm font-semibold mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+                Pincode *
+              </label>
+              <input
+                type="text"
+                placeholder="e.g., 110018"
+                value={pincode}
+                onChange={(e) => setPincode(e.target.value)}
+                className={`w-full px-4 py-2 rounded-lg border ${
+                  isDarkMode
+                    ? 'bg-gray-700 border-gray-600 text-white'
+                    : 'bg-white border-gray-300 text-gray-900'
+                } focus:ring-2 focus:ring-purple-500`}
+              />
+              <p className={`text-xs mt-1 ${isDarkMode ? 'text-gray-500' : 'text-gray-500'}`}>
+                📍 Area: {area}
+              </p>
+            </div>
+          )}
+
+          {/* Radius */}
+          <div className="mb-6">
+            <label className={`block text-sm font-semibold mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+              Radius (km) *
+            </label>
+            <select
+              value={radius}
+              onChange={(e) => setRadius(parseInt(e.target.value))}
+              className={`w-full px-4 py-2 rounded-lg border ${
+                isDarkMode
+                  ? 'bg-gray-700 border-gray-600 text-white'
+                  : 'bg-white border-gray-300 text-gray-900'
+              } focus:ring-2 focus:ring-purple-500`}
+            >
+              <option value="5">5 km</option>
+              <option value="10">10 km</option>
+              <option value="15">15 km</option>
+              <option value="20">20 km</option>
+            </select>
+          </div>
+
+          {/* Search Button */}
+          <button
+            onClick={handleSearch}
+            disabled={loading}
+            className="w-full bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          >
+            {loading ? '🔍 Searching...' : '🔍 Search Stores'}
+          </button>
+        </div>
+
+        {/* Confirmation Modal */}
+        {showConfirm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className={`max-w-md w-full mx-4 rounded-lg p-6 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+              <h2 className={`text-2xl font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                🔍 Confirm Search
+              </h2>
+              
+              <div className={`mb-4 p-4 rounded-lg ${isDarkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
+                <p className={`mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  <strong>Query:</strong> {query}
+                </p>
+                <p className={`mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  <strong>Location:</strong> New Delhi, {useArea ? area : `Pincode ${pincode}`}
+                </p>
+                <p className={isDarkMode ? 'text-gray-300' : 'text-gray-700'}>
+                  <strong>Radius:</strong> {radius} km
+                </p>
+              </div>
+
+              <div className={`p-4 rounded-lg mb-6 ${
+                cacheInfo?.hit ? 'bg-green-500 bg-opacity-20' : 'bg-yellow-500 bg-opacity-20'
+              }`}>
+                <h3 className={`text-lg font-semibold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                  {cacheInfo?.hit ? '✅ FROM CACHE' : '🔌 NEW SEARCH'}
+                </h3>
+                <p className={`text-2xl font-bold mb-1 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                  Cost: ₹{cacheInfo?.cost ?? 2.66}
+                </p>
+                <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  {cacheInfo?.message ?? 'Estimated cost for new search'}
+                </p>
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowConfirm(false)}
+                  className={`flex-1 px-4 py-2 rounded-lg font-medium ${
+                    isDarkMode
+                      ? 'bg-gray-700 text-white hover:bg-gray-600'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmSearch}
+                  className="flex-1 bg-purple-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-purple-700"
+                >
+                  Proceed
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Results */}
+        {results.length > 0 && (
+          <div className={`p-6 rounded-lg ${isDarkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg`}>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                Results ({results.length})
+              </h2>
+              {cacheInfo && (
+                <div className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  cacheInfo.hit
+                    ? 'bg-green-500 bg-opacity-20 text-green-600'
+                    : 'bg-yellow-500 bg-opacity-20 text-yellow-600'
+                }`}>
+                  {cacheInfo.hit ? '✅ From Cache' : '🔌 Fresh Search'}
+                </div>
+              )}
+            </div>
+            
+            <div className="grid gap-4">
+              {results.map((store, i) => (
+                <div
+                  key={i}
+                  className={`p-4 rounded-lg border ${
+                    isDarkMode
+                      ? 'bg-gray-700 border-gray-600'
+                      : 'bg-gray-50 border-gray-200'
+                  }`}
+                >
+                  <h3 className={`text-lg font-semibold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                    {store.name}
+                  </h3>
+                  <div className={`text-sm space-y-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                    {store.address && <p>📍 {store.address}</p>}
+                    {store.phone && <p>📞 {store.phone}</p>}
+                    {store.rating && <p>⭐ {store.rating}/5</p>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default SearchStoresPage;

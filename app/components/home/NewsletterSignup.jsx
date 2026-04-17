@@ -1,0 +1,62 @@
+import React, { useState } from 'react';
+
+const NewsletterSignup = () => {
+    const [email, setEmail] = useState('');
+    const [submitted, setSubmitted] = useState(false);
+
+    const handleSubmit = (e) => {
+          e.preventDefault();
+          if (email.trim()) {
+                  setSubmitted(true);
+          }
+    };
+
+    return (
+          <section
+        style={{ background: 'linear-gradient(to right, #06B6D4, #10B981)' }}
+      className="py-16 px-4"
+    >
+              <div className="max-w-lg mx-auto text-center text-white">
+                <h2 className="text-3xl md:text-4xl font-bold mb-3">
+                  Join the Pack 🐾
+        </h2>
+        <p className="text-white/90 text-base md:text-lg mb-8">
+                  Get exclusive deals, new product drops, and dog care tips straight to your inbox.
+        </p>
+
+{submitted ? (
+            <div className="bg-white/20 rounded-xl px-6 py-4 inline-block">
+              <p className="text-white font-semibold text-lg">
+                🎉 You're in! Welcome to the pack.
+  </p>
+  </div>
+         ) : (
+                     <form onSubmit={handleSubmit} className="w-full">
+                       <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                         <input
+                 type="email"
+                 value={email}
+                 onChange={(e) => setEmail(e.target.value)}
+                 placeholder="Enter your email address"
+                 required
+                 className="flex-1 sm:max-w-sm px-4 py-3 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/60 text-sm"
+               />
+                                 <button
+                 type="submit"
+                 className="px-6 py-3 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-lg transition-colors duration-200 text-sm whitespace-nowrap"
+               >
+                                   Subscribe
+                   </button>
+                   </div>
+                   </form>
+         )}
+
+        <p className="mt-4 text-white/70 text-xs">
+                    No spam, ever. Unsubscribe anytime.
+          </p>
+          </div>
+          </section>
+  );
+};
+
+export default NewsletterSignup;

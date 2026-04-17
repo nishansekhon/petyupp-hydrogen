@@ -1,8 +1,9 @@
 import {Await, Link} from 'react-router';
 import {Suspense, useId} from 'react';
 import {Aside} from '~/components/Aside';
-import {Footer} from '~/components/Footer';
+import Footer from '~/components/Footer';
 import {Header, HeaderMenu} from '~/components/Header';
+import {PromoBar} from '~/components/PromoBar';
 import {CartMain} from '~/components/CartMain';
 import {
   SEARCH_ENDPOINT,
@@ -23,6 +24,7 @@ export function PageLayout({
 }) {
   return (
     <Aside.Provider>
+      <PromoBar />
       <CartAside cart={cart} />
       <SearchAside />
       <MobileMenuAside header={header} publicStoreDomain={publicStoreDomain} />

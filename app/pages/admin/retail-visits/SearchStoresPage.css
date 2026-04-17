@@ -1,0 +1,344 @@
+.search-stores-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* COMPACT FORM AT TOP */
+.search-form-compact {
+  background: rgba(100, 100, 150, 0.1);
+  border: 1px solid rgba(100, 100, 150, 0.2);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+.search-form-compact h2 {
+  margin-top: 0;
+  font-size: 24px;
+  color: #e0e0e0;
+}
+
+.search-form-compact p {
+  color: #a0a0c0;
+  margin-bottom: 24px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.form-row .form-group.full {
+  grid-column: 1 / -1;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #a0a0c0;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-group input,
+.form-group select {
+  padding: 10px 12px;
+  background: rgba(50, 50, 80, 0.5);
+  border: 1px solid rgba(100, 100, 150, 0.3);
+  border-radius: 6px;
+  color: #e0e0e0;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: rgba(96, 165, 250, 0.5);
+  background: rgba(50, 50, 80, 0.7);
+}
+
+.form-group small {
+  font-size: 11px;
+  color: #707090;
+  margin-top: 4px;
+}
+
+.state-fixed {
+  padding: 10px 12px;
+  background: rgba(96, 165, 250, 0.1);
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  border-radius: 6px;
+  color: #60a5fa;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.toggle-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.toggle-buttons button {
+  flex: 1;
+  padding: 8px 12px;
+  background: rgba(100, 100, 150, 0.2);
+  border: 1px solid rgba(100, 100, 150, 0.3);
+  border-radius: 6px;
+  color: #a0a0c0;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.toggle-buttons button.active {
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  border-color: rgba(139, 92, 246, 0.5);
+  color: white;
+}
+
+.btn-search-primary {
+  width: 100%;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 16px;
+}
+
+.btn-search-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(139, 92, 246, 0.3);
+}
+
+.btn-search-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* MODAL */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: rgba(30, 30, 46, 0.95);
+  border: 1px solid rgba(100, 100, 150, 0.2);
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(100, 100, 150, 0.2);
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #e0e0e0;
+}
+
+.modal-header .close {
+  background: none;
+  border: none;
+  color: #a0a0c0;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 24px;
+}
+
+.search-details {
+  background: rgba(100, 100, 150, 0.1);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.search-details p {
+  margin: 8px 0;
+  font-size: 13px;
+  color: #e0e0e0;
+}
+
+.cost-indicator {
+  background: rgba(100, 100, 150, 0.1);
+  border: 2px solid rgba(100, 100, 150, 0.3);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.cost-indicator.hit {
+  background: rgba(74, 222, 128, 0.1);
+  border-color: rgba(74, 222, 128, 0.3);
+}
+
+.cost-indicator.miss {
+  background: rgba(249, 115, 22, 0.1);
+  border-color: rgba(249, 115, 22, 0.3);
+}
+
+.cost-indicator h3 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  color: #a0a0c0;
+}
+
+.cost-indicator.hit h3 {
+  color: #4ade80;
+}
+
+.cost-indicator.miss h3 {
+  color: #f97316;
+}
+
+.cost-indicator .cost {
+  font-size: 28px;
+  font-weight: 600;
+  color: #60a5fa;
+  margin: 8px 0;
+}
+
+.cost-indicator.hit .cost {
+  color: #4ade80;
+}
+
+.cost-indicator.miss .cost {
+  color: #f97316;
+}
+
+.cost-indicator .message {
+  font-size: 12px;
+  color: #a0a0c0;
+  margin: 8px 0 0 0;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 12px;
+  padding: 20px 24px;
+  border-top: 1px solid rgba(100, 100, 150, 0.2);
+}
+
+.btn-cancel, .btn-proceed {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-cancel {
+  background: rgba(100, 100, 150, 0.2);
+  border: 1px solid rgba(100, 100, 150, 0.3);
+  color: #a0a0c0;
+}
+
+.btn-cancel:hover {
+  background: rgba(100, 100, 150, 0.3);
+}
+
+.btn-proceed {
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  color: white;
+}
+
+.btn-proceed:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+/* RESULTS */
+.results-section {
+  margin-top: 32px;
+}
+
+.results-section h2 {
+  font-size: 20px;
+  color: #e0e0e0;
+  margin-bottom: 16px;
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.store-card {
+  background: rgba(100, 100, 150, 0.1);
+  border: 1px solid rgba(100, 100, 150, 0.2);
+  border-radius: 8px;
+  padding: 16px;
+  transition: all 0.2s ease;
+}
+
+.store-card:hover {
+  background: rgba(100, 100, 150, 0.15);
+  border-color: rgba(100, 100, 150, 0.4);
+  transform: translateY(-2px);
+}
+
+.store-card h3 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  color: #60a5fa;
+}
+
+.store-card p {
+  margin: 6px 0;
+  font-size: 12px;
+  color: #a0a0c0;
+}
+
+.store-card a {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 6px 12px;
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.store-card a:hover {
+  opacity: 0.9;
+}

@@ -1,0 +1,76 @@
+/* App.css - PetYupp Global Styles */
+
+/* Remove dark mode defaults - PetYupp is always light */
+.dark \:bg-slate-800 { background-color: #ffffff !important; }
+.dark \:bg-slate-900 { background-color: #ffffff !important; }
+.dark \:text-gray-300 { color: #374151 !important; }
+.dark \:border-slate-700 { border-color: #e5e7eb !important; }
+.dark \:bg-obsidian { background-color: #ffffff !important; }
+
+/* Override any residual dark backgrounds */
+.bg-obsidian,
+.bg-obsidian-dark,
+.bg-obsidian-light,
+.bg-slate-800,
+.bg-slate-900,
+.bg-gray-900 {
+  /* These are overridden only in content areas, footer retains dark */
+}
+
+/* Sticky header offset */
+.page-with-header {
+  padding-top: 96px;
+}
+
+/* PetYupp Brand - Teal Accent Colors */
+.text-brand { color: #06B6D4; }
+.bg-brand { background-color: #06B6D4; }
+.border-brand { border-color: #06B6D4; }
+.text-brand-green { color: #10B981; }
+.bg-brand-green { background-color: #10B981; }
+
+/* Ensure white backgrounds on content pages */
+.content-page {
+  background-color: var(--bg-primary);
+  min-height: 100vh;
+}
+
+/* Collection/Shop Page */
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .shop-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .shop-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Product Detail Page */
+.product-detail-container {
+  background-color: var(--bg-primary);
+  padding-top: 96px;
+  min-height: 100vh;
+}
+
+/* Cart Page */
+.cart-container {
+  background-color: var(--bg-primary);
+  padding-top: 96px;
+  min-height: 100vh;
+}
+
+/* Blog Page */
+.blog-container {
+  background-color: var(--bg-primary);
+  padding-top: 96px;
+  min-height: 100vh;
+}
