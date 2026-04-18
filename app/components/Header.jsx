@@ -49,7 +49,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
             <div className={`absolute top-full left-1/2 -translate-x-1/2 bg-white shadow-xl rounded-lg border border-gray-100 p-8 z-50 ${
               isShopOpen ? 'block' : 'hidden'
             }`} style={{minWidth:'620px'}}>
-              <div className="grid grid-cols-2 gap-12">
+              <div className="grid grid-cols-2 gap-12 divide-x divide-gray-100">
                 <div>
                   <h3 style={{color:"#9CA3AF"}} className="text-xs font-bold uppercase tracking-wider mb-4">Shop by Product</h3>
                   <ul className="space-y-3">
@@ -63,7 +63,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
                     <li><NavLink to="/collections/non-skid-mats-for-dogs" style={{color:"#111827",textDecoration:"none"}} className="text-sm font-medium block hover:!text-cyan-500">Non-Skid Mats</NavLink></li>
                   </ul>
                 </div>
-                <div>
+                <div className="pl-12">
                   <h3 style={{color:"#9CA3AF"}} className="text-xs font-bold uppercase tracking-wider mb-4">Shop by Problem</h3>
                   <ul className="space-y-3">
                     <li><NavLink to="/collections" style={{color:"#111827",textDecoration:"none"}} className="text-sm font-medium block hover:!text-cyan-500">Separation Anxiety</NavLink></li>
