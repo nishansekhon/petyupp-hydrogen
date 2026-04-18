@@ -156,6 +156,17 @@ function Navbar() {
             About
             <span className={`absolute -bottom-1 left-0 h-0.5 bg-[#06B6D4] transition-all ${isActive('/about') ? 'w-full' : 'w-0 group-hover:w-full'}`} />
           </Link>
+          <Link
+            to="/blogs/journal"
+            className={`text-sm font-medium transition-colors relative group ${
+              isActive('/blogs/journal')
+                ? 'text-[#06B6D4]'
+                : 'text-gray-700 hover:text-[#06B6D4]'
+            }`}
+          >
+            Blog
+            <span className={`absolute -bottom-1 left-0 h-0.5 bg-[#06B6D4] transition-all ${isActive('/blogs/journal') ? 'w-full' : 'w-0 group-hover:w-full'}`} />
+          </Link>
         </nav>
 
         <div className="flex items-center gap-4">
