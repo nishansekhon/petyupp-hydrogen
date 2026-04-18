@@ -86,8 +86,8 @@ function Navbar() {
             </button>
 
             <div className={isShopOpen ? 'block' : 'hidden'}>
-              <div className="absolute top-full left-1/2 -translate-x-1/2 bg-white shadow-xl rounded-lg border border-gray-100 p-8 z-50" style={{minWidth:'680px'}}>
-                <div className="grid grid-cols-2 gap-16">
+              <div className="absolute top-full left-1/2 -translate-x-1/2 bg-white shadow-xl rounded-lg border border-gray-100 p-6 z-50" style={{minWidth:'620px'}}>
+                <div className="grid grid-cols-2 gap-12">
                   <div>
                     <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Shop by Product</h3>
                     <ul className="space-y-1">
@@ -106,7 +106,7 @@ function Navbar() {
                           <li key={item.to}>
                             <Link
                               to={item.to}
-                              className={`block text-sm font-medium py-2 pl-3 border-l-2 transition-all ${
+                              className={`block text-sm font-medium py-1.5 pl-3 border-l-[3px] transition-all ${
                                 active
                                   ? 'border-[#06B6D4] text-[#06B6D4]'
                                   : 'border-transparent text-gray-700 hover:border-[#06B6D4] hover:text-[#06B6D4]'
@@ -133,7 +133,7 @@ function Navbar() {
                         <li key={label}>
                           <Link
                             to="/collections"
-                            className="block text-sm font-medium py-2 pl-3 border-l-2 border-transparent text-gray-700 hover:border-[#06B6D4] hover:text-[#06B6D4] transition-all"
+                            className="block text-sm font-medium py-1.5 pl-3 border-l-[3px] border-transparent text-gray-700 hover:border-[#06B6D4] hover:text-[#06B6D4] transition-all"
                           >
                             {label}
                           </Link>
