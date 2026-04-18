@@ -45,47 +45,35 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
               </svg>
             </button>
 
-            {/* Dropdown Menu */}
-            <div className={`absolute left-0 mt-0 w-56 bg-white rounded-lg shadow-xl transition-all duration-200 z-50 ${
-              isShopOpen ? 'block opacity-100 visible translate-y-0' : 'hidden opacity-0 invisible translate-y-2'
-            }`}>
-              <div className="py-2">
-                <NavLink
-                  to="/collections/bowls"
-                  className="block px-4 py-3 hover:bg-cyan-50 text-gray-900 font-inter text-sm"
-                >
-                  Bowls & Buckets
-                </NavLink>
-                <NavLink
-                  to="/collections/treats"
-                  className="block px-4 py-3 hover:bg-cyan-50 text-gray-900 font-inter text-sm"
-                >
-                  Natural Treats
-                </NavLink>
-                <NavLink
-                  to="/collections/yak-chews"
-                  className="block px-4 py-3 hover:bg-cyan-50 text-gray-900 font-inter text-sm"
-                >
-                  Yak Chews
-                </NavLink>
-                <NavLink
-                  to="/collections/dog-toys"
-                  className="block px-4 py-3 hover:bg-cyan-50 text-gray-900 font-inter text-sm"
-                >
-                  Toys
-                </NavLink>
-                <NavLink
-                  to="/collections/dog-diners"
-                  className="block px-4 py-3 hover:bg-cyan-50 text-gray-900 font-inter text-sm"
-                >
-                  Diners
-                </NavLink>
-                <NavLink
-                  to="/collections/non-skid-mats-for-dogs"
-                  className="block px-4 py-3 hover:bg-cyan-50 text-gray-900 font-inter text-sm border-t border-gray-100"
-                >
-                  Non-Skid Mats
-                </NavLink>
+            {/* Two-Column Mega Menu */}
+            <div className={`absolute top-full left-1/2 -translate-x-1/2 bg-white shadow-xl rounded-lg border border-gray-100 p-8 z-50 ${
+              isShopOpen ? 'block' : 'hidden'
+            }`} style={{minWidth:'620px'}}>
+              <div className="grid grid-cols-2 gap-12">
+                <div>
+                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Shop by Product</h3>
+                  <ul className="space-y-3">
+                    <li><NavLink to="/collections/treats" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Natural Treats and Chews</NavLink></li>
+                    <li><NavLink to="/collections/yak-chews" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Yak Chews</NavLink></li>
+                    <li><NavLink to="/collections/bully-sticks" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Bully Sticks</NavLink></li>
+                    <li><NavLink to="/collections/wooden-chews" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Wooden Chews</NavLink></li>
+                    <li><NavLink to="/collections/dog-toys" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Dog Toys</NavLink></li>
+                    <li><NavLink to="/collections/dog-diners" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Dog Diners</NavLink></li>
+                    <li><NavLink to="/collections/dog-bowls" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Bowls and Buckets</NavLink></li>
+                    <li><NavLink to="/collections/non-skid-mats-for-dogs" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Non-Skid Mats</NavLink></li>
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Shop by Problem</h3>
+                  <ul className="space-y-3">
+                    <li><NavLink to="/collections" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Separation Anxiety</NavLink></li>
+                    <li><NavLink to="/collections" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Dental Health</NavLink></li>
+                    <li><NavLink to="/collections" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Destructive Chewing</NavLink></li>
+                    <li><NavLink to="/collections" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Joint Pain</NavLink></li>
+                    <li><NavLink to="/collections" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Digestive Issues</NavLink></li>
+                    <li><NavLink to="/collections" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Hyperactivity</NavLink></li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
