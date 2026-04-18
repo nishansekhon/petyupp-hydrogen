@@ -87,61 +87,97 @@ function Navbar() {
 
             <div className={isShopOpen ? 'block' : 'hidden'}>
               <div className="absolute top-full left-1/2 -translate-x-1/2 bg-white shadow-xl rounded-lg border border-gray-100 p-6 z-50" style={{minWidth:'620px'}}>
-                <div className="grid grid-cols-2 gap-12">
-                  <div>
-                    <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Shop by Product</h3>
-                    <ul className="space-y-1">
-                      {[
-                        {to: '/collections/treats', label: 'Natural Treats and Chews'},
-                        {to: '/collections/yak-chews', label: 'Yak Chews'},
-                        {to: '/collections/bully-sticks', label: 'Bully Sticks'},
-                        {to: '/collections/wooden-chews', label: 'Wooden Chews'},
-                        {to: '/collections/dog-toys', label: 'Dog Toys'},
-                        {to: '/collections/dog-diners', label: 'Dog Diners'},
-                        {to: '/collections/dog-bowls', label: 'Bowls and Buckets'},
-                        {to: '/collections/non-skid-mats-for-dogs', label: 'Non-Skid Mats'},
-                      ].map((item) => {
-                        const active = isActive(item.to);
-                        return (
-                          <li key={item.to}>
-                            <Link
-                              to={item.to}
-                              className={`block text-sm font-medium py-1.5 pl-3 border-l-[3px] transition-all ${
-                                active
-                                  ? 'border-[#06B6D4] text-[#06B6D4]'
-                                  : 'border-transparent text-gray-700 hover:border-[#06B6D4] hover:text-[#06B6D4]'
-                              }`}
-                            >
-                              {item.label}
-                            </Link>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                  <div>
-                    <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Shop by Problem</h3>
-                    <ul className="space-y-1">
-                      {[
-                        'Separation Anxiety',
-                        'Dental Health',
-                        'Destructive Chewing',
-                        'Joint Pain',
-                        'Digestive Issues',
-                        'Hyperactivity',
-                      ].map((label) => (
-                        <li key={label}>
-                          <Link
-                            to="/collections"
-                            className="block text-sm font-medium py-1.5 pl-3 border-l-[3px] border-transparent text-gray-700 hover:border-[#06B6D4] hover:text-[#06B6D4] transition-all"
-                          >
-                            {label}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
+                {(() => {
+                  const headerStyle = {
+                    fontSize: '11px',
+                    fontWeight: 600,
+                    color: '#9CA3AF',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    marginBottom: '16px',
+                  };
+                  const linkStyle = (active) => ({
+                    borderLeft: active ? '3px solid #06B6D4' : '3px solid transparent',
+                    color: active ? '#06B6D4' : '#374151',
+                    paddingLeft: '12px',
+                    paddingTop: '6px',
+                    paddingBottom: '6px',
+                    display: 'block',
+                    fontSize: '14px',
+                    fontWeight: 500,
+                    transition: 'all 0.15s ease',
+                    textDecoration: 'none',
+                  });
+                  const onEnter = (e) => {
+                    e.currentTarget.style.borderLeftColor = '#06B6D4';
+                    e.currentTarget.style.color = '#06B6D4';
+                  };
+                  const onLeave = (active) => (e) => {
+                    if (!active) {
+                      e.currentTarget.style.borderLeftColor = 'transparent';
+                      e.currentTarget.style.color = '#374151';
+                    }
+                  };
+                  const productLinks = [
+                    {to: '/collections/treats', label: 'Natural Treats and Chews'},
+                    {to: '/collections/yak-chews', label: 'Yak Chews'},
+                    {to: '/collections/bully-sticks', label: 'Bully Sticks'},
+                    {to: '/collections/wooden-chews', label: 'Wooden Chews'},
+                    {to: '/collections/dog-toys', label: 'Dog Toys'},
+                    {to: '/collections/dog-diners', label: 'Dog Diners'},
+                    {to: '/collections/dog-bowls', label: 'Bowls and Buckets'},
+                    {to: '/collections/non-skid-mats-for-dogs', label: 'Non-Skid Mats'},
+                  ];
+                  const problemLinks = [
+                    'Separation Anxiety',
+                    'Dental Health',
+                    'Destructive Chewing',
+                    'Joint Pain',
+                    'Digestive Issues',
+                    'Hyperactivity',
+                  ];
+                  return (
+                    <div className="grid grid-cols-2" style={{gap: '48px'}}>
+                      <div>
+                        <h3 style={headerStyle}>Shop by Product</h3>
+                        <ul style={{listStyle: 'none', margin: 0, padding: 0}}>
+                          {productLinks.map((item) => {
+                            const active = isActive(item.to);
+                            return (
+                              <li key={item.to}>
+                                <Link
+                                  to={item.to}
+                                  style={linkStyle(active)}
+                                  onMouseEnter={onEnter}
+                                  onMouseLeave={onLeave(active)}
+                                >
+                                  {item.label}
+                                </Link>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                      <div>
+                        <h3 style={headerStyle}>Shop by Problem</h3>
+                        <ul style={{listStyle: 'none', margin: 0, padding: 0}}>
+                          {problemLinks.map((label) => (
+                            <li key={label}>
+                              <Link
+                                to="/collections"
+                                style={linkStyle(false)}
+                                onMouseEnter={onEnter}
+                                onMouseLeave={onLeave(false)}
+                              >
+                                {label}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
             </div>
           </div>
