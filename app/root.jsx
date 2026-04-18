@@ -16,6 +16,7 @@ import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import tailwindCss from './styles/tailwind.css?url';
 import {PageLayout} from './components/PageLayout';
+import {ThemeProvider} from './contexts/ThemeContext';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -190,17 +191,19 @@ export default function App() {
   }
 
   return (
-    <HelmetProvider>
-      <Analytics.Provider
-        cart={data.cart}
-        shop={data.shop}
-        consent={data.consent}
-      >
-        <PageLayout {...data}>
-          <Outlet />
-        </PageLayout>
-      </Analytics.Provider>
-    </HelmetProvider>
+    <ThemeProvider>
+      <HelmetProvider>
+        <Analytics.Provider
+          cart={data.cart}
+          shop={data.shop}
+          consent={data.consent}
+        >
+          <PageLayout {...data}>
+            <Outlet />
+          </PageLayout>
+        </Analytics.Provider>
+      </HelmetProvider>
+    </ThemeProvider>
   );
 }
 

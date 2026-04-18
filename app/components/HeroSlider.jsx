@@ -9,6 +9,7 @@ const slides = [
     ctaLink: "/shop",
     bubbles: ["6 Problem Categories", "Vet Approved", "Free Ship $50+"],
     bg: "from-[#065F46] to-[#047857]",
+    bgImage: "https://images.unsplash.com/photo-1611003228941-98852ba62227?w=1920&h=600&fit=crop",
   },
   {
     headline: "Built for Heavy Chewers",
@@ -17,6 +18,7 @@ const slides = [
     ctaLink: "/shop",
     bubbles: ["6 Problem Categories", "Vet Approved", "Free Ship $50+"],
     bg: "from-[#1E3A5F] to-[#1e40af]",
+    bgImage: "https://images.unsplash.com/photo-1600079766852-a8d6ebc77b0a?w=1920&h=600&fit=crop",
   },
   {
     headline: "Because They Deserve Better",
@@ -25,6 +27,7 @@ const slides = [
     ctaLink: "/shop",
     bubbles: ["6 Problem Categories", "Vet Approved", "Free Ship $50+"],
     bg: "from-[#4C1D95] to-[#6D28D9]",
+    bgImage: "https://images.unsplash.com/photo-1633846445033-d2fa7b1a9fca?w=1920&h=600&fit=crop",
   },
 ];
 
@@ -55,8 +58,12 @@ const HeroSlider = () => {
     <div className="relative w-full overflow-hidden bg-[#065F46]" style={{minHeight: '380px'}}>
       {/* Slide background */}
       <div
-        className={`absolute inset-0 bg-gradient-to-br ${slide.bg} transition-opacity duration-300`}
-        style={{opacity: transitioning ? 0 : 1}}
+        className={`absolute inset-0 bg-gradient-to-br ${slide.bg} transition-opacity duration-300 bg-cover bg-center`}
+        style={{
+          backgroundImage: `url(${slide.bgImage})`,
+          backgroundBlend: 'overlay',
+          opacity: transitioning ? 0 : 1
+        }}
       />
 
       {/* Content */}

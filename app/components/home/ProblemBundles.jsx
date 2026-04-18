@@ -5,31 +5,37 @@ const bundles = [
         id: 1,
         name: 'Separation Anxiety',
         description: 'Calming chews and long-lasting treats to keep your pup relaxed',
+        image: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=300&fit=crop',
   },
   {
         id: 2,
         name: 'Destructive Chewing',
         description: 'Tough natural chews that satisfy the urge to chomp',
+        image: 'https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=400&h=300&fit=crop',
   },
   {
         id: 3,
         name: 'Dental Health',
         description: 'Chews that clean teeth and freshen breath naturally',
+        image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop',
   },
   {
         id: 4,
         name: 'Joint Support',
         description: 'Nutrient-rich treats for active and aging dogs',
+        image: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&h=300&fit=crop',
   },
   {
         id: 5,
         name: 'Digestive Issues',
         description: 'Gentle, natural ingredients for sensitive stomachs',
+        image: 'https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?w=400&h=300&fit=crop',
   },
   {
         id: 6,
         name: 'Hyperactivity',
         description: 'Long-lasting chews to burn mental energy',
+        image: 'https://images.unsplash.com/photo-1633846445033-d2fa7b1a9fca?w=400&h=300&fit=crop',
   },
   ];
 
@@ -60,13 +66,24 @@ const ProblemBundles = () => {
 {bundles.map((bundle) => (
               <div
                            key={bundle.id}
-              className="flex-shrink-0 bg-white border border-gray-200 rounded-2xl shadow-sm p-6 flex flex-col"
+              className="flex-shrink-0 bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden flex flex-col"
               style={{
                                 scrollSnapAlign: 'start',
                                 width: 'calc(33.333% - 16px)',
                                 minWidth: '260px',
               }}
             >
+{/* Bundle Image */}
+              <div className="h-40 bg-gray-200 overflow-hidden">
+                <img
+                  src={bundle.image}
+                  alt={bundle.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+{/* Content */}
+              <div className="p-6 flex flex-col flex-1">
 {/* Problem heading */}
               <h3 className="text-xl font-bold text-gray-900 mb-3">
               {bundle.name}
@@ -84,6 +101,7 @@ const ProblemBundles = () => {
               >
                 Shop Bundle &rarr;
 </button>
+              </div>
   </div>
           ))}
 </div>
