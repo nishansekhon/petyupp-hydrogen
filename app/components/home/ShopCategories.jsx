@@ -58,21 +58,36 @@ const CategoryProductCard = ({ product, index }) => (
   </motion.div>
 );
 
-const CATEGORY_ORDER = [
-  'treats',
-  'yak-chews',
-  'bully-sticks',
-  'wooden-chews',
-  'dog-toys',
-  'dog-diners',
-  'dog-bowls',
-  'non-skid-mats-for-dogs',
+const DESIRED_COLLECTIONS = [
+  {handle: 'natural-treats-and-chews', label: 'Natural Treats and Chews'},
+  {handle: 'treats', label: 'Natural Treats and Chews'},
+  {handle: 'yak-chews', label: 'Yak Chews'},
+  {handle: 'bully-sticks', label: 'Bully Sticks'},
+  {handle: 'wooden-chews', label: 'Wooden Chews'},
+  {handle: 'dog-toys', label: 'Dog Toys'},
+  {handle: 'dog-diners', label: 'Dog Diners'},
+  {handle: 'dog-bowls', label: 'Bowls and Buckets'},
+  {handle: 'non-skid-mats-for-dogs', label: 'Non-Skid Mats'},
+  {handle: 'chews-treats', label: 'Chews & Treats'},
+  {handle: 'chews-and-treats', label: 'Chews & Treats'},
 ];
 
 const ShopCategories = ({ collections = [] }) => {
-  const filtered = CATEGORY_ORDER
-    .map((handle) => collections.find((c) => c.handle === handle))
+  if (typeof window !== 'undefined') {
+    console.log('Collections:', collections?.map((c) => ({title: c.title, handle: c.handle})));
+  }
+
+  const matched = DESIRED_COLLECTIONS
+    .map(({handle, label}) => {
+      const col = collections.find((c) => c.handle === handle);
+      return col ? {...col, label} : null;
+    })
     .filter(Boolean);
+
+  const filtered = matched.length > 0
+    ? matched
+    : collections.map((c) => ({...c, label: c.title}));
+
   const withProducts = filtered.filter((c) => (c.products?.nodes?.length ?? 0) > 0);
   const [activeId, setActiveId] = useState(withProducts[0]?.id ?? filtered[0]?.id);
   const scrollRef = useRef(null);
@@ -104,7 +119,7 @@ const ShopCategories = ({ collections = [] }) => {
                   : 'bg-white text-gray-700 border-gray-200 hover:border-[#06B6D4] hover:text-[#06B6D4]'
               }`}
             >
-              {c.title}
+              {c.label}
             </button>
           );
         })}

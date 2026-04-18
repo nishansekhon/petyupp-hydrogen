@@ -87,10 +87,10 @@ const HeroSlider = () => {
           </p>
           <Link
             to={slide.ctaLink}
-            className="inline-block px-8 py-3 bg-[#06B6D4] text-white font-bold text-sm rounded-full hover:bg-[#0891B2] transition-colors shadow-lg"
-            style={{backgroundColor: '#06B6D4', color: '#ffffff'}}
+            className="inline-block px-8 py-3 font-bold text-sm rounded-full shadow-lg"
+            style={{color: '#ffffff', backgroundColor: '#06B6D4'}}
           >
-            {slide.cta}
+            <span style={{color: '#ffffff'}}>{slide.cta}</span>
           </Link>
 
           {/* Floating bubbles — below CTA */}
