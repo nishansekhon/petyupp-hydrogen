@@ -51,27 +51,27 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
             }`} style={{minWidth:'620px'}}>
               <div className="grid grid-cols-2 gap-12">
                 <div>
-                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Shop by Product</h3>
+                  <h3 style={{color:"#9CA3AF"}} className="text-xs font-bold uppercase tracking-wider mb-4">Shop by Product</h3>
                   <ul className="space-y-3">
-                    <li><NavLink to="/collections/treats" className="text-gray-900 hover:text-cyan-500 text-sm font-medium block no-underline">Natural Treats and Chews</NavLink></li>
-                    <li><NavLink to="/collections/yak-chews" className="text-gray-900 hover:text-cyan-500 text-sm font-medium block no-underline">Yak Chews</NavLink></li>
-                    <li><NavLink to="/collections/bully-sticks" className="text-gray-900 hover:text-cyan-500 text-sm font-medium block no-underline">Bully Sticks</NavLink></li>
-                    <li><NavLink to="/collections/wooden-chews" className="text-gray-900 hover:text-cyan-500 text-sm font-medium block no-underline">Wooden Chews</NavLink></li>
-                    <li><NavLink to="/collections/dog-toys" className="text-gray-900 hover:text-cyan-500 text-sm font-medium block no-underline">Dog Toys</NavLink></li>
-                    <li><NavLink to="/collections/dog-diners" className="text-gray-900 hover:text-cyan-500 text-sm font-medium block no-underline">Dog Diners</NavLink></li>
-                    <li><NavLink to="/collections/dog-bowls" className="text-gray-900 hover:text-cyan-500 text-sm font-medium block no-underline">Bowls and Buckets</NavLink></li>
-                    <li><NavLink to="/collections/non-skid-mats-for-dogs" className="text-gray-900 hover:text-cyan-500 text-sm font-medium block no-underline">Non-Skid Mats</NavLink></li>
+                    <li><NavLink to="/collections/treats" style={{color:"#111827",textDecoration:"none"}} className="text-sm font-medium block hover:!text-cyan-500">Natural Treats and Chews</NavLink></li>
+                    <li><NavLink to="/collections/yak-chews" style={{color:"#111827",textDecoration:"none"}} className="text-sm font-medium block hover:!text-cyan-500">Yak Chews</NavLink></li>
+                    <li><NavLink to="/collections/bully-sticks" style={{color:"#111827",textDecoration:"none"}} className="text-sm font-medium block hover:!text-cyan-500">Bully Sticks</NavLink></li>
+                    <li><NavLink to="/collections/wooden-chews" style={{color:"#111827",textDecoration:"none"}} className="text-sm font-medium block hover:!text-cyan-500">Wooden Chews</NavLink></li>
+                    <li><NavLink to="/collections/dog-toys" style={{color:"#111827",textDecoration:"none"}} className="text-sm font-medium block hover:!text-cyan-500">Dog Toys</NavLink></li>
+                    <li><NavLink to="/collections/dog-diners" style={{color:"#111827",textDecoration:"none"}} className="text-sm font-medium block hover:!text-cyan-500">Dog Diners</NavLink></li>
+                    <li><NavLink to="/collections/dog-bowls" style={{color:"#111827",textDecoration:"none"}} className="text-sm font-medium block hover:!text-cyan-500">Bowls and Buckets</NavLink></li>
+                    <li><NavLink to="/collections/non-skid-mats-for-dogs" style={{color:"#111827",textDecoration:"none"}} className="text-sm font-medium block hover:!text-cyan-500">Non-Skid Mats</NavLink></li>
                   </ul>
                 </div>
                 <div>
-                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Shop by Problem</h3>
+                  <h3 style={{color:"#9CA3AF"}} className="text-xs font-bold uppercase tracking-wider mb-4">Shop by Problem</h3>
                   <ul className="space-y-3">
-                    <li><NavLink to="/collections" className="text-gray-900 hover:text-cyan-500 text-sm font-medium block no-underline">Separation Anxiety</NavLink></li>
-                    <li><NavLink to="/collections" className="text-gray-900 hover:text-cyan-500 text-sm font-medium block no-underline">Dental Health</NavLink></li>
-                    <li><NavLink to="/collections" className="text-gray-900 hover:text-cyan-500 text-sm font-medium block no-underline">Destructive Chewing</NavLink></li>
-                    <li><NavLink to="/collections" className="text-gray-900 hover:text-cyan-500 text-sm font-medium block no-underline">Joint Pain</NavLink></li>
-                    <li><NavLink to="/collections" className="text-gray-900 hover:text-cyan-500 text-sm font-medium block no-underline">Digestive Issues</NavLink></li>
-                    <li><NavLink to="/collections" className="text-gray-900 hover:text-cyan-500 text-sm font-medium block no-underline">Hyperactivity</NavLink></li>
+                    <li><NavLink to="/collections" style={{color:"#111827",textDecoration:"none"}} className="text-sm font-medium block hover:!text-cyan-500">Separation Anxiety</NavLink></li>
+                    <li><NavLink to="/collections" style={{color:"#111827",textDecoration:"none"}} className="text-sm font-medium block hover:!text-cyan-500">Dental Health</NavLink></li>
+                    <li><NavLink to="/collections" style={{color:"#111827",textDecoration:"none"}} className="text-sm font-medium block hover:!text-cyan-500">Destructive Chewing</NavLink></li>
+                    <li><NavLink to="/collections" style={{color:"#111827",textDecoration:"none"}} className="text-sm font-medium block hover:!text-cyan-500">Joint Pain</NavLink></li>
+                    <li><NavLink to="/collections" style={{color:"#111827",textDecoration:"none"}} className="text-sm font-medium block hover:!text-cyan-500">Digestive Issues</NavLink></li>
+                    <li><NavLink to="/collections" style={{color:"#111827",textDecoration:"none"}} className="text-sm font-medium block hover:!text-cyan-500">Hyperactivity</NavLink></li>
                   </ul>
                 </div>
               </div>
