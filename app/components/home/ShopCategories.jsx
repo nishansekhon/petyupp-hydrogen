@@ -1,25 +1,21 @@
-import React, { useEffect, useRef, useState } from 'react';
-import axios from 'axios';
+import React, { useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { motion } from 'framer-motion';
-import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
-import { API_BASE_URL } from '@/config/api';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-const API_URL = API_BASE_URL + '/api';
-const BACKEND_URL = API_BASE_URL;
-
-// Pill label shown to users → category/tag value the API will match against.
-// Labels without a populated match fall through to the "Coming soon" state.
-const CATEGORIES = [
-  { label: 'Natural Treats and Chews', query: 'Dog Treats' },
-  { label: 'Yak Chews', query: 'Cheese Chews' },
-  { label: 'Bully Sticks', query: 'Bully Sticks' },
-  { label: 'Wooden Chews', query: 'Wooden Chews' },
-  { label: 'Dog Toys', query: 'Dog Toys' },
-  { label: 'Dog Diners', query: 'Dog feeder' },
-  { label: 'Bowls and Buckets', query: 'Bowls & Feeders' },
-  { label: 'Non-Skid Mats', query: 'Non-Skid Mats' },
-];
+function adaptShopifyProduct(product) {
+  const image = product.images?.nodes?.[0];
+  const price = Number(product.priceRange?.minVariantPrice?.amount ?? 0);
+  const compareAt = Number(product.compareAtPriceRange?.maxVariantPrice?.amount ?? 0);
+  return {
+    id: product.id,
+    slug: product.handle,
+    name: product.title,
+    image_url: image?.url || '',
+    price,
+    original_price: compareAt > price ? compareAt : null,
+  };
+}
 
 const CategoryProductCard = ({ product, index }) => (
   <motion.div
@@ -32,7 +28,7 @@ const CategoryProductCard = ({ product, index }) => (
       <Link to={`/product/${product.slug || product.id}`} className="block flex-1">
         <div className="relative aspect-square overflow-hidden bg-gray-50">
           <img
-            src={product.image_url?.startsWith('http') ? product.image_url : `${BACKEND_URL}${product.image_url}`}
+            src={product.image_url}
             alt={product.name}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
@@ -41,11 +37,6 @@ const CategoryProductCard = ({ product, index }) => (
           <h3 className="font-semibold text-sm text-gray-900 mb-2 line-clamp-2 min-h-[2.5rem]">
             {product.name}
           </h3>
-          <div className="flex items-center gap-1 mb-2">
-            <Star size={13} className="text-yellow-400 fill-yellow-400" />
-            <span className="text-sm font-bold text-gray-900">{product.rating}</span>
-            <span className="text-xs text-gray-400">({product.review_count})</span>
-          </div>
           <div className="flex items-center gap-2">
             <span className="font-black text-lg text-gray-900">
               ${typeof product.price === 'number' ? product.price.toFixed(2) : product.price}
@@ -67,32 +58,15 @@ const CategoryProductCard = ({ product, index }) => (
   </motion.div>
 );
 
-const ShopCategories = () => {
-  const [active, setActive] = useState(CATEGORIES[0].label);
-  const [cache, setCache] = useState({});
+const ShopCategories = ({ collections = [] }) => {
+  const withProducts = collections.filter((c) => (c.products?.nodes?.length ?? 0) > 0);
+  const [activeId, setActiveId] = useState(withProducts[0]?.id ?? collections[0]?.id);
   const scrollRef = useRef(null);
 
-  useEffect(() => {
-    if (cache[active] !== undefined) return;
-    const cat = CATEGORIES.find((c) => c.label === active);
-    let cancelled = false;
-    axios
-      .get(`${API_URL}/products`, { params: { category: cat.query, limit: 10 } })
-      .then((res) => {
-        if (cancelled) return;
-        const list = Array.isArray(res.data) ? res.data.slice(0, 5) : [];
-        setCache((prev) => ({ ...prev, [active]: list }));
-      })
-      .catch(() => {
-        if (!cancelled) setCache((prev) => ({ ...prev, [active]: [] }));
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [active, cache]);
+  if (!collections.length) return null;
 
-  const products = cache[active];
-  const loaded = products !== undefined;
+  const active = collections.find((c) => c.id === activeId) || collections[0];
+  const products = (active?.products?.nodes ?? []).map(adaptShopifyProduct);
 
   const scroll = (direction) => {
     if (!scrollRef.current) return;
@@ -104,25 +78,25 @@ const ShopCategories = () => {
       <h2 className="text-xl md:text-2xl font-black text-gray-900 mb-6">Shop Our Categories</h2>
 
       <div className="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
-        {CATEGORIES.map((cat) => {
-          const isActive = cat.label === active;
+        {collections.map((c) => {
+          const isActive = c.id === active.id;
           return (
             <button
-              key={cat.label}
-              onClick={() => setActive(cat.label)}
+              key={c.id}
+              onClick={() => setActiveId(c.id)}
               className={`flex-shrink-0 px-5 py-2 rounded-full text-sm font-semibold transition-colors border ${
                 isActive
                   ? 'bg-[#06B6D4] text-white border-[#06B6D4]'
                   : 'bg-white text-gray-700 border-gray-200 hover:border-[#06B6D4] hover:text-[#06B6D4]'
               }`}
             >
-              {cat.label}
+              {c.title}
             </button>
           );
         })}
       </div>
 
-      {loaded && products.length === 0 ? (
+      {products.length === 0 ? (
         <div className="py-16 text-center text-gray-500 text-sm">Coming soon</div>
       ) : (
         <div className="relative">
@@ -142,16 +116,9 @@ const ShopCategories = () => {
           </button>
 
           <div ref={scrollRef} className="flex gap-4 overflow-x-auto scrollbar-hide snap-x pb-2">
-            {loaded
-              ? products.map((product, index) => (
-                  <CategoryProductCard key={product.id} product={product} index={index} />
-                ))
-              : Array.from({ length: 5 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="flex-shrink-0 w-[260px] h-[380px] bg-gray-100 rounded-2xl animate-pulse"
-                  />
-                ))}
+            {products.map((product, index) => (
+              <CategoryProductCard key={product.id} product={product} index={index} />
+            ))}
           </div>
         </div>
       )}
