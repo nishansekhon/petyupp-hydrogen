@@ -58,14 +58,28 @@ const CategoryProductCard = ({ product, index }) => (
   </motion.div>
 );
 
+const CATEGORY_ORDER = [
+  'treats',
+  'yak-chews',
+  'bully-sticks',
+  'wooden-chews',
+  'dog-toys',
+  'dog-diners',
+  'dog-bowls',
+  'non-skid-mats-for-dogs',
+];
+
 const ShopCategories = ({ collections = [] }) => {
-  const withProducts = collections.filter((c) => (c.products?.nodes?.length ?? 0) > 0);
-  const [activeId, setActiveId] = useState(withProducts[0]?.id ?? collections[0]?.id);
+  const filtered = CATEGORY_ORDER
+    .map((handle) => collections.find((c) => c.handle === handle))
+    .filter(Boolean);
+  const withProducts = filtered.filter((c) => (c.products?.nodes?.length ?? 0) > 0);
+  const [activeId, setActiveId] = useState(withProducts[0]?.id ?? filtered[0]?.id);
   const scrollRef = useRef(null);
 
-  if (!collections.length) return null;
+  if (!filtered.length) return null;
 
-  const active = collections.find((c) => c.id === activeId) || collections[0];
+  const active = filtered.find((c) => c.id === activeId) || filtered[0];
   const products = (active?.products?.nodes ?? []).map(adaptShopifyProduct);
 
   const scroll = (direction) => {
@@ -78,7 +92,7 @@ const ShopCategories = ({ collections = [] }) => {
       <h2 className="text-xl md:text-2xl font-black text-gray-900 mb-6">Shop Our Categories</h2>
 
       <div className="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
-        {collections.map((c) => {
+        {filtered.map((c) => {
           const isActive = c.id === active.id;
           return (
             <button

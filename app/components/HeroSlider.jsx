@@ -76,15 +76,19 @@ const HeroSlider = () => {
         style={{opacity: transitioning ? 0 : 1, transition: 'opacity 0.3s ease'}}
       >
         <div className="w-full text-center">
-          <h1 className="text-2xl md:text-4xl lg:text-5xl font-black text-white leading-tight mb-4">
+          <h1
+            className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-4"
+            style={{color: '#ffffff', fontWeight: 900}}
+          >
             {slide.headline}
           </h1>
-          <p className="text-white/80 text-sm md:text-base mb-8 max-w-2xl mx-auto">
+          <p className="text-white/80 text-sm md:text-base mb-8 max-w-2xl mx-auto" style={{color: 'rgba(255,255,255,0.85)'}}>
             {slide.subtext}
           </p>
           <Link
             to={slide.ctaLink}
             className="inline-block px-8 py-3 bg-[#06B6D4] text-white font-bold text-sm rounded-full hover:bg-[#0891B2] transition-colors shadow-lg"
+            style={{backgroundColor: '#06B6D4', color: '#ffffff'}}
           >
             {slide.cta}
           </Link>
