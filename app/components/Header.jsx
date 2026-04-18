@@ -53,25 +53,25 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
                 <div>
                   <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Shop by Product</h3>
                   <ul className="space-y-3">
-                    <li><NavLink to="/collections/treats" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Natural Treats and Chews</NavLink></li>
-                    <li><NavLink to="/collections/yak-chews" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Yak Chews</NavLink></li>
-                    <li><NavLink to="/collections/bully-sticks" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Bully Sticks</NavLink></li>
-                    <li><NavLink to="/collections/wooden-chews" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Wooden Chews</NavLink></li>
-                    <li><NavLink to="/collections/dog-toys" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Dog Toys</NavLink></li>
-                    <li><NavLink to="/collections/dog-diners" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Dog Diners</NavLink></li>
-                    <li><NavLink to="/collections/dog-bowls" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Bowls and Buckets</NavLink></li>
-                    <li><NavLink to="/collections/non-skid-mats-for-dogs" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Non-Skid Mats</NavLink></li>
+                    <li><NavLink to="/collections/treats" className="text-gray-900 hover:text-cyan-500 text-sm font-medium block no-underline">Natural Treats and Chews</NavLink></li>
+                    <li><NavLink to="/collections/yak-chews" className="text-gray-900 hover:text-cyan-500 text-sm font-medium block no-underline">Yak Chews</NavLink></li>
+                    <li><NavLink to="/collections/bully-sticks" className="text-gray-900 hover:text-cyan-500 text-sm font-medium block no-underline">Bully Sticks</NavLink></li>
+                    <li><NavLink to="/collections/wooden-chews" className="text-gray-900 hover:text-cyan-500 text-sm font-medium block no-underline">Wooden Chews</NavLink></li>
+                    <li><NavLink to="/collections/dog-toys" className="text-gray-900 hover:text-cyan-500 text-sm font-medium block no-underline">Dog Toys</NavLink></li>
+                    <li><NavLink to="/collections/dog-diners" className="text-gray-900 hover:text-cyan-500 text-sm font-medium block no-underline">Dog Diners</NavLink></li>
+                    <li><NavLink to="/collections/dog-bowls" className="text-gray-900 hover:text-cyan-500 text-sm font-medium block no-underline">Bowls and Buckets</NavLink></li>
+                    <li><NavLink to="/collections/non-skid-mats-for-dogs" className="text-gray-900 hover:text-cyan-500 text-sm font-medium block no-underline">Non-Skid Mats</NavLink></li>
                   </ul>
                 </div>
                 <div>
                   <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Shop by Problem</h3>
                   <ul className="space-y-3">
-                    <li><NavLink to="/collections" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Separation Anxiety</NavLink></li>
-                    <li><NavLink to="/collections" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Dental Health</NavLink></li>
-                    <li><NavLink to="/collections" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Destructive Chewing</NavLink></li>
-                    <li><NavLink to="/collections" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Joint Pain</NavLink></li>
-                    <li><NavLink to="/collections" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Digestive Issues</NavLink></li>
-                    <li><NavLink to="/collections" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Hyperactivity</NavLink></li>
+                    <li><NavLink to="/collections" className="text-gray-900 hover:text-cyan-500 text-sm font-medium block no-underline">Separation Anxiety</NavLink></li>
+                    <li><NavLink to="/collections" className="text-gray-900 hover:text-cyan-500 text-sm font-medium block no-underline">Dental Health</NavLink></li>
+                    <li><NavLink to="/collections" className="text-gray-900 hover:text-cyan-500 text-sm font-medium block no-underline">Destructive Chewing</NavLink></li>
+                    <li><NavLink to="/collections" className="text-gray-900 hover:text-cyan-500 text-sm font-medium block no-underline">Joint Pain</NavLink></li>
+                    <li><NavLink to="/collections" className="text-gray-900 hover:text-cyan-500 text-sm font-medium block no-underline">Digestive Issues</NavLink></li>
+                    <li><NavLink to="/collections" className="text-gray-900 hover:text-cyan-500 text-sm font-medium block no-underline">Hyperactivity</NavLink></li>
                   </ul>
                 </div>
               </div>
