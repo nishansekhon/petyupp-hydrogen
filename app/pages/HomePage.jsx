@@ -111,7 +111,7 @@ function HomePage() {
   );
 
   return (
-    <div className="min-h-screen bg-white pt-[106px]">
+    <div className="min-h-screen bg-white">
       <OrganizationSchema />
       <WebsiteSchema />
 

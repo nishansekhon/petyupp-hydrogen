@@ -1,31 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router';
-import { Menu, Search, ShoppingCart, User, ChevronDown } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router';
 import { useTheme } from '@/contexts/ThemeContext';
-import { Sun, Moon } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import UserMenu from '@/components/UserMenu';
 import MobileNavDrawer from '@/components/MobileNavDrawer';
 
 function Navbar() {
-  const navigate = useNavigate();
-  const { user } = useAuth();
-  const cartItemsCount = useCartStore(state => state.getItemCount());
+  const cartItemsCount = useCartStore((state) => state.getItemCount());
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [isShopOpen, setIsShopOpen] = useState(false);
   const { isDarkMode, toggleTheme } = useTheme();
 
   useEffect(() => {
     setMobileMenuOpen(false);
+    setIsShopOpen(false);
   }, [location]);
 
   const isActive = (path) => location.pathname === path;
 
   return (
     <>
-      {/* 1. ANNOUNCEMENT BAR - Dark charcoal bg-[#111827] text-white — confirmed */}
       <div className="fixed top-0 left-0 right-0 z-[100] bg-[#111827] text-white py-1.5 h-[28px] overflow-hidden flex items-center text-xs">
         <div className="flex items-center animate-ticker whitespace-nowrap" style={{ width: '200%' }}>
           <span className="inline-block px-8 text-xs sm:text-sm font-medium">
@@ -52,21 +48,20 @@ function Navbar() {
         </div>
       </div>
 
-      {/* 2. MAIN NAVBAR - White background */}
       <header className="fixed top-[28px] left-0 right-0 z-[99] flex items-center justify-between px-4 sm:px-6 lg:px-8 bg-white py-5">
-
-        {/* LEFT: Mobile menu + Logo */}
         <div className="flex items-center gap-3">
-          {/* Mobile hamburger */}
           <button
             className="p-2 -ml-1 rounded-lg hover:bg-gray-100 transition-colors lg:hidden"
             onClick={() => setMobileMenuOpen(true)}
             aria-label="Open menu"
           >
-            <Menu size={22} className="text-gray-700" />
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M4 7h16" />
+              <path d="M4 12h16" />
+              <path d="M4 17h16" />
+            </svg>
           </button>
 
-          {/* PetYupp Logo */}
           <Link to="/" className="flex items-center">
             <span className="text-2xl font-bold text-[#06B6D4] tracking-tight whitespace-nowrap">
               PetYupp<span className="hidden md:inline"> | Pet Lifestyle</span>
@@ -74,70 +69,49 @@ function Navbar() {
           </Link>
         </div>
 
-        {/* CENTER: Desktop Navigation - tighter gap-6, font-medium links */}
         <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 transform -translate-x-1/2">
-          {/* Shop Dropdown */}
-          <div className="relative group">
+          <div className="relative">
             <button
+              type="button"
               className={`text-sm font-medium transition-colors flex items-center gap-1 ${
                 isActive('/shop') ? 'text-[#06B6D4]' : 'text-gray-700 hover:text-[#06B6D4]'
               }`}
+              onClick={() => setIsShopOpen((open) => !open)}
+              aria-expanded={isShopOpen}
             >
               Shop
-              <ChevronDown size={14} className="transition-transform duration-200 group-hover:rotate-180" />
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" className={`transition-transform duration-200 ${isShopOpen ? 'rotate-180' : ''}`}>
+                <path d="M6 9l6 6 6-6" />
+              </svg>
             </button>
-            {/* Dropdown Menu - Two Column */}
-            <div className="absolute top-full left-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden" style={{ minWidth: '460px' }}>
-              <div className="flex">
-                {/* Left Column: Shop by Product */}
-                <div className="flex-1 p-3 border-r border-gray-100">
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wider px-2 pb-2">Shop by Product</p>
-                  <Link to="/collections/natural-treats" className="flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:text-[#06B6D4] hover:border-l-2 hover:border-[#06B6D4] hover:pl-2 transition-all duration-150">
-                    Natural Treats and Chews
-                  </Link>
-                  <Link to="/collections/yak-chews" className="flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:text-[#06B6D4] hover:border-l-2 hover:border-[#06B6D4] hover:pl-2 transition-all duration-150">
-                    Yak Chews
-                  </Link>
-                  <Link to="/collections/bully-sticks" className="flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:text-[#06B6D4] hover:border-l-2 hover:border-[#06B6D4] hover:pl-2 transition-all duration-150">
-                    Bully Sticks
-                  </Link>
-                  <Link to="/collections/wooden-chews" className="flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:text-[#06B6D4] hover:border-l-2 hover:border-[#06B6D4] hover:pl-2 transition-all duration-150">
-                    Wooden Chews
-                  </Link>
-                  <Link to="/collections/dog-toys" className="flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:text-[#06B6D4] hover:border-l-2 hover:border-[#06B6D4] hover:pl-2 transition-all duration-150">
-                    Dog Toys
-                  </Link>
-                  <Link to="/collections/dog-diners" className="flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:text-[#06B6D4] hover:border-l-2 hover:border-[#06B6D4] hover:pl-2 transition-all duration-150">
-                    Dog Diners
-                  </Link>
-                  <Link to="/collections/bowls-buckets" className="flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:text-[#06B6D4] hover:border-l-2 hover:border-[#06B6D4] hover:pl-2 transition-all duration-150">
-                    Bowls and Buckets
-                  </Link>
-                  <Link to="/collections/non-skid-mats" className="flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:text-[#06B6D4] hover:border-l-2 hover:border-[#06B6D4] hover:pl-2 transition-all duration-150">
-                    Non-Skid Mats
-                  </Link>
-                </div>
-                {/* Right Column: Shop by Problem */}
-                <div className="flex-1 p-3">
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wider px-2 pb-2">Shop by Problem</p>
-                  <Link to="/collections/separation-anxiety" className="flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:text-[#06B6D4] hover:border-l-2 hover:border-[#06B6D4] hover:pl-2 transition-all duration-150">
-                    Separation Anxiety
-                  </Link>
-                  <Link to="/collections/dental-health" className="flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:text-[#06B6D4] hover:border-l-2 hover:border-[#06B6D4] hover:pl-2 transition-all duration-150">
-                    Dental Health
-                  </Link>
-                  <Link to="/collections/destructive-chewing" className="flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:text-[#06B6D4] hover:border-l-2 hover:border-[#06B6D4] hover:pl-2 transition-all duration-150">
-                    Destructive Chewing
-                  </Link>
-                  <Link to="/collections/joint-pain" className="flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:text-[#06B6D4] hover:border-l-2 hover:border-[#06B6D4] hover:pl-2 transition-all duration-150">
-                    Joint Pain
-                  </Link>
-                  <Link to="/collections/digestive-issues" className="flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:text-[#06B6D4] hover:border-l-2 hover:border-[#06B6D4] hover:pl-2 transition-all duration-150">
-                    Digestive Issues
-                  </Link>
-                  <Link to="/collections/hyperactivity" className="flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:text-[#06B6D4] hover:border-l-2 hover:border-[#06B6D4] hover:pl-2 transition-all duration-150">
-                    Hyperactivity
-                  </Link>
+
+            <div className={isShopOpen ? 'block' : 'hidden'}>
+              <div className="absolute top-full left-1/2 -translate-x-1/2 bg-white shadow-xl rounded-lg border border-gray-100 p-8 z-50" style={{minWidth:'620px'}}>
+                <div className="grid grid-cols-2 gap-12">
+                  <div>
+                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Shop by Product</h3>
+                    <ul className="space-y-3">
+                      <li><a href="/collections/treats" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Natural Treats and Chews</a></li>
+                      <li><a href="/collections/yak-chews" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Yak Chews</a></li>
+                      <li><a href="/collections/bully-sticks" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Bully Sticks</a></li>
+                      <li><a href="/collections/wooden-chews" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Wooden Chews</a></li>
+                      <li><a href="/collections/dog-toys" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Dog Toys</a></li>
+                      <li><a href="/collections/dog-diners" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Dog Diners</a></li>
+                      <li><a href="/collections/dog-bowls" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Bowls and Buckets</a></li>
+                      <li><a href="/collections/non-skid-mats-for-dogs" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Non-Skid Mats</a></li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Shop by Problem</h3>
+                    <ul className="space-y-3">
+                      <li><a href="/collections" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Separation Anxiety</a></li>
+                      <li><a href="/collections" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Dental Health</a></li>
+                      <li><a href="/collections" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Destructive Chewing</a></li>
+                      <li><a href="/collections" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Joint Pain</a></li>
+                      <li><a href="/collections" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Digestive Issues</a></li>
+                      <li><a href="/collections" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Hyperactivity</a></li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
@@ -153,66 +127,42 @@ function Navbar() {
             About
             <span className={`absolute -bottom-1 left-0 h-0.5 bg-[#06B6D4] transition-all ${isActive('/about') ? 'w-full' : 'w-0 group-hover:w-full'}`} />
           </Link>
-          <Link
-            to="/blog"
-            className={`text-sm font-medium transition-colors relative group ${
-              isActive('/blog')
-                ? 'text-[#06B6D4]'
-                : 'text-gray-700 hover:text-[#06B6D4]'
-            }`}
-          >
-            Blog
-            <span className={`absolute -bottom-1 left-0 h-0.5 bg-[#06B6D4] transition-all ${isActive('/blog') ? 'w-full' : 'w-0 group-hover:w-full'}`} />
-          </Link>
         </nav>
 
-        {/* RIGHT: Search, Cart, Account */}
         <div className="flex items-center gap-4">
-          {/* Theme Toggle */}
           <button
+            type="button"
             onClick={toggleTheme}
             aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-            className="p-2 rounded-full dark-mode-btn hidden lg:flex items-center justify-center"
-            style={{ color: 'var(--accent)', background: 'transparent', border: 'none', cursor: 'pointer' }}
+            className="p-2 rounded-full hover:bg-gray-100 transition-colors"
           >
-            {isDarkMode ? (
-              <Sun size={20} strokeWidth={2} />
-            ) : (
-              <Moon size={20} strokeWidth={2} />
-            )}
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
           </button>
 
-          {/* Search */}
           <button
             className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
             aria-label="Search"
             onClick={() => setSearchOpen(!searchOpen)}
           >
-            <Search size={20} className="text-gray-700" />
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
           </button>
 
-          {/* Theme Toggle - Mobile only */}
-          <button
-            onClick={toggleTheme}
-            aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-            className="p-2 rounded-full dark-mode-btn flex lg:hidden items-center justify-center"
-            style={{ color: 'var(--accent)', background: 'transparent', border: 'none', cursor: 'pointer' }}
-          >
-            {isDarkMode ? (
-              <Sun size={20} strokeWidth={2} />
-            ) : (
-              <Moon size={20} strokeWidth={2} />
-            )}
-          </button>
-
-          {/* Cart */}
           <Link
             to="/cart"
             className="p-2 rounded-lg hover:bg-gray-100 transition-colors relative"
             aria-label="Cart"
             data-testid="nav-cart"
           >
-            <ShoppingCart size={20} className="text-gray-700" />
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
+              <path d="M3 6h18" />
+              <path d="M16 10a4 4 0 01-8 0" />
+            </svg>
             {cartItemsCount > 0 && (
               <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] bg-[#06B6D4] text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1">
                 {cartItemsCount > 99 ? '99+' : cartItemsCount}
@@ -220,14 +170,12 @@ function Navbar() {
             )}
           </Link>
 
-          {/* Account */}
           <div className="hidden sm:block">
             <UserMenu />
           </div>
         </div>
       </header>
 
-      {/* Mobile Navigation Drawer */}
       <MobileNavDrawer isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
     </>
   );

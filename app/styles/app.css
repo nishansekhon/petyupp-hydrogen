@@ -381,7 +381,7 @@ button.reset:hover:not(:has(> *)) {
   color: #6B7280;
   font-weight: 400;
   letter-spacing: 0.025em;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .header-menu-mobile-toggle {

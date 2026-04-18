@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router';
 
-const slides = [
+const SLIDES = [
   {
     headline: "Happier Dogs Start Here",
     subtext: "Natural chews and treats matched to your dog's exact need",
@@ -47,23 +47,27 @@ const HeroSlider = () => {
 
   useEffect(() => {
     timerRef.current = setInterval(() => {
-      goTo((current + 1) % slides.length);
+      goTo((current + 1) % SLIDES.length);
     }, 5000);
     return () => clearInterval(timerRef.current);
   }, [current]);
 
-  const slide = slides[current];
+  const slide = SLIDES[current];
 
   return (
     <div className="relative w-full overflow-hidden bg-[#065F46]" style={{minHeight: '380px'}}>
-      {/* Slide background */}
+      {/* Photo layer */}
       <div
-        className={`absolute inset-0 bg-gradient-to-br ${slide.bg} transition-opacity duration-300 bg-cover bg-center`}
+        className="absolute inset-0 bg-cover bg-center transition-opacity duration-300"
         style={{
           backgroundImage: `url(${slide.bgImage})`,
-          backgroundBlend: 'overlay',
           opacity: transitioning ? 0 : 1
         }}
+      />
+      {/* Gradient overlay on top of photo */}
+      <div
+        className={`absolute inset-0 bg-gradient-to-br ${slide.bg}`}
+        style={{opacity: transitioning ? 0 : 0.4}}
       />
 
       {/* Content */}
@@ -101,7 +105,7 @@ const HeroSlider = () => {
 
       {/* Dot indicators */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-        {slides.map((_, i) => (
+        {SLIDES.map((_, i) => (
           <button
             key={i}
             onClick={() => goTo(i)}
@@ -112,13 +116,13 @@ const HeroSlider = () => {
 
       {/* Prev/Next arrows */}
       <button
-        onClick={() => goTo((current - 1 + slides.length) % slides.length)}
+        onClick={() => goTo((current - 1 + SLIDES.length) % SLIDES.length)}
         className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors"
       >
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10 12L6 8l4-4"/></svg>
       </button>
       <button
-        onClick={() => goTo((current + 1) % slides.length)}
+        onClick={() => goTo((current + 1) % SLIDES.length)}
         className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors"
       >
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 12l4-4-4-4"/></svg>

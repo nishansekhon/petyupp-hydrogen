@@ -2,6 +2,7 @@ import {Suspense, useState} from 'react';
 import {Await, NavLink, useAsyncValue} from 'react-router';
 import {useAnalytics, useOptimisticCart} from '@shopify/hydrogen';
 import {useAside} from '~/components/Aside';
+import {useTheme} from '~/contexts/ThemeContext';
 
 /**
  * @param {HeaderProps}
@@ -28,7 +29,11 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
             onMouseEnter={() => setIsShopOpen(true)}
             onMouseLeave={() => setIsShopOpen(false)}
           >
-            <button className="header-menu-item flex items-center gap-2">
+            <button
+            type="button"
+            className="header-menu-item flex items-center gap-2"
+            onClick={() => setIsShopOpen((open) => !open)}
+          >
               Shop
               <svg
                 className={`w-4 h-4 transition-transform ${isShopOpen ? 'rotate-180' : ''}`}
@@ -42,7 +47,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
 
             {/* Dropdown Menu */}
             <div className={`absolute left-0 mt-0 w-56 bg-white rounded-lg shadow-xl transition-all duration-200 z-50 ${
-              isShopOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-2'
+              isShopOpen ? 'block opacity-100 visible translate-y-0' : 'hidden opacity-0 invisible translate-y-2'
             }`}>
               <div className="py-2">
                 <NavLink
@@ -207,6 +212,7 @@ const FALLBACK_HEADER_MENU = {
  */
 function HeaderCtas({isLoggedIn, cart, isMobileMenuOpen, setIsMobileMenuOpen}) {
   const {open} = useAside();
+  const {isDarkMode, toggleTheme} = useTheme();
 
   return (
     <nav className="header-ctas" role="navigation">
@@ -234,6 +240,24 @@ function HeaderCtas({isLoggedIn, cart, isMobileMenuOpen, setIsMobileMenuOpen}) {
             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
           />
         </svg>
+      </button>
+
+      {/* Dark mode toggle */}
+      <button
+        type="button"
+        className="reset text-gray-900 hover:text-cyan-500 transition-colors"
+        onClick={toggleTheme}
+        title="Toggle dark mode"
+      >
+        {isDarkMode ? (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" />
+          </svg>
+        ) : (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.36 6.36l-1.42-1.42M7.05 6.05L5.64 4.64m12.72 0l-1.41 1.41M7.05 17.95l-1.41 1.41M12 7a5 5 0 100 10 5 5 0 000-10z" />
+          </svg>
+        )}
       </button>
 
       {/* Account */}
