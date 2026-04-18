@@ -30,10 +30,11 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
             onMouseLeave={() => setIsShopOpen(false)}
           >
             <button
-            type="button"
-            className="header-menu-item flex items-center gap-2"
-            onClick={() => setIsShopOpen((open) => !open)}
-          >
+              type="button"
+              className="reset header-menu-item text-sm font-medium text-gray-700 hover:text-[#06B6D4] flex items-center gap-1"
+              style={{background: 'transparent', padding: 0, border: 'none', color: '#374151'}}
+              onClick={() => setIsShopOpen((open) => !open)}
+            >
               Shop
               <svg
                 className={`w-4 h-4 transition-transform ${isShopOpen ? 'rotate-180' : ''}`}
@@ -41,7 +42,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </button>
 
@@ -79,12 +80,20 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
           </div>
 
           {/* About Link */}
-          <NavLink to="/pages/about" className="header-menu-item">
+          <NavLink
+            to="/pages/about"
+            className="header-menu-item text-sm font-medium text-gray-700 hover:text-[#06B6D4]"
+            style={{color: '#374151'}}
+          >
             About
           </NavLink>
 
           {/* Blog Link */}
-          <NavLink to="/blogs/journal" className="header-menu-item">
+          <NavLink
+            to="/blogs/journal"
+            className="header-menu-item text-sm font-medium text-gray-700 hover:text-[#06B6D4]"
+            style={{color: '#374151'}}
+          >
             Blog
           </NavLink>
         </nav>
@@ -200,7 +209,7 @@ const FALLBACK_HEADER_MENU = {
  */
 function HeaderCtas({isLoggedIn, cart, isMobileMenuOpen, setIsMobileMenuOpen}) {
   const {open} = useAside();
-  const {isDarkMode, toggleTheme} = useTheme();
+  const {toggleTheme} = useTheme();
 
   return (
     <nav className="header-ctas" role="navigation">
@@ -237,15 +246,9 @@ function HeaderCtas({isLoggedIn, cart, isMobileMenuOpen, setIsMobileMenuOpen}) {
         onClick={toggleTheme}
         title="Toggle dark mode"
       >
-        {isDarkMode ? (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" />
-          </svg>
-        ) : (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.36 6.36l-1.42-1.42M7.05 6.05L5.64 4.64m12.72 0l-1.41 1.41M7.05 17.95l-1.41 1.41M12 7a5 5 0 100 10 5 5 0 000-10z" />
-          </svg>
-        )}
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" />
+        </svg>
       </button>
 
       {/* Account */}
