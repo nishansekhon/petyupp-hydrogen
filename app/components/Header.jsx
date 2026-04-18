@@ -17,8 +17,8 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
       <div className="header-container">
         {/* Logo and Tagline */}
         <NavLink prefetch="intent" to="/" className="logo-section" end>
-          <span className="logo-text">PetYupp</span>
-          <span className="logo-tagline">| Pet Lifestyle</span>
+          <span className="logo-text text-3xl font-bold" style={{color: '#06B6D4', fontSize: '1.875rem', fontWeight: 700}}>PetYupp</span>
+          <span className="logo-tagline text-lg font-normal" style={{color: '#6B7280', fontSize: '1.125rem', fontWeight: 400, marginLeft: '0.25rem'}}>| Pet Lifestyle</span>
         </NavLink>
 
         {/* Desktop Menu */}
@@ -31,8 +31,8 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
           >
             <button
               type="button"
-              className="reset header-menu-item text-sm font-medium text-gray-700 hover:text-[#06B6D4] flex items-center gap-1"
-              style={{background: 'transparent', padding: 0, border: 'none', color: '#374151'}}
+              className="reset header-menu-item text-sm font-medium hover:text-[#06B6D4] flex items-center gap-1"
+              style={{background: 'transparent', padding: 0, border: 'none', color: isShopOpen ? '#06B6D4' : '#374151'}}
               onClick={() => setIsShopOpen((open) => !open)}
             >
               Shop
@@ -50,7 +50,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
             <div className={`absolute top-full left-1/2 -translate-x-1/2 bg-white shadow-xl rounded-lg border border-gray-100 p-8 z-50 ${
               isShopOpen ? 'block' : 'hidden'
             }`} style={{minWidth:'620px'}}>
-              <div className="grid grid-cols-2 gap-12 divide-x divide-gray-100">
+              <div className="grid grid-cols-2 gap-12">
                 <div>
                   <h3 style={{color:"#9CA3AF"}} className="text-xs font-bold uppercase tracking-wider mb-4">Shop by Product</h3>
                   <ul className="space-y-3">
@@ -64,7 +64,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
                     <li><NavLink to="/collections/non-skid-mats-for-dogs" style={{color:"#111827",textDecoration:"none"}} className="text-sm font-medium block hover:!text-cyan-500">Non-Skid Mats</NavLink></li>
                   </ul>
                 </div>
-                <div className="pl-12">
+                <div>
                   <h3 style={{color:"#9CA3AF"}} className="text-xs font-bold uppercase tracking-wider mb-4">Shop by Problem</h3>
                   <ul className="space-y-3">
                     <li><NavLink to="/collections" style={{color:"#111827",textDecoration:"none"}} className="text-sm font-medium block hover:!text-cyan-500">Separation Anxiety</NavLink></li>
@@ -223,6 +223,18 @@ function HeaderCtas({isLoggedIn, cart, isMobileMenuOpen, setIsMobileMenuOpen}) {
         </svg>
       </button>
 
+      {/* Dark mode toggle */}
+      <button
+        type="button"
+        className="reset text-gray-900 hover:text-cyan-500 transition-colors"
+        onClick={toggleTheme}
+        title="Toggle dark mode"
+      >
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" />
+        </svg>
+      </button>
+
       {/* Search Icon */}
       <button
         className="reset text-gray-900 hover:text-cyan-500 transition-colors"
@@ -239,35 +251,22 @@ function HeaderCtas({isLoggedIn, cart, isMobileMenuOpen, setIsMobileMenuOpen}) {
         </svg>
       </button>
 
-      {/* Dark mode toggle */}
-      <button
-        type="button"
-        className="reset text-gray-900 hover:text-cyan-500 transition-colors"
-        onClick={toggleTheme}
-        title="Toggle dark mode"
-      >
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" />
-        </svg>
-      </button>
+      {/* Cart */}
+      <CartToggle cart={cart} />
 
-      {/* Account */}
-      <NavLink prefetch="intent" to="/account">
-        <Suspense fallback="Sign in">
-          <Await resolve={isLoggedIn} errorElement="Sign in">
-            {(isLoggedIn) => (
-              <>
-                <svg className="w-5 h-5 text-gray-900 hover:text-cyan-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              </>
-            )}
+      {/* Account — Sign In text on desktop */}
+      <NavLink
+        prefetch="intent"
+        to="/account"
+        className="hidden md:flex items-center gap-1 text-sm font-medium text-gray-700 hover:text-[#06B6D4]"
+        style={{color: '#374151'}}
+      >
+        <Suspense fallback={<span>Sign In</span>}>
+          <Await resolve={isLoggedIn} errorElement={<span>Sign In</span>}>
+            {(loggedIn) => <span>{loggedIn ? 'Account' : 'Sign In'}</span>}
           </Await>
         </Suspense>
       </NavLink>
-
-      {/* Cart */}
-      <CartToggle cart={cart} />
     </nav>
   );
 }
