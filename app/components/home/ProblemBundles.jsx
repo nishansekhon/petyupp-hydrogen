@@ -74,13 +74,12 @@ const ProblemBundles = () => {
               }}
             >
 {/* Bundle Image */}
-              <div className="h-40 bg-gray-200 overflow-hidden">
-                <img
-                  src={bundle.image}
-                  alt={bundle.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
+              <div
+                className="h-40 bg-gray-200 bg-cover bg-center"
+                style={{
+                  backgroundImage: `url('${bundle.image}')`,
+                }}
+              />
 
 {/* Content */}
               <div className="p-6 flex flex-col flex-1">
