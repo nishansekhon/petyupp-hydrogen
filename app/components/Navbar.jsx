@@ -86,30 +86,59 @@ function Navbar() {
             </button>
 
             <div className={isShopOpen ? 'block' : 'hidden'}>
-              <div className="absolute top-full left-1/2 -translate-x-1/2 bg-white shadow-xl rounded-lg border border-gray-100 p-8 z-50" style={{minWidth:'620px'}}>
-                <div className="grid grid-cols-2 gap-12">
+              <div className="absolute top-full left-1/2 -translate-x-1/2 bg-white shadow-xl rounded-lg border border-gray-100 p-8 z-50" style={{minWidth:'680px'}}>
+                <div className="grid grid-cols-2 gap-16">
                   <div>
-                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Shop by Product</h3>
-                    <ul className="space-y-3">
-                      <li><a href="/collections/treats" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Natural Treats and Chews</a></li>
-                      <li><a href="/collections/yak-chews" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Yak Chews</a></li>
-                      <li><a href="/collections/bully-sticks" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Bully Sticks</a></li>
-                      <li><a href="/collections/wooden-chews" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Wooden Chews</a></li>
-                      <li><a href="/collections/dog-toys" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Dog Toys</a></li>
-                      <li><a href="/collections/dog-diners" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Dog Diners</a></li>
-                      <li><a href="/collections/dog-bowls" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Bowls and Buckets</a></li>
-                      <li><a href="/collections/non-skid-mats-for-dogs" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Non-Skid Mats</a></li>
+                    <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Shop by Product</h3>
+                    <ul className="space-y-1">
+                      {[
+                        {to: '/collections/treats', label: 'Natural Treats and Chews'},
+                        {to: '/collections/yak-chews', label: 'Yak Chews'},
+                        {to: '/collections/bully-sticks', label: 'Bully Sticks'},
+                        {to: '/collections/wooden-chews', label: 'Wooden Chews'},
+                        {to: '/collections/dog-toys', label: 'Dog Toys'},
+                        {to: '/collections/dog-diners', label: 'Dog Diners'},
+                        {to: '/collections/dog-bowls', label: 'Bowls and Buckets'},
+                        {to: '/collections/non-skid-mats-for-dogs', label: 'Non-Skid Mats'},
+                      ].map((item) => {
+                        const active = isActive(item.to);
+                        return (
+                          <li key={item.to}>
+                            <Link
+                              to={item.to}
+                              className={`block text-sm font-medium py-2 pl-3 border-l-2 transition-all ${
+                                active
+                                  ? 'border-[#06B6D4] text-[#06B6D4]'
+                                  : 'border-transparent text-gray-700 hover:border-[#06B6D4] hover:text-[#06B6D4]'
+                              }`}
+                            >
+                              {item.label}
+                            </Link>
+                          </li>
+                        );
+                      })}
                     </ul>
                   </div>
                   <div>
-                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Shop by Problem</h3>
-                    <ul className="space-y-3">
-                      <li><a href="/collections" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Separation Anxiety</a></li>
-                      <li><a href="/collections" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Dental Health</a></li>
-                      <li><a href="/collections" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Destructive Chewing</a></li>
-                      <li><a href="/collections" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Joint Pain</a></li>
-                      <li><a href="/collections" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Digestive Issues</a></li>
-                      <li><a href="/collections" className="text-gray-700 hover:text-[#06B6D4] text-sm font-medium block">Hyperactivity</a></li>
+                    <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Shop by Problem</h3>
+                    <ul className="space-y-1">
+                      {[
+                        'Separation Anxiety',
+                        'Dental Health',
+                        'Destructive Chewing',
+                        'Joint Pain',
+                        'Digestive Issues',
+                        'Hyperactivity',
+                      ].map((label) => (
+                        <li key={label}>
+                          <Link
+                            to="/collections"
+                            className="block text-sm font-medium py-2 pl-3 border-l-2 border-transparent text-gray-700 hover:border-[#06B6D4] hover:text-[#06B6D4] transition-all"
+                          >
+                            {label}
+                          </Link>
+                        </li>
+                      ))}
                     </ul>
                   </div>
                 </div>
