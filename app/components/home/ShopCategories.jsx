@@ -58,26 +58,17 @@ const CategoryProductCard = ({ product, index }) => (
   </motion.div>
 );
 
-const DESIRED_COLLECTIONS = [
-  {handle: 'natural-treats-and-chews', label: 'Natural Treats and Chews'},
-  {handle: 'treats', label: 'Natural Treats and Chews'},
-  {handle: 'yak-chews', label: 'Yak Chews'},
-  {handle: 'bully-sticks', label: 'Bully Sticks'},
-  {handle: 'wooden-chews', label: 'Wooden Chews'},
-  {handle: 'dog-toys', label: 'Dog Toys'},
-  {handle: 'dog-diners', label: 'Dog Diners'},
-  {handle: 'dog-bowls', label: 'Bowls and Buckets'},
-  {handle: 'non-skid-mats-for-dogs', label: 'Non-Skid Mats'},
-  {handle: 'chews-treats', label: 'Chews & Treats'},
-  {handle: 'chews-and-treats', label: 'Chews & Treats'},
+const CATEGORY_MAP = [
+  { label: 'Natural Treats and Chews', handle: 'dog-chews-and-treats' },
+  { label: 'Yak Chews', handle: 'yak-chews' },
+  { label: 'Dog Toys', handle: 'dog-toys' },
+  { label: 'Dog Diners', handle: 'dog-diners' },
+  { label: 'Bowls and Buckets', handle: 'dog-bowls' },
+  { label: 'Non-Skid Mats', handle: 'non-skid-mats-for-dogs' },
 ];
 
 const ShopCategories = ({ collections = [] }) => {
-  if (typeof window !== 'undefined') {
-    console.log('Collections:', collections?.map((c) => ({title: c.title, handle: c.handle})));
-  }
-
-  const matched = DESIRED_COLLECTIONS
+  const matched = CATEGORY_MAP
     .map(({handle, label}) => {
       const col = collections.find((c) => c.handle === handle);
       return col ? {...col, label} : null;
