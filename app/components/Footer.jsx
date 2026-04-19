@@ -60,11 +60,11 @@ const footerColumns = [
   {
     title: "Company",
     links: [
-      { label: "About PetYupp", to: "/about" },
-      { label: "Contact Us", to: "/contact" },
-      { label: "Shipping & Delivery", to: "/shipping" },
-      { label: "Returns & Exchanges", to: "/returns" },
-      { label: "Wholesale Inquiries", to: "/wholesale" },
+      { label: "About PetYupp", to: "/pages/about" },
+      { label: "Contact Us", to: "/pages/contact" },
+      { label: "Shipping & Delivery", to: "/pages/shipping" },
+      { label: "Returns & Exchanges", to: "/pages/returns" },
+      { label: "Wholesale Inquiries", to: "/pages/contact" },
     ],
   },
 ];
@@ -108,10 +108,67 @@ function AccordionSection({ title, links }) {
   );
 }
 
+function FooterNewsletter() {
+  const [submitted, setSubmitted] = useState(false);
+  return (
+    <div className="max-w-3xl mx-auto text-center">
+      <h2 className="text-white text-xl md:text-2xl font-bold mb-1">
+        Join the Pack
+      </h2>
+      <p className="text-gray-400 text-sm mb-4">
+        Get 10% off your first order, plus product drops and dog-care tips.
+      </p>
+      {submitted ? (
+        <p className="text-white font-semibold">
+          🎉 You&rsquo;re in! Welcome to the pack.
+        </p>
+      ) : (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            setSubmitted(true);
+          }}
+          className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto"
+        >
+          <input
+            type="email"
+            name="email"
+            required
+            placeholder="Enter your email"
+            aria-label="Email address"
+            className="flex-1 px-4 py-2.5 rounded-lg text-gray-800 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#06B6D4] text-sm"
+          />
+          <button
+            type="submit"
+            className="px-5 py-2.5 rounded-lg bg-[#06B6D4] hover:bg-[#0891B2] text-white font-semibold text-sm transition-colors whitespace-nowrap"
+          >
+            Subscribe
+          </button>
+        </form>
+      )}
+    </div>
+  );
+}
+
 function Footer() {
   return (
     <footer style={{ backgroundColor: "#1C1917", color: "#fff" }}>
       <div className="max-w-7xl mx-auto px-4 md:px-6 pt-12 pb-6">
+        {/* Brand row */}
+        <div className="flex items-center gap-3 mb-8 pb-6 border-b border-white/10">
+          <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-[#06B6D4] text-white font-black">
+            P
+          </span>
+          <Link to="/" className="text-white text-xl font-bold tracking-tight">
+            PetYupp
+          </Link>
+        </div>
+
+        {/* Newsletter strip */}
+        <div className="pb-10 mb-10 border-b border-white/10">
+          <FooterNewsletter />
+        </div>
+
         {/* Main columns grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 sm:gap-8 mb-8">
           {/* Columns 1-3: Shop by Problem, Products, Company */}
@@ -129,7 +186,7 @@ function Footer() {
                 href="https://instagram.com/petyupp"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-gray-400 hover:text-white text-sm transition-colors duration-150"
+                className="flex items-center gap-2 text-gray-400 hover:text-white text-sm transition-all duration-150 hover:translate-x-0.5"
               >
                 <InstagramIcon />
                 <span>Instagram</span>
@@ -138,7 +195,7 @@ function Footer() {
                 href="https://tiktok.com/@petyupp"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-gray-400 hover:text-white text-sm transition-colors duration-150"
+                className="flex items-center gap-2 text-gray-400 hover:text-white text-sm transition-all duration-150 hover:translate-x-0.5"
               >
                 <TikTokIcon />
                 <span>TikTok</span>
@@ -147,14 +204,14 @@ function Footer() {
                 href="https://youtube.com/@petyupp"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-gray-400 hover:text-white text-sm transition-colors duration-150"
+                className="flex items-center gap-2 text-gray-400 hover:text-white text-sm transition-all duration-150 hover:translate-x-0.5"
               >
                 <YouTubeIcon />
                 <span>YouTube</span>
               </a>
               <a
                 href="mailto:hello@petyupp.com"
-                className="flex items-center gap-2 text-gray-400 hover:text-white text-sm transition-colors duration-150"
+                className="flex items-center gap-2 text-gray-400 hover:text-white text-sm transition-all duration-150 hover:translate-x-0.5"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
