@@ -3,19 +3,19 @@ import { Link } from 'react-router';
 import { useCartStore } from '@/store/cartStore';
 
 const bestSellers = [
-  { label: 'Yak Chews', emoji: '🧀', path: '/shop?category=yak-chews' },
-  { label: 'Bully Sticks', emoji: '🥩', path: '/shop?category=bully-sticks' },
-  { label: 'Coffee Wood', emoji: '🪵', path: '/shop?category=coffee-wood' },
-  { label: 'Buffalo Chews', emoji: '🦬', path: '/shop?category=buffalo-chews' },
+  { label: 'Yak Chews', emoji: '🧀', path: '/collections/yak-chews' },
+  { label: 'Bully Sticks', emoji: '🥩', path: '/collections/bully-sticks' },
+  { label: 'Coffee Wood', emoji: '🪵', path: '/collections/wooden-chews' },
+  { label: 'Buffalo Chews', emoji: '🦬', path: '/collections/treats' },
 ];
 
 const categories = [
-  { label: 'Natural Treats', path: '/shop?category=natural-treats' },
-  { label: 'Yak Chews', path: '/shop?category=yak-chews' },
-  { label: 'Dog Toys', path: '/shop?category=dog-toys' },
-  { label: 'Bowls & Buckets', path: '/shop?category=bowls-buckets' },
-  { label: 'Diners', path: '/shop?category=diners' },
-  { label: 'Non-Skid Mats', path: '/shop?category=non-skid-mats' },
+  { label: 'Natural Treats', path: '/collections/treats' },
+  { label: 'Yak Chews', path: '/collections/yak-chews' },
+  { label: 'Dog Toys', path: '/collections/dog-toys' },
+  { label: 'Bowls & Buckets', path: '/collections/dog-bowls' },
+  { label: 'Diners', path: '/collections/dog-diners' },
+  { label: 'Non-Skid Mats', path: '/collections/non-skid-mats-for-dogs' },
 ];
 
 const MobileNavDrawer = ({ isOpen, onClose }) => {
@@ -86,7 +86,7 @@ const MobileNavDrawer = ({ isOpen, onClose }) => {
         {/* Sale row */}
         <div className="mx-4 mt-2 mb-1">
           <Link
-            to="/shop?tag=sale"
+            to="/collections/all"
             onClick={onClose}
             className="flex items-center justify-between w-full px-4 py-3 rounded-xl font-semibold text-sm transition-colors"
             style={{ background: '#FFF1F0', color: '#E53935' }}
@@ -131,7 +131,7 @@ const MobileNavDrawer = ({ isOpen, onClose }) => {
         {/* Shop by Problem teal row */}
         <div className="mx-4 mt-2">
           <Link
-            to="/shop?view=problems"
+            to="/collections/all"
             onClick={onClose}
             className="flex items-center justify-between w-full px-4 py-3 rounded-xl font-semibold text-sm text-white transition-colors hover:opacity-90"
             style={{ background: '#06B6D4' }}
