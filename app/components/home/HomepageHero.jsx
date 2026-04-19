@@ -84,10 +84,10 @@ export default function HomepageHero() {
   };
 
   return (
-    <section className="homepage-hero bg-[#FDF8F4] pt-8 md:pt-12 pb-0">
+    <section className="homepage-hero bg-[#FDF8F4] pt-32 md:pt-36 pb-0">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-[55%_45%] gap-10 items-center">
-        <div className="flex flex-col justify-center min-h-[400px] md:min-h-[480px]">
+        <div className="grid grid-cols-1 md:grid-cols-[55%_45%] gap-6 md:gap-10 items-center">
+        <div className="flex flex-col justify-center min-h-0 md:min-h-[480px]">
           <div className="w-12 h-1 bg-teal-500 rounded-full mb-4"></div>
           <p className="font-heading text-sm font-bold tracking-[0.2em] uppercase text-[#06B6D4] mb-4">
             Natural relief for dogs
@@ -125,12 +125,12 @@ export default function HomepageHero() {
         </div>
         <div
           aria-hidden="true"
-          className="hero-placeholder relative hidden md:block rounded-2xl overflow-hidden shadow-2xl"
+          className="hero-placeholder relative block rounded-2xl overflow-hidden shadow-2xl"
         >
           <img
             src="https://res.cloudinary.com/petyupp-lifestyle/image/upload/w_800,f_auto,q_auto/v1776620340/nicholas-brownlow-lx_KwA7hlLU-unsplash_g37voz.jpg"
             alt="Happy dog parent kissing their golden retriever"
-            className="w-full h-auto rounded-2xl"
+            className="w-full max-h-[250px] md:max-h-none h-auto object-cover rounded-2xl"
             loading="eager"
             width="800"
             height="1000"
