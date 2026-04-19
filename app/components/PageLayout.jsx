@@ -5,6 +5,7 @@ import Footer from '~/components/Footer';
 import {HeaderMenu} from '~/components/Header';
 import MobileBottomNav from '~/components/MobileBottomNav';
 import Navbar from '~/components/Navbar';
+import {NavigationProgress} from '~/components/NavigationProgress';
 import {PromoBar} from '~/components/PromoBar';
 import {CartMain} from '~/components/CartMain';
 import {
@@ -26,6 +27,7 @@ export function PageLayout({
 }) {
   return (
     <Aside.Provider>
+      <NavigationProgress />
       <PromoBar />
       <CartAside cart={cart} />
       <SearchAside />
