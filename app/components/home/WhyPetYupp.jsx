@@ -31,28 +31,21 @@ const WhyPetYupp = () => {
         {/* Heading */}
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-2">Why PetYupp?</h2>
-          <p className="text-lg font-medium" style={{ color: '#06B6D4' }}>See the difference.</p>
+          <p className="text-lg font-medium text-[#06B6D4]">See the difference.</p>
         </div>
 
         {/* Table Card */}
-        <div
-          className="w-full rounded-xl overflow-hidden"
-          style={{ border: '1px solid #E5E7EB', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}
-        >
+        <div className="w-full rounded-xl overflow-hidden border border-gray-200 shadow-sm">
           {/* Column Headers */}
           <div
-            className="grid"
-            style={{
-              gridTemplateColumns: '1fr auto auto',
-              backgroundColor: '#F9FAFB',
-              borderBottom: '1px solid #E5E7EB',
-            }}
+            className="grid bg-gray-50 border-b border-gray-200"
+            style={{gridTemplateColumns: '1fr auto auto'}}
           >
             <div className="py-3 px-4">
               <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Benefits</span>
             </div>
             <div className="py-3 px-6 text-center">
-              <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#06B6D4' }}>PetYupp</span>
+              <span className="text-xs font-semibold uppercase tracking-wide text-[#06B6D4]">PetYupp</span>
             </div>
             <div className="py-3 px-4 text-center">
               <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Generic Brands</span>
@@ -63,12 +56,10 @@ const WhyPetYupp = () => {
           {benefits.map((benefit, index) => (
             <div
               key={index}
-              className="grid items-center"
-              style={{
-                gridTemplateColumns: '1fr auto auto',
-                borderBottom: index < benefits.length - 1 ? '1px solid #F3F4F6' : 'none',
-                backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#FAFAFA',
-              }}
+              className={`grid items-center ${
+                index < benefits.length - 1 ? 'border-b border-gray-100' : ''
+              } ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
+              style={{gridTemplateColumns: '1fr auto auto'}}
             >
               <div className="py-3 px-4">
                 <span className="text-sm text-gray-700">{benefit}</span>

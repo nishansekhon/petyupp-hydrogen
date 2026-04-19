@@ -72,20 +72,31 @@ body {
   border-radius: 4px;
 }
 
-/* Dark-mode overrides keyed to existing Tailwind utility classes. */
+/* Dark-mode overrides keyed to existing Tailwind utility classes.
+   React's renderToString emits inline styles without a space after the
+   colon (e.g. "background-color:#fff"), so substring selectors must
+   match both that form and the whitespace variant. */
 [data-theme="dark"] .bg-white,
-[data-theme="dark"] [style*="background-color: white"],
+[data-theme="dark"] [style*="background-color:#fff"],
+[data-theme="dark"] [style*="background-color:#FFF"],
+[data-theme="dark"] [style*="background-color:white"],
 [data-theme="dark"] [style*="background-color: #fff"],
-[data-theme="dark"] [style*="background-color: #ffffff"],
-[data-theme="dark"] [style*="background-color: #FFFFFF"],
-[data-theme="dark"] [style*="background: white"],
+[data-theme="dark"] [style*="background-color: #FFF"],
+[data-theme="dark"] [style*="background-color: white"],
+[data-theme="dark"] [style*="background:#fff"],
+[data-theme="dark"] [style*="background:#FFF"],
+[data-theme="dark"] [style*="background:white"],
 [data-theme="dark"] [style*="background: #fff"],
-[data-theme="dark"] [style*="background: #ffffff"] {
+[data-theme="dark"] [style*="background: white"] {
   background-color: var(--bg-card) !important;
 }
 
 [data-theme="dark"] .bg-gray-50,
 [data-theme="dark"] .bg-gray-100,
+[data-theme="dark"] [style*="background-color:#F9FAFB"],
+[data-theme="dark"] [style*="background-color:#f9fafb"],
+[data-theme="dark"] [style*="background-color:#FAFAFA"],
+[data-theme="dark"] [style*="background-color:#fafafa"],
 [data-theme="dark"] [style*="background-color: #F9FAFB"],
 [data-theme="dark"] [style*="background-color: #f9fafb"],
 [data-theme="dark"] [style*="background: #F9FAFB"],
