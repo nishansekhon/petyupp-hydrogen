@@ -129,12 +129,12 @@ function Navbar() {
                     {to: '/collections/non-skid-mats-for-dogs', label: 'Non-Skid Mats'},
                   ];
                   const problemLinks = [
-                    'Separation Anxiety',
-                    'Dental Health',
-                    'Destructive Chewing',
-                    'Joint Pain',
-                    'Digestive Issues',
-                    'Hyperactivity',
+                    {to: '/collections/separation-anxiety', label: 'Separation Anxiety'},
+                    {to: '/collections/dental-health', label: 'Dental Health'},
+                    {to: '/collections/destructive-chewing', label: 'Destructive Chewing'},
+                    {to: '/collections/joint-support', label: 'Joint Pain'},
+                    {to: '/collections/digestive-issues', label: 'Digestive Issues'},
+                    {to: '/collections/hyperactivity', label: 'Hyperactivity'},
                   ];
                   return (
                     <div className="grid grid-cols-2" style={{gap: '48px'}}>
@@ -161,18 +161,21 @@ function Navbar() {
                       <div>
                         <h3 style={headerStyle}>Shop by Problem</h3>
                         <ul style={{listStyle: 'none', margin: 0, padding: 0}}>
-                          {problemLinks.map((label) => (
-                            <li key={label}>
-                              <Link
-                                to="/collections"
-                                style={linkStyle(false)}
-                                onMouseEnter={onEnter}
-                                onMouseLeave={onLeave(false)}
-                              >
-                                {label}
-                              </Link>
-                            </li>
-                          ))}
+                          {problemLinks.map((item) => {
+                            const active = isActive(item.to);
+                            return (
+                              <li key={item.to}>
+                                <Link
+                                  to={item.to}
+                                  style={linkStyle(active)}
+                                  onMouseEnter={onEnter}
+                                  onMouseLeave={onLeave(active)}
+                                >
+                                  {item.label}
+                                </Link>
+                              </li>
+                            );
+                          })}
                         </ul>
                       </div>
                     </div>
@@ -212,9 +215,16 @@ function Navbar() {
             aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
             className="p-2 rounded-full hover:bg-gray-100 transition-colors"
           >
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-            </svg>
+            {isDarkMode ? (
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+            )}
           </button>
 
           <button

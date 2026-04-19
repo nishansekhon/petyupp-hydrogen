@@ -15,6 +15,7 @@ import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import tailwindCss from './styles/tailwind.css?url';
+import themeStyles from '~/styles/theme.css?url';
 import {PageLayout} from './components/PageLayout';
 import {ThemeProvider} from './contexts/ThemeContext';
 
@@ -162,6 +163,13 @@ export function Layout({children}) {
         <link rel="stylesheet" href={tailwindCss}></link>
         <link rel="stylesheet" href={resetStyles}></link>
         <link rel="stylesheet" href={appStyles}></link>
+        <link rel="stylesheet" href={themeStyles}></link>
+        <script
+          nonce={nonce}
+          dangerouslySetInnerHTML={{
+            __html: `try{var t=localStorage.getItem('petyupp-theme');if(t==='dark'){document.documentElement.setAttribute('data-theme','dark');document.documentElement.classList.add('dark');}else{document.documentElement.setAttribute('data-theme','light');}}catch(e){}`,
+          }}
+        />
         <Meta />
         <Links />
       </head>
