@@ -169,12 +169,35 @@ export default function Product() {
           />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">{title}</h1>
           <div className="mt-3">
             <ProductPrice
               price={selectedVariant?.price}
               compareAtPrice={selectedVariant?.compareAtPrice}
+              size="lg"
             />
+          </div>
+          <div
+            aria-live="polite"
+            className="mt-3 inline-flex items-center gap-2 text-sm font-medium"
+          >
+            <span
+              aria-hidden="true"
+              className={`w-2 h-2 rounded-full ${
+                selectedVariant?.availableForSale
+                  ? 'bg-[#10B981]'
+                  : 'bg-red-500'
+              }`}
+            />
+            <span
+              className={
+                selectedVariant?.availableForSale
+                  ? 'text-[#10B981]'
+                  : 'text-red-600'
+              }
+            >
+              {selectedVariant?.availableForSale ? 'In Stock' : 'Out of Stock'}
+            </span>
           </div>
           <div className="mt-6">
             <ProductForm
