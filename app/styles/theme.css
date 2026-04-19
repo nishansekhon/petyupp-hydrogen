@@ -228,3 +228,47 @@ body {
 [data-theme="dark"] .prose h4 {
   color: var(--text-primary);
 }
+
+/* 2026 redesign surfaces */
+
+/* TrustMicroBar: dim the light green panel in dark mode. */
+[data-theme="dark"] .trust-micro-bar {
+  background-color: rgba(6, 95, 70, 0.25) !important;
+  color: #86efac !important;
+}
+
+/* Editorial homepage hero: gradient placeholder needs a dark tone. */
+[data-theme="dark"] .homepage-hero .hero-placeholder {
+  background: linear-gradient(
+    to bottom,
+    rgba(8, 145, 178, 0.18),
+    rgba(8, 145, 178, 0.28)
+  ) !important;
+}
+
+/* AI input in hero stays readable against dark nav. */
+[data-theme="dark"] .homepage-hero input {
+  background-color: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--accent) !important;
+}
+
+/* Quick problem chips */
+[data-theme="dark"] .homepage-hero button[type='button'] {
+  background-color: var(--bg-card) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-secondary) !important;
+}
+
+/* Green problem-tag pills on PDP */
+[data-theme="dark"] .bg-green-50,
+[data-theme="dark"] .bg-green-100 {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+}
+[data-theme="dark"] .text-green-800,
+[data-theme="dark"] .text-green-700 {
+  color: #86efac !important;
+}
+[data-theme="dark"] .text-green-600 {
+  color: #4ade80 !important;
+}
