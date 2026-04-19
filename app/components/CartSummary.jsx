@@ -15,11 +15,11 @@ export function CartSummary({cart, layout}) {
   const giftCardInputId = useId();
 
   return (
-    <div aria-labelledby={summaryId} className={className}>
-      <h4 id={summaryId}>Totals</h4>
-      <dl role="group" className="cart-subtotal">
-        <dt>Subtotal</dt>
-        <dd>
+    <div aria-labelledby={summaryId} className={`${className} pt-4 border-t border-gray-200`}>
+      <h4 id={summaryId} className="sr-only">Totals</h4>
+      <dl role="group" className="cart-subtotal flex items-center justify-between mb-4">
+        <dt className="text-gray-700">Subtotal</dt>
+        <dd className="font-semibold text-gray-900 text-right">
           {cart?.cost?.subtotalAmount?.amount ? (
             <Money data={cart?.cost?.subtotalAmount} />
           ) : (
@@ -49,11 +49,14 @@ function CartCheckoutActions({checkoutUrl}) {
   if (!checkoutUrl) return null;
 
   return (
-    <div>
-      <a href={checkoutUrl} target="_self">
-        <p>Continue to Checkout &rarr;</p>
+    <div className="mt-4">
+      <a
+        href={checkoutUrl}
+        target="_self"
+        className="block w-full py-3 px-6 rounded-lg bg-[#06B6D4] hover:bg-[#0891B2] text-white font-semibold text-center transition-colors"
+      >
+        Continue to Checkout &rarr;
       </a>
-      <br />
     </div>
   );
 }
