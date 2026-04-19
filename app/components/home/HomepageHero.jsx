@@ -15,10 +15,22 @@ const QUICK_PROBLEMS = [
       "My dog whines and gets destructive when I'm gone. Need something to keep them calm and busy.",
   },
   {
-    emoji: '🐾',
-    label: 'Destroys every toy',
+    emoji: '🐶',
+    label: 'Puppy teething on everything',
     query:
-      'My dog shreds every toy in minutes. I need something durable and safe for aggressive chewers.',
+      'My puppy is teething and chewing everything — shoes, furniture, hands. Need safe natural puppy chews.',
+  },
+  {
+    emoji: '🧀',
+    label: 'Healthy treat that lasts hours',
+    query:
+      'I need a long-lasting natural treat that keeps my dog busy for hours. Not rawhide.',
+  },
+  {
+    emoji: '🐾',
+    label: 'Destroys every toy in minutes',
+    query:
+      'My dog shreds every toy in minutes. Need something durable and safe for aggressive chewers.',
   },
   {
     emoji: '🦴',
@@ -27,28 +39,40 @@ const QUICK_PROBLEMS = [
       'I want to stop giving rawhide. What natural chew alternatives are safe and long-lasting?',
   },
   {
-    emoji: '⚡',
-    label: 'Eats way too fast',
+    emoji: '🏠',
+    label: 'Bored home alone all day',
     query:
-      'My dog inhales food in seconds and then throws up. Need a slow feeder bowl or solution.',
-  },
-  {
-    emoji: '🍽️',
-    label: 'Food bowl slides everywhere',
-    query:
-      'My dog pushes the bowl across the floor while eating. Need a non-skid mat or heavy bowl.',
-  },
-  {
-    emoji: '🐕',
-    label: 'Slowing down on walks',
-    query:
-      'My older dog is getting stiff on walks. Looking for joint support chews.',
+      'My dog is alone 8 hours a day and gets bored and destructive. Need long-lasting chews to keep them busy.',
   },
   {
     emoji: '🪵',
     label: 'Loves chewing sticks outside',
     query:
       'My dog always chews sticks on walks. Want a safe natural wood chew alternative for indoors.',
+  },
+  {
+    emoji: '⚡',
+    label: 'Eats way too fast',
+    query:
+      'My dog inhales food in seconds and throws up. Need a slow feeder bowl or solution.',
+  },
+  {
+    emoji: '🍽️',
+    label: 'Bowl slides across the floor',
+    query:
+      'My dog pushes the food bowl across the floor while eating. Need a non-skid mat or heavy bowl.',
+  },
+  {
+    emoji: '🐕',
+    label: 'Slowing down on walks',
+    query:
+      'My older dog is getting stiff and limping on walks. Looking for natural joint support chews.',
+  },
+  {
+    emoji: '📐',
+    label: 'Big dog strains to eat',
+    query:
+      "My large dog bends down too far to eat and it's uncomfortable. Need an elevated diner or raised bowl stand.",
   },
 ];
 
@@ -79,12 +103,14 @@ export default function HomepageHero() {
           </p>
           <AIAdvisor ref={advisorRef} />
           <div className="flex flex-wrap gap-2 mt-4">
-            {QUICK_PROBLEMS.map((problem) => (
+            {QUICK_PROBLEMS.map((problem, index) => (
               <button
                 key={problem.label}
                 type="button"
                 onClick={() => handleChipClick(problem.query)}
-                className="group inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-white/80 backdrop-blur-sm border border-gray-200/60 rounded-full text-xs font-semibold text-gray-600 shadow-sm hover:bg-[#06B6D4]/10 hover:border-[#06B6D4]/40 hover:text-[#06B6D4] hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all duration-200 ease-out cursor-pointer select-none whitespace-nowrap"
+                className={`group items-center gap-1.5 px-3.5 py-1.5 bg-white/80 backdrop-blur-sm border border-gray-200/60 rounded-full text-xs font-semibold text-gray-600 shadow-sm hover:bg-[#06B6D4]/10 hover:border-[#06B6D4]/40 hover:text-[#06B6D4] hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all duration-200 ease-out cursor-pointer select-none whitespace-nowrap ${
+                  index >= 8 ? 'hidden sm:inline-flex' : 'inline-flex'
+                }`}
               >
                 <span
                   aria-hidden="true"
