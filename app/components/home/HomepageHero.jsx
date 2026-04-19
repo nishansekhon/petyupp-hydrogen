@@ -80,7 +80,7 @@ export default function HomepageHero() {
   const advisorRef = useRef(null);
 
   const handleChipClick = (label) => {
-    advisorRef.current?.populate(label);
+    advisorRef.current?.submitQuery(label);
   };
 
   return (

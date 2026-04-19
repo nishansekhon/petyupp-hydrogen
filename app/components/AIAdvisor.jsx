@@ -255,7 +255,7 @@ export const AIAdvisor = forwardRef(function AIAdvisor(props, ref) {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           disabled={pending}
-          placeholder="What's going on with your dog?"
+          placeholder="Tell us about your dog..."
           className="w-full border-2 border-[#06B6D4] rounded-xl shadow-lg bg-white px-5 py-4 pr-28 md:pr-32 text-sm md:text-base text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-400 disabled:opacity-60"
         />
         <button
@@ -264,7 +264,7 @@ export const AIAdvisor = forwardRef(function AIAdvisor(props, ref) {
           disabled={pending || input.trim().length === 0}
           className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#06B6D4] hover:bg-[#0891B2] text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          {pending ? 'Asking…' : 'Ask AI →'}
+          {pending ? 'Fetching…' : 'Fetch 🐕'}
         </button>
       </div>
 
@@ -278,10 +278,11 @@ export const AIAdvisor = forwardRef(function AIAdvisor(props, ref) {
             <MessageBubble key={idx} turn={turn} />
           ))}
           {pending && (
-            <div className="flex justify-start">
-              <div className="bg-gray-50 border border-gray-100 rounded-xl rounded-bl-sm px-3.5 py-3">
-                <LoadingDots />
-              </div>
+            <div className="flex flex-col items-center justify-center py-8 gap-3">
+              <div className="text-4xl animate-bounce">🐕</div>
+              <p className="text-sm text-gray-500 font-medium animate-pulse">
+                Fetching the best picks for your pup...
+              </p>
             </div>
           )}
           {error && (
