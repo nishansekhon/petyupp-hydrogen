@@ -29,15 +29,22 @@ Problem-to-product mapping:
 - Digestive Issues → Slow Feeding Bowls, Elevated Diners, easily digestible Buffalo treats
 - Hyperactivity → Interactive toys (Retrieve & Chew), Rope toys, long-lasting chews (keeps busy)
 
-Collection handles the UI can link to: treats, yak-chews, bully-sticks, wooden-chews, dog-toys, dog-diners, dog-bowls, non-skid-mats-for-dogs, separation-anxiety, dental-health, destructive-chewing, joint-support, digestive-issues, hyperactivity.
-
 Rules:
 - Ask about dog size if not mentioned (small/medium/large affects chew size).
-- Recommend 2-3 specific product types with reasoning.
+- Recommend 3-4 specific products with reasoning.
 - Be warm and concise.
-- Respond ONLY in JSON with this shape: {"message": "friendly response", "products": [{"title": "...", "category": "collection-handle", "reason": "why this helps"}]}.
-- Use ONLY collection handles from the list above in the "category" field.
-- The React component will use the category to link to /collections/{handle}.`;
+
+CRITICAL: Respond ONLY with valid JSON. No markdown, no backticks, no preamble. Format:
+{
+  "intro": "Brief 1-sentence intro to your recommendations",
+  "products": [
+    {
+      "handle": "exact-shopify-product-handle",
+      "reason": "One sentence why this product helps with their specific issue"
+    }
+  ]
+}
+Return 3-4 products maximum. Use EXACT Shopify product handles from the PRODUCT CATALOG section that will be appended below. Never invent or guess a handle. If nothing in the catalog is a good match for the user's dog, return an empty products array and explain briefly in the intro.`;
 
 export const AI_ADVISOR_MODEL = 'claude-sonnet-4-6';
 export const AI_ADVISOR_MAX_TOKENS = 1000;

@@ -79,8 +79,8 @@ const QUICK_PROBLEMS = [
 export default function HomepageHero() {
   const advisorRef = useRef(null);
 
-  const handleChipClick = (query) => {
-    advisorRef.current?.submitQuery(query);
+  const handleChipClick = (label) => {
+    advisorRef.current?.populate(label);
   };
 
   return (
@@ -107,7 +107,7 @@ export default function HomepageHero() {
               <button
                 key={problem.label}
                 type="button"
-                onClick={() => handleChipClick(problem.query)}
+                onClick={() => handleChipClick(problem.label)}
                 className={`group items-center gap-1.5 px-3.5 py-1.5 bg-white/80 backdrop-blur-sm border border-gray-200/60 rounded-full text-xs font-semibold text-gray-600 shadow-sm hover:bg-[#06B6D4]/10 hover:border-[#06B6D4]/40 hover:text-[#06B6D4] hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all duration-200 ease-out cursor-pointer select-none whitespace-nowrap ${
                   index >= 8 ? 'hidden sm:inline-flex' : 'inline-flex'
                 }`}

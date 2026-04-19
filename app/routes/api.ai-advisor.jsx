@@ -7,6 +7,8 @@ import {
 } from '~/lib/aiAdvisorPrompt';
 
 const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
+const CATALOG_LIMIT = 250;
+const MAX_RECOMMENDATIONS = 4;
 
 function json(body, init = {}) {
   return new Response(JSON.stringify(body), {
@@ -34,7 +36,6 @@ function sanitizeMessages(raw) {
     if (!trimmed) return null;
     cleaned.push({role, content: trimmed.slice(0, AI_ADVISOR_MAX_MESSAGE_CHARS)});
   }
-  // The Messages API requires the first message to be 'user'.
   if (cleaned[0].role !== 'user') return null;
   return cleaned;
 }
@@ -54,7 +55,6 @@ function parseAssistantJson(text) {
   try {
     return JSON.parse(text);
   } catch {}
-  // Fallback — the model sometimes wraps JSON in prose or code fences.
   const match = text.match(/\{[\s\S]*\}/);
   if (match) {
     try {
@@ -62,6 +62,17 @@ function parseAssistantJson(text) {
     } catch {}
   }
   return null;
+}
+
+function formatCatalog(entries) {
+  if (!entries?.length) return '';
+  const lines = entries
+    .map((p) => {
+      const type = p?.productType ? ` [${p.productType}]` : '';
+      return `- ${p.handle}: ${p.title}${type}`;
+    })
+    .join('\n');
+  return `\n\nPRODUCT CATALOG (use these exact handles; do not invent new ones):\n${lines}`;
 }
 
 /**
@@ -92,9 +103,27 @@ export async function action({request, context}) {
 
   const messages = sanitizeMessages(body?.messages);
   if (!messages) {
-    return json({error: 'messages must be a non-empty alternating user/assistant array'}, {status: 400});
+    return json(
+      {error: 'messages must be a non-empty alternating user/assistant array'},
+      {status: 400},
+    );
   }
 
+  // 1) Fetch the catalog so we can list real handles in the system prompt.
+  let catalogEntries = [];
+  try {
+    const result = await context.storefront.query(PRODUCT_CATALOG_QUERY, {
+      cache: context.storefront.CacheLong(),
+    });
+    catalogEntries = result?.products?.nodes ?? [];
+  } catch (error) {
+    console.error('AI advisor catalog fetch failed:', error);
+  }
+
+  const validHandles = new Set(catalogEntries.map((p) => p.handle));
+  const systemText = AI_ADVISOR_SYSTEM_PROMPT + formatCatalog(catalogEntries);
+
+  // 2) Call Anthropic.
   let upstream;
   try {
     upstream = await fetch(ANTHROPIC_URL, {
@@ -110,9 +139,10 @@ export async function action({request, context}) {
         system: [
           {
             type: 'text',
-            text: AI_ADVISOR_SYSTEM_PROMPT,
-            // Silently no-ops today (prompt is under the cacheable-prefix
-            // minimum for Sonnet 4.6); harmless if the catalog grows past it.
+            text: systemText,
+            // Catalog push combined with the base prompt is now >2048 tokens
+            // on Sonnet 4.6, so this breakpoint will actually cache on the
+            // second and subsequent requests (same catalog bytes).
             cache_control: {type: 'ephemeral'},
           },
         ],
@@ -147,14 +177,119 @@ export async function action({request, context}) {
   const text = extractText(payload);
   const parsed = parseAssistantJson(text);
 
+  // 3) Validate recommended handles against the catalog and fetch product
+  //    details in parallel.
+  const rawRecs = Array.isArray(parsed?.products) ? parsed.products : [];
+  const picked = [];
+  const seen = new Set();
+  for (const rec of rawRecs) {
+    const handle = typeof rec?.handle === 'string' ? rec.handle.trim() : '';
+    if (!handle || seen.has(handle)) continue;
+    if (validHandles.size > 0 && !validHandles.has(handle)) continue;
+    seen.add(handle);
+    picked.push({
+      handle,
+      reason: typeof rec?.reason === 'string' ? rec.reason.trim() : '',
+    });
+    if (picked.length >= MAX_RECOMMENDATIONS) break;
+  }
+
+  const productDetails = await Promise.all(
+    picked.map((rec) =>
+      context.storefront
+        .query(PRODUCT_BY_HANDLE_QUERY, {
+          variables: {handle: rec.handle},
+          cache: context.storefront.CacheLong(),
+        })
+        .then((r) => r?.product ?? null)
+        .catch((error) => {
+          console.error(
+            'AI advisor product fetch failed:',
+            rec.handle,
+            error,
+          );
+          return null;
+        }),
+    ),
+  );
+
+  const enrichedProducts = picked
+    .map((rec, i) => {
+      const product = productDetails[i];
+      if (!product) return null;
+      return {
+        handle: product.handle,
+        title: product.title,
+        url: `/products/${product.handle}`,
+        image: product.featuredImage ?? null,
+        price: product.priceRange?.minVariantPrice ?? null,
+        variantId: product.selectedOrFirstAvailableVariant?.id ?? null,
+        available:
+          product.selectedOrFirstAvailableVariant?.availableForSale ?? false,
+        reason: rec.reason,
+      };
+    })
+    .filter(Boolean);
+
   return json({
+    intro: typeof parsed?.intro === 'string' ? parsed.intro.trim() : '',
+    products: enrichedProducts,
     raw: text,
-    parsed,
     usage: payload?.usage ?? null,
   });
 }
 
-// Resource routes should not render UI — return 405 on GET.
+// Resource route — no UI on GET.
 export function loader() {
   return new Response('Not found', {status: 404});
 }
+
+const PRODUCT_CATALOG_QUERY = `#graphql
+  query AIAdvisorCatalog(
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
+    products(first: ${CATALOG_LIMIT}, sortKey: TITLE) {
+      nodes {
+        handle
+        title
+        productType
+      }
+    }
+  }
+`;
+
+const PRODUCT_BY_HANDLE_QUERY = `#graphql
+  query AIAdvisorProduct(
+    $handle: String!
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
+    product(handle: $handle) {
+      id
+      handle
+      title
+      featuredImage {
+        id
+        url
+        altText
+        width
+        height
+      }
+      priceRange {
+        minVariantPrice {
+          amount
+          currencyCode
+        }
+      }
+      selectedOrFirstAvailableVariant(
+        selectedOptions: []
+        ignoreUnknownOptions: true
+        caseInsensitiveMatch: true
+      ) {
+        id
+        availableForSale
+      }
+    }
+  }
+`;
