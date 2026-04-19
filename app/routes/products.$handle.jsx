@@ -106,27 +106,33 @@ export default function Product() {
   const {title, descriptionHtml} = product;
 
   return (
-    <div className="product">
-      <ProductImage image={selectedVariant?.image} />
-      <div className="product-main">
-        <h1>{title}</h1>
-        <ProductPrice
-          price={selectedVariant?.price}
-          compareAtPrice={selectedVariant?.compareAtPrice}
-        />
-        <br />
-        <ProductForm
-          productOptions={productOptions}
-          selectedVariant={selectedVariant}
-        />
-        <br />
-        <br />
-        <p>
-          <strong>Description</strong>
-        </p>
-        <br />
-        <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
-        <br />
+    <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="md:sticky md:top-4 md:self-start">
+          <ProductImage image={selectedVariant?.image} />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
+          <div className="mt-3">
+            <ProductPrice
+              price={selectedVariant?.price}
+              compareAtPrice={selectedVariant?.compareAtPrice}
+            />
+          </div>
+          <div className="mt-6">
+            <ProductForm
+              productOptions={productOptions}
+              selectedVariant={selectedVariant}
+            />
+          </div>
+          <div className="mt-8">
+            <p className="font-semibold text-gray-900 mb-2">Description</p>
+            <div
+              className="text-gray-700 prose prose-sm max-w-none"
+              dangerouslySetInnerHTML={{__html: descriptionHtml}}
+            />
+          </div>
+        </div>
       </div>
       <Analytics.ProductView
         data={{
