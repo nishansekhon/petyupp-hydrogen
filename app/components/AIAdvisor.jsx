@@ -10,9 +10,43 @@ import {CartForm, Money} from '@shopify/hydrogen';
 
 const ENDPOINT = '/api/ai-advisor';
 const MAX_HISTORY = 10;
+const STORAGE_KEY = 'petyupp_ai_results';
+const STORAGE_TTL_MS = 30 * 60 * 1000; // 30 minutes
 
 const FALLBACK_ERROR =
   'Our advisor is taking a break. Browse products instead.';
+
+function readSavedResults() {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = window.sessionStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    if (!data || typeof data !== 'object') return null;
+    if (typeof data.timestamp !== 'number') return null;
+    if (Date.now() - data.timestamp >= STORAGE_TTL_MS) {
+      window.sessionStorage.removeItem(STORAGE_KEY);
+      return null;
+    }
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+function writeSavedResults(data) {
+  if (typeof window === 'undefined') return;
+  try {
+    window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch {}
+}
+
+function clearSavedResults() {
+  if (typeof window === 'undefined') return;
+  try {
+    window.sessionStorage.removeItem(STORAGE_KEY);
+  } catch {}
+}
 
 function LoadingDots() {
   return (
@@ -160,7 +194,7 @@ function ProductRecommendations({products}) {
   );
 }
 
-function MessageBubble({turn, onFollowUp}) {
+function MessageBubble({turn, onFollowUp, onClear}) {
   if (turn.role === 'user') {
     return (
       <div className="flex justify-end">
@@ -176,10 +210,26 @@ function MessageBubble({turn, onFollowUp}) {
   return (
     <div className="flex justify-start">
       <div className="bg-gray-50 border border-gray-100 rounded-xl rounded-bl-sm px-3.5 py-3 max-w-full w-full">
-        {intro ? (
-          <p className="text-sm text-gray-500 italic mb-2 leading-snug">
-            {intro}
-          </p>
+        {intro || onClear ? (
+          <div className="flex items-start justify-between gap-2 mb-2">
+            {intro ? (
+              <p className="text-sm text-gray-500 italic leading-snug">
+                {intro}
+              </p>
+            ) : (
+              <span />
+            )}
+            {onClear ? (
+              <button
+                type="button"
+                onClick={onClear}
+                className="text-[11px] text-gray-400 hover:text-gray-600 flex-shrink-0 leading-snug"
+                aria-label="Clear AI recommendations"
+              >
+                ✕ Clear
+              </button>
+            ) : null}
+          </div>
         ) : null}
         <ProductRecommendations products={turn.products} />
         {hasProducts && onFollowUp ? (
@@ -223,11 +273,41 @@ export const AIAdvisor = forwardRef(function AIAdvisor(props, ref) {
     [],
   );
 
+  // Restore the latest conversation from sessionStorage once on mount
+  // so users who navigate to a PDP and return keep their AI chat.
+  useEffect(() => {
+    const data = readSavedResults();
+    if (!data) return;
+    const restored = [];
+    if (typeof data.query === 'string' && data.query.trim()) {
+      restored.push({role: 'user', content: data.query});
+    }
+    const introText = typeof data.intro === 'string' ? data.intro : '';
+    const savedProducts = Array.isArray(data.products) ? data.products : [];
+    if (introText || savedProducts.length > 0) {
+      restored.push({
+        role: 'assistant',
+        intro: introText,
+        products: savedProducts,
+        content: introText,
+        rawContent: introText,
+      });
+    }
+    if (restored.length > 0) setTurns(restored);
+  }, []);
+
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [turns, pending, error]);
+
+  function handleClear() {
+    setTurns([]);
+    setInput('');
+    setError(null);
+    clearSavedResults();
+  }
 
   async function submit(queryOverride) {
     const query = (queryOverride ?? input).trim();
@@ -273,6 +353,12 @@ export const AIAdvisor = forwardRef(function AIAdvisor(props, ref) {
         },
       ]);
       setPending(false);
+      writeSavedResults({
+        query,
+        intro,
+        products,
+        timestamp: Date.now(),
+      });
     } catch (err) {
       console.error(err);
       setError(FALLBACK_ERROR);
@@ -320,9 +406,18 @@ export const AIAdvisor = forwardRef(function AIAdvisor(props, ref) {
           aria-live="polite"
           className="mt-5 max-h-[520px] overflow-y-auto flex flex-col gap-3 pr-1"
         >
-          {turns.map((turn, idx) => (
-            <MessageBubble key={idx} turn={turn} onFollowUp={submit} />
-          ))}
+          {turns.map((turn, idx) => {
+            const isLatestAssistant =
+              turn.role === 'assistant' && idx === turns.length - 1;
+            return (
+              <MessageBubble
+                key={idx}
+                turn={turn}
+                onFollowUp={submit}
+                onClear={isLatestAssistant ? handleClear : undefined}
+              />
+            );
+          })}
           {pending && (
             <div className="flex items-center justify-center py-6 gap-1">
               <p className="text-sm text-gray-400 font-medium">

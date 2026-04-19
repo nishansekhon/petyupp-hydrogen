@@ -1,5 +1,5 @@
-import {Suspense, useState} from 'react';
-import {Await, useLoaderData} from 'react-router';
+import {Suspense, useEffect, useState} from 'react';
+import {Await, Link, useLoaderData} from 'react-router';
 import {
   getSelectedProductOptions,
   Analytics,
@@ -155,6 +155,7 @@ export default function Product() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{__html: JSON.stringify(productJsonLd)}}
       />
+      <BackToAIAdvisor />
       <Breadcrumbs
         items={[
           {label: 'Home', to: '/'},
@@ -295,6 +296,34 @@ export default function Product() {
         }}
       />
     </div>
+  );
+}
+
+// Renders a 'back to AI recommendations' link only when the visitor still
+// has a recent saved advisor conversation in sessionStorage. Checked on the
+// client after mount to avoid hydration mismatches.
+function BackToAIAdvisor() {
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      const raw = window.sessionStorage.getItem('petyupp_ai_results');
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      if (!data || typeof data.timestamp !== 'number') return;
+      if (Date.now() - data.timestamp < 30 * 60 * 1000) {
+        setShow(true);
+      }
+    } catch {}
+  }, []);
+  if (!show) return null;
+  return (
+    <Link
+      to="/"
+      className="inline-flex items-center gap-1 text-sm text-[#06B6D4] hover:underline mb-4"
+    >
+      ← Back to AI recommendations
+    </Link>
   );
 }
 
