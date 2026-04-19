@@ -6,8 +6,8 @@ const SLIDES = [
     headline: "Happier Dogs Start Here",
     subtext: "Natural chews and treats matched to your dog's exact need",
     cta: "Find Your Fix",
-    ctaLink: "/shop",
-    bubbles: ["6 Problem Categories", "Vet Approved", "Free Ship $50+"],
+    ctaLink: "/collections/all",
+    bubbles: ["6 Problem Categories", "Vet Approved", "Free Ship $49+"],
     bg: "from-[#065F46] to-[#047857]",
     bgImage: "https://images.unsplash.com/photo-1611003228941-98852ba62227?w=1920&h=600&fit=crop",
   },
@@ -15,8 +15,8 @@ const SLIDES = [
     headline: "Built for Heavy Chewers",
     subtext: "Coffee wood, yak cheese, and buffalo horn — tested by the toughest dogs",
     cta: "Shop Heavy Chewers",
-    ctaLink: "/shop",
-    bubbles: ["6 Problem Categories", "Vet Approved", "Free Ship $50+"],
+    ctaLink: "/collections/bully-sticks",
+    bubbles: ["6 Problem Categories", "Vet Approved", "Free Ship $49+"],
     bg: "from-[#1E3A5F] to-[#1e40af]",
     bgImage: "https://images.unsplash.com/photo-1600079766852-a8d6ebc77b0a?w=1920&h=600&fit=crop",
   },
@@ -24,8 +24,8 @@ const SLIDES = [
     headline: "Because They Deserve Better",
     subtext: "100% natural, single-ingredient treats. No preservatives, no rawhide, no compromise.",
     cta: "Shop Natural Treats",
-    ctaLink: "/shop",
-    bubbles: ["6 Problem Categories", "Vet Approved", "Free Ship $50+"],
+    ctaLink: "/collections/treats",
+    bubbles: ["6 Problem Categories", "Vet Approved", "Free Ship $49+"],
     bg: "from-[#4C1D95] to-[#6D28D9]",
     bgImage: "https://images.unsplash.com/photo-1633846445033-d2fa7b1a9fca?w=1920&h=600&fit=crop",
   },
@@ -112,7 +112,10 @@ const HeroSlider = () => {
         {SLIDES.map((_, i) => (
           <button
             key={i}
+            type="button"
             onClick={() => goTo(i)}
+            aria-label={`Go to slide ${i + 1}`}
+            aria-current={i === current}
             className={`transition-all rounded-full ${i === current ? 'w-6 h-2 bg-white' : 'w-2 h-2 bg-white/40'}`}
           />
         ))}
@@ -120,13 +123,17 @@ const HeroSlider = () => {
 
       {/* Prev/Next arrows */}
       <button
+        type="button"
         onClick={() => goTo((current - 1 + SLIDES.length) % SLIDES.length)}
+        aria-label="Previous slide"
         className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors"
       >
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10 12L6 8l4-4"/></svg>
       </button>
       <button
+        type="button"
         onClick={() => goTo((current + 1) % SLIDES.length)}
+        aria-label="Next slide"
         className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors"
       >
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 12l4-4-4-4"/></svg>
