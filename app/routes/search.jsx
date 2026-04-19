@@ -3,12 +3,17 @@ import {getPaginationVariables, Analytics} from '@shopify/hydrogen';
 import {SearchForm} from '~/components/SearchForm';
 import {SearchResults} from '~/components/SearchResults';
 import {getEmptyPredictiveSearchResult} from '~/lib/search';
+import {createSeoMeta, SITE_URL} from '~/lib/seo';
 
 /**
  * @type {Route.MetaFunction}
  */
 export const meta = () => {
-  return [{title: `PetYupp | Search`}];
+  return createSeoMeta({
+    title: 'PetYupp | Search Results',
+    description: 'Search PetYupp for products, collections, and blog posts.',
+    url: `${SITE_URL}/search`,
+  });
 };
 
 /**

@@ -1,11 +1,18 @@
 import {useLoaderData} from 'react-router';
 import HomePage from '../pages/HomePage';
+import {createSeoMeta, SITE_URL} from '~/lib/seo';
 
 /**
  * @type {Route.MetaFunction}
  */
 export const meta = () => {
-  return [{title: 'PetYupp | Happier Dogs Start Here'}];
+  return createSeoMeta({
+    title:
+      'PetYupp | Natural Dog Chews & Treats – Happier Dogs Start Here',
+    description:
+      "Premium natural dog chews, treats & supplies matched to your dog's exact need. Vet approved. Free shipping on orders $49+. Shop by problem or product.",
+    url: SITE_URL,
+  });
 };
 
 /**
@@ -31,10 +38,31 @@ async function loadCriticalData({context}) {
   };
 }
 
+const ORGANIZATION_JSON_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'PetYupp',
+  url: SITE_URL,
+  logo: `${SITE_URL}/logo.png`,
+  sameAs: [
+    'https://instagram.com/petyupp',
+    'https://www.tiktok.com/@petyupp',
+    'https://www.youtube.com/@petyupp',
+  ],
+};
+
 export default function Homepage() {
   /** @type {LoaderReturnData} */
   const {products, collections} = useLoaderData();
-  return <HomePage products={products} collections={collections} />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{__html: JSON.stringify(ORGANIZATION_JSON_LD)}}
+      />
+      <HomePage products={products} collections={collections} />
+    </>
+  );
 }
 
 const HOMEPAGE_PRODUCTS_QUERY = `#graphql

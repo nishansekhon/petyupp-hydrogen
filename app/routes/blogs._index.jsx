@@ -1,12 +1,18 @@
 import {Link, useLoaderData} from 'react-router';
 import {getPaginationVariables} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
+import {createSeoMeta, SITE_URL} from '~/lib/seo';
 
 /**
  * @type {Route.MetaFunction}
  */
 export const meta = () => {
-  return [{title: `PetYupp | Blogs`}];
+  return createSeoMeta({
+    title: 'PetYupp | Blog',
+    description:
+      'Dog care tips, product guides, and stories from the PetYupp pack.',
+    url: `${SITE_URL}/blogs`,
+  });
 };
 
 /**

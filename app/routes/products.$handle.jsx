@@ -15,18 +15,26 @@ import {ProductForm} from '~/components/ProductForm';
 import {ProductItem} from '~/components/ProductItem';
 import {ProductSkeletonGrid} from '~/components/ProductSkeleton';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {createSeoMeta, excerpt, SITE_URL} from '~/lib/seo';
 
 /**
  * @type {Route.MetaFunction}
  */
 export const meta = ({data}) => {
-  return [
-    {title: `PetYupp | ${data?.product.title ?? ''}`},
-    {
-      rel: 'canonical',
-      href: `/products/${data?.product.handle}`,
-    },
-  ];
+  const product = data?.product;
+  if (!product) return createSeoMeta({title: 'PetYupp'});
+  const title = `PetYupp | ${product.title}`;
+  const description =
+    excerpt(product.seo?.description || product.description) ||
+    `Shop ${product.title} at PetYupp — natural, vet-approved dog products.`;
+  const image = product.selectedOrFirstAvailableVariant?.image?.url;
+  return createSeoMeta({
+    title,
+    description,
+    url: `${SITE_URL}/products/${product.handle}`,
+    type: 'product',
+    image,
+  });
 };
 
 /**
@@ -119,8 +127,33 @@ export default function Product() {
   const {title, descriptionHtml} = product;
   const productImages = product.images?.nodes ?? [];
 
+  const productJsonLd = {
+    '@context': 'https://schema.org/',
+    '@type': 'Product',
+    name: title,
+    description: excerpt(product.description, 500),
+    image: productImages.map((img) => img.url).filter(Boolean),
+    brand: {'@type': 'Brand', name: 'PetYupp'},
+    sku: selectedVariant?.sku || undefined,
+    offers: selectedVariant?.price
+      ? {
+          '@type': 'Offer',
+          price: selectedVariant.price.amount,
+          priceCurrency: selectedVariant.price.currencyCode,
+          availability: selectedVariant.availableForSale
+            ? 'https://schema.org/InStock'
+            : 'https://schema.org/OutOfStock',
+          url: `${SITE_URL}/products/${product.handle}`,
+        }
+      : undefined,
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{__html: JSON.stringify(productJsonLd)}}
+      />
       <Breadcrumbs
         items={[
           {label: 'Home', to: '/'},

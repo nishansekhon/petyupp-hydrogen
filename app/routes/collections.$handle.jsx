@@ -4,12 +4,23 @@ import {Breadcrumbs} from '~/components/Breadcrumbs';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {ProductItem} from '~/components/ProductItem';
+import {createSeoMeta, excerpt, SITE_URL} from '~/lib/seo';
 
 /**
  * @type {Route.MetaFunction}
  */
 export const meta = ({data}) => {
-  return [{title: `PetYupp | ${data?.collection.title ?? ''} Collection`}];
+  const collection = data?.collection;
+  if (!collection) return createSeoMeta({title: 'PetYupp'});
+  const title = `PetYupp | ${collection.title}`;
+  const description =
+    excerpt(collection.description) ||
+    `Shop the ${collection.title} collection at PetYupp — natural, vet-approved dog products.`;
+  return createSeoMeta({
+    title,
+    description,
+    url: `${SITE_URL}/collections/${collection.handle}`,
+  });
 };
 
 /**

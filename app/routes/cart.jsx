@@ -1,12 +1,17 @@
 import {useLoaderData, data} from 'react-router';
 import {CartForm} from '@shopify/hydrogen';
 import {CartMain} from '~/components/CartMain';
+import {createSeoMeta, SITE_URL} from '~/lib/seo';
 
 /**
  * @type {Route.MetaFunction}
  */
 export const meta = () => {
-  return [{title: `PetYupp | Cart`}];
+  return createSeoMeta({
+    title: 'PetYupp | Your Cart',
+    description: 'Review and check out the items in your PetYupp cart.',
+    url: `${SITE_URL}/cart`,
+  });
 };
 
 /**

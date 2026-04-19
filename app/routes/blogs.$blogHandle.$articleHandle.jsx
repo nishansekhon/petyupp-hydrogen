@@ -1,12 +1,26 @@
 import {useLoaderData} from 'react-router';
 import {Image} from '@shopify/hydrogen';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {createSeoMeta, excerpt, SITE_URL} from '~/lib/seo';
 
 /**
  * @type {Route.MetaFunction}
  */
-export const meta = ({data}) => {
-  return [{title: `PetYupp | ${data?.article.title ?? ''} article`}];
+export const meta = ({data, params}) => {
+  const article = data?.article;
+  if (!article) return createSeoMeta({title: 'PetYupp | Blog'});
+  const title = `PetYupp | ${article.title}`;
+  const description =
+    excerpt(article.seo?.description || article.contentHtml) ||
+    `Read "${article.title}" on the PetYupp blog.`;
+  const image = article.image?.url;
+  return createSeoMeta({
+    title,
+    description,
+    url: `${SITE_URL}/blogs/${params.blogHandle}/${params.articleHandle}`,
+    type: 'article',
+    image,
+  });
 };
 
 /**

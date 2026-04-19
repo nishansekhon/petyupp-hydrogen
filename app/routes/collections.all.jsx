@@ -2,12 +2,18 @@ import {useLoaderData} from 'react-router';
 import {getPaginationVariables} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {ProductItem} from '~/components/ProductItem';
+import {createSeoMeta, SITE_URL} from '~/lib/seo';
 
 /**
  * @type {Route.MetaFunction}
  */
 export const meta = () => {
-  return [{title: `PetYupp | Products`}];
+  return createSeoMeta({
+    title: 'PetYupp | All Products',
+    description:
+      "Browse every natural dog chew, treat, toy, and accessory PetYupp offers. Vet approved. Free shipping on orders $49+.",
+    url: `${SITE_URL}/collections/all`,
+  });
 };
 
 /**
