@@ -52,10 +52,10 @@ export default function HomepageHero() {
         </div>
         <div
           aria-hidden="true"
-          className="hero-placeholder relative hidden md:flex aspect-[4/5] rounded-bl-[48px] rounded-tr-[24px] overflow-hidden"
+          className="hero-placeholder relative hidden md:block aspect-[4/5] rounded-bl-[48px] rounded-tr-[24px] overflow-hidden"
         >
           <img
-            src="https://res.cloudinary.com/petyupp-lifestyle/image/upload/w_800,f_auto,q_auto/nicholas-brownlow-lx_KwA7hlLU-unsplash_g37voz.jpg"
+            src="https://res.cloudinary.com/petyupp-lifestyle/image/upload/w_800,f_auto,q_auto/v1776620340/nicholas-brownlow-lx_KwA7hlLU-unsplash_g37voz.jpg"
             alt="Happy dog parent kissing their golden retriever"
             className="w-full h-full object-cover"
             loading="eager"
