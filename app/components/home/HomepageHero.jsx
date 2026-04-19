@@ -78,15 +78,13 @@ export default function HomepageHero() {
             vet-approved chews and treats that actually help.
           </p>
           <AIAdvisor ref={advisorRef} />
-          <div className="flex flex-wrap gap-2.5 mt-4 max-w-[580px]">
-            {QUICK_PROBLEMS.map((problem, index) => (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-4">
+            {QUICK_PROBLEMS.map((problem) => (
               <button
                 key={problem.label}
                 type="button"
                 onClick={() => handleChipClick(problem.query)}
-                className={`group inline-flex items-center gap-2 px-5 py-2.5 bg-white/80 backdrop-blur-sm border border-gray-200/60 rounded-full text-[13px] font-semibold text-gray-600 shadow-sm hover:bg-[#06B6D4]/10 hover:border-[#06B6D4]/40 hover:text-[#06B6D4] hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all duration-200 ease-out cursor-pointer select-none ${
-                  index >= 4 ? 'hidden md:inline-flex' : ''
-                }`}
+                className="group inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-white/80 backdrop-blur-sm border border-gray-200/60 rounded-full text-[13px] font-semibold text-gray-600 shadow-sm hover:bg-[#06B6D4]/10 hover:border-[#06B6D4]/40 hover:text-[#06B6D4] hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all duration-200 ease-out cursor-pointer select-none"
               >
                 <span
                   aria-hidden="true"
