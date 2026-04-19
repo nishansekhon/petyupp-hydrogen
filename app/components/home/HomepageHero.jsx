@@ -66,7 +66,7 @@ export default function HomepageHero() {
             vet-approved chews and treats that actually help.
           </p>
           <AIAdvisor ref={advisorRef} />
-          <div className="flex flex-wrap gap-2 mt-4">
+          <div className="flex flex-wrap gap-2 mt-3">
             {QUICK_PROBLEMS.map((problem, index) => (
               <button
                 key={problem.label}
@@ -74,7 +74,7 @@ export default function HomepageHero() {
                 onClick={() => handleChipClick(problem.query)}
                 className={`${
                   index >= 4 ? 'hidden md:inline-flex' : 'inline-flex'
-                } text-xs text-gray-600 border border-gray-200 rounded-full px-3 py-1.5 bg-white hover:border-[#06B6D4] hover:text-[#06B6D4] transition-colors cursor-pointer items-center gap-1.5`}
+                } items-center gap-1.5 px-4 py-2.5 bg-white border border-gray-200 rounded-full text-sm font-semibold text-gray-700 hover:border-[#06B6D4] hover:text-[#06B6D4] hover:shadow-md transition-all duration-200 cursor-pointer`}
               >
                 <span aria-hidden="true">{problem.emoji}</span>
                 {problem.label}
