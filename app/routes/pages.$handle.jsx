@@ -1,11 +1,28 @@
-import {useLoaderData} from 'react-router';
+import {useLoaderData, useParams} from 'react-router';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {getStaticPage} from '~/components/content/StaticPages';
+import {createSeoMeta, excerpt, SITE_URL} from '~/lib/seo';
 
 /**
  * @type {Route.MetaFunction}
  */
-export const meta = ({data}) => {
-  return [{title: `PetYupp | ${data?.page?.title ?? data?.fallbackTitle ?? ''}`}];
+export const meta = ({data, params}) => {
+  const staticPage = data?.staticPage;
+  if (staticPage) {
+    return createSeoMeta({
+      title: `PetYupp | ${staticPage.title}`,
+      description: staticPage.description,
+      url: `${SITE_URL}/pages/${params.handle}`,
+    });
+  }
+  const page = data?.page;
+  const title = page?.title ?? data?.fallbackTitle ?? '';
+  return createSeoMeta({
+    title: `PetYupp | ${title}`,
+    description:
+      excerpt(page?.seo?.description || page?.body) || undefined,
+    url: `${SITE_URL}/pages/${params.handle}`,
+  });
 };
 
 function humanizeHandle(handle) {
@@ -37,6 +54,17 @@ export async function loader(args) {
 async function loadCriticalData({context, request, params}) {
   if (!params.handle) {
     throw new Error('Missing page handle');
+  }
+
+  const staticPage = getStaticPage(params.handle);
+  if (staticPage) {
+    return {
+      staticPage: {
+        title: staticPage.title,
+        description: staticPage.description,
+      },
+      page: null,
+    };
   }
 
   const [{page}] = await Promise.all([
@@ -74,7 +102,16 @@ function loadDeferredData({context}) {
 
 export default function Page() {
   /** @type {LoaderReturnData} */
-  const {page, fallbackTitle} = useLoaderData();
+  const {page, fallbackTitle, staticPage} = useLoaderData();
+  const params = useParams();
+
+  if (staticPage) {
+    const entry = getStaticPage(params.handle);
+    if (entry) {
+      const Component = entry.Component;
+      return <Component />;
+    }
+  }
 
   if (!page) {
     return (
