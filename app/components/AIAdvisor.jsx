@@ -35,28 +35,28 @@ function ProductCard({product}) {
     product;
 
   return (
-    <article className="flex-shrink-0 w-[160px] md:w-[180px] snap-start bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden group cursor-pointer hover:shadow-lg hover:scale-105 transition-all duration-200">
+    <article className="flex flex-col flex-shrink-0 w-[160px] md:w-[180px] snap-start bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden group cursor-pointer hover:shadow-lg hover:scale-105 transition-all duration-200">
       <Link to={url} prefetch="intent" className="block">
         {image?.url ? (
           <img
             src={image.url}
             alt={image.altText || title}
             width={image.width || 400}
-            height={image.height || 400}
+            height={image.height || 300}
             loading="lazy"
             decoding="async"
-            className="aspect-square w-full object-cover bg-gray-50"
+            className="aspect-[4/3] w-full object-cover bg-gray-50"
           />
         ) : (
           <div
             aria-hidden="true"
-            className="aspect-square w-full bg-gray-50 flex items-center justify-center text-3xl text-gray-300"
+            className="aspect-[4/3] w-full bg-gray-50 flex items-center justify-center text-3xl text-gray-300"
           >
             🐾
           </div>
         )}
       </Link>
-      <div className="p-2.5">
+      <div className="p-2.5 flex flex-col justify-between flex-1">
         <Link to={url} prefetch="intent">
           <h4 className="text-xs font-semibold text-gray-800 line-clamp-2 leading-tight">
             {title}
@@ -67,7 +67,7 @@ function ProductCard({product}) {
             {reason}
           </p>
         ) : null}
-        <div className="flex items-center justify-between mt-2">
+        <div className="flex items-center justify-between mt-auto pt-1.5">
           {price ? (
             <span className="text-sm font-bold text-gray-900">
               <Money data={price} />
@@ -109,7 +109,7 @@ function ProductCard({product}) {
 function ProductRecommendations({products}) {
   if (!Array.isArray(products) || products.length === 0) return null;
   return (
-    <div className="max-h-[280px] overflow-y-auto">
+    <div className="max-h-[340px] overflow-y-auto">
       <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide">
         {products.map((p) => (
           <ProductCard key={p.handle} product={p} />
