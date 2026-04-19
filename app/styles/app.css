@@ -130,16 +130,17 @@ aside {
   background: var(--color-light);
   box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
   height: 100vh;
-  width: min(var(--aside-width), 85vw);
+  width: 100vw;
   position: fixed;
-  right: calc(-1 * var(--aside-width));
+  right: calc(-1 * 100vw);
   top: 0;
-  transition: transform 200ms ease-in-out;
+  transition: transform 300ms ease-in-out;
 }
 
 @media (min-width: 768px) {
   aside {
     width: var(--aside-width);
+    right: calc(-1 * var(--aside-width));
   }
 }
 
@@ -157,15 +158,30 @@ aside header h3 {
 }
 
 aside header .close {
-  font-weight: bold;
-  opacity: 0.8;
-  text-decoration: none;
-  transition: all 200ms;
-  width: 20px;
+  font-size: 1.75rem;
+  font-weight: 300;
+  line-height: 1;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  color: #111827;
+  transition: background-color 200ms;
+  cursor: pointer;
 }
 
 aside header .close:hover {
-  opacity: 1;
+  background-color: #f3f4f6;
+}
+
+[data-theme="dark"] aside header .close {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] aside header .close:hover {
+  background-color: var(--bg-secondary);
 }
 
 aside header h2 {
@@ -202,7 +218,7 @@ aside li {
 }
 
 .overlay {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.5);
   bottom: 0;
   left: 0;
   opacity: 0;
@@ -210,8 +226,7 @@ aside li {
   position: fixed;
   right: 0;
   top: 0;
-  transition: opacity 400ms ease-in-out;
-  transition: opacity 400ms;
+  transition: opacity 300ms ease-in-out;
   visibility: hidden;
   z-index: 10;
 }
@@ -245,7 +260,23 @@ aside li {
 }
 /* reveal aside */
 .overlay.expanded aside {
-  transform: translateX(calc(var(--aside-width) * -1));
+  transform: translateX(-100vw);
+}
+
+@media (min-width: 768px) {
+  .overlay.expanded aside {
+    transform: translateX(calc(var(--aside-width) * -1));
+  }
+}
+
+.overlay .close-outside {
+  width: 0;
+}
+
+@media (min-width: 768px) {
+  .overlay .close-outside {
+    width: calc(100% - var(--aside-width));
+  }
 }
 
 button.reset {

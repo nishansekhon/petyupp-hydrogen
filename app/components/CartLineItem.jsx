@@ -27,15 +27,25 @@ export function CartLineItem({layout, line, childrenMap}) {
     <li key={id} className="cart-line py-3 border-b border-gray-100">
       <div className="cart-line-inner flex gap-3">
         {image && (
-          <Image
-            alt={title}
-            aspectRatio="1/1"
-            data={image}
-            height={64}
-            loading="lazy"
-            width={64}
-            className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
-          />
+          <Link
+            prefetch="intent"
+            to={lineItemUrl}
+            onClick={() => {
+              if (layout === 'aside') close();
+            }}
+            className="flex-shrink-0"
+            aria-label={product.title}
+          >
+            <Image
+              alt={title}
+              aspectRatio="1/1"
+              data={image}
+              height={64}
+              loading="lazy"
+              width={64}
+              className="w-16 h-16 rounded-lg object-cover"
+            />
+          </Link>
         )}
 
         <div className="flex-1 min-w-0">
