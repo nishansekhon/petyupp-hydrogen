@@ -487,7 +487,7 @@ const AdminVideosPage = () => {
 
                   {video.product_id && (
                     <a
-                      href={`/product/${video.product_id}`}
+                      href={`/products/${video.product_id}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-1.5 rounded-lg text-teal-400 hover:bg-teal-500/20 transition-colors"

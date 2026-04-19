@@ -33,7 +33,7 @@ function CatCollectionPage() {
           {CAT_PRODUCTS.map((product) => (
             <Link
               key={product.id}
-              to={`/product/${product.id}`}
+              to={`/products/${product.id}`}
               className="bg-white rounded-2xl p-5 text-center shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 group"
             >
               <div className="text-4xl mb-3">{product.icon}</div>

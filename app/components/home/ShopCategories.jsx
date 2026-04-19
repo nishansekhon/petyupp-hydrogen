@@ -25,7 +25,7 @@ const CategoryProductCard = ({ product, index }) => (
     className="flex-shrink-0 w-[260px] snap-start"
   >
     <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md border border-gray-100 transition-all duration-300 group flex flex-col h-full">
-      <Link to={`/product/${product.slug || product.id}`} className="block flex-1">
+      <Link to={`/products/${product.slug || product.id}`} className="block flex-1">
         <div className="relative aspect-square overflow-hidden bg-gray-50">
           <img
             src={product.image_url}

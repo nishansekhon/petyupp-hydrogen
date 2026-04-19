@@ -24,7 +24,7 @@ function ProductCard({ product, index = 0, showBadges = true }) {
   return (
     <div className="rounded-2xl overflow-hidden shadow-sm transition-all hover:shadow-md bg-white border border-gray-100 flex flex-col">
       <Link
-        to={`/product/${product.slug || product.id}`}
+        to={`/products/${product.slug || product.id}`}
         className="block flex-1"
       >
       {/* Product Image */}
