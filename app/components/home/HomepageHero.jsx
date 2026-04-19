@@ -20,9 +20,9 @@ export default function HomepageHero() {
   };
 
   return (
-    <section className="homepage-hero max-w-7xl mx-auto px-4 py-12 md:py-20">
+    <section className="homepage-hero max-w-7xl mx-auto px-4 py-8 md:py-12">
       <div className="grid grid-cols-1 md:grid-cols-[55%_45%] gap-10 items-center">
-        <div>
+        <div className="flex flex-col justify-center">
           <p className="text-xs font-semibold text-[#06B6D4] tracking-widest uppercase mb-4">
             Problem-first pet care
           </p>
@@ -52,12 +52,12 @@ export default function HomepageHero() {
         </div>
         <div
           aria-hidden="true"
-          className="hero-placeholder relative hidden md:block aspect-[4/5] rounded-bl-[48px] rounded-tr-[24px] overflow-hidden"
+          className="hero-placeholder relative hidden md:block w-full max-h-[480px] rounded-bl-[48px] rounded-tr-[24px] overflow-hidden"
         >
           <img
             src="https://res.cloudinary.com/petyupp-lifestyle/image/upload/v1776620340/nicholas-brownlow-lx_KwA7hlLU-unsplash_g37voz.jpg"
             alt="Happy dog parent kissing their golden retriever"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-center"
             loading="eager"
             width="800"
             height="1000"
