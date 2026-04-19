@@ -1,7 +1,13 @@
 import {useEffect, useMemo, useState} from 'react';
-import {Image} from '@shopify/hydrogen';
 
 /**
+ * Renders the product hero image + optional thumbnail strip for the PDP.
+ *
+ * Plain <img> tags here rather than Hydrogen's <Image> because Hydrogen's
+ * Image silently renders nothing when the data object lacks one of its
+ * expected fields, which was leaving the PDP left column blank on products
+ * with non-standard image metadata.
+ *
  * @param {{
  *   variantImage: any;
  *   images: Array<any>;
@@ -9,36 +15,51 @@ import {Image} from '@shopify/hydrogen';
  */
 export function ProductImageGallery({variantImage, images}) {
   const gallery = useMemo(() => {
-    const list = Array.isArray(images) ? images.filter(Boolean) : [];
-    if (variantImage && !list.some((img) => img?.id === variantImage.id)) {
+    const list = Array.isArray(images)
+      ? images.filter((img) => img?.url)
+      : [];
+    const variantHasUrl = variantImage?.url;
+    if (
+      variantHasUrl &&
+      !list.some((img) => img?.id === variantImage.id)
+    ) {
       return [variantImage, ...list];
     }
-    return list.length > 0 ? list : variantImage ? [variantImage] : [];
+    return list.length > 0 ? list : variantHasUrl ? [variantImage] : [];
   }, [variantImage, images]);
 
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
-    if (!variantImage) return;
+    if (!variantImage?.url) return;
     const idx = gallery.findIndex((img) => img?.id === variantImage.id);
     if (idx >= 0) setActiveIndex(idx);
   }, [variantImage, gallery]);
 
-  const mainImage = gallery[activeIndex] ?? variantImage;
+  const mainImage = gallery[activeIndex] ?? null;
 
-  if (!mainImage) {
-    return <div className="aspect-square w-full rounded-xl bg-gray-100" />;
+  if (!mainImage?.url) {
+    return (
+      <div
+        aria-hidden="true"
+        className="aspect-square w-full rounded-xl bg-gray-50 flex items-center justify-center text-6xl text-gray-300"
+      >
+        🐾
+      </div>
+    );
   }
 
   return (
     <div>
       <div className="aspect-square overflow-hidden rounded-xl bg-gray-50">
-        <Image
+        <img
+          key={mainImage.id || mainImage.url}
+          src={mainImage.url}
           alt={mainImage.altText || 'Product image'}
-          aspectRatio="1/1"
-          data={mainImage}
-          key={mainImage.id}
-          sizes="(min-width: 45em) 50vw, 100vw"
+          width={mainImage.width || 800}
+          height={mainImage.height || 800}
+          loading="eager"
+          decoding="async"
           className="w-full h-full object-cover"
         />
       </div>
@@ -57,11 +78,13 @@ export function ProductImageGallery({variantImage, images}) {
                   : 'border-transparent hover:border-gray-300'
               }`}
             >
-              <Image
+              <img
+                src={img.url}
                 alt={img.altText || `Thumbnail ${idx + 1}`}
-                aspectRatio="1/1"
-                data={img}
-                sizes="64px"
+                width={img.width || 200}
+                height={img.height || 200}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover"
               />
             </button>

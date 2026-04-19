@@ -90,18 +90,59 @@ function FollowUpChips({onFollowUp}) {
   );
 }
 
+function AdvisorAddButton({variantId}) {
+  return (
+    <CartForm
+      route="/cart"
+      inputs={{lines: [{merchandiseId: variantId, quantity: 1}]}}
+      action={CartForm.ACTIONS.LinesAdd}
+    >
+      {(fetcher) => <AdvisorAddButtonInner fetcher={fetcher} />}
+    </CartForm>
+  );
+}
+
+function AdvisorAddButtonInner({fetcher}) {
+  const [justAdded, setJustAdded] = useState(false);
+  const wasSubmittingRef = useRef(false);
+
+  useEffect(() => {
+    if (fetcher.state === 'submitting') {
+      wasSubmittingRef.current = true;
+      return;
+    }
+    if (fetcher.state === 'idle' && wasSubmittingRef.current && fetcher.data) {
+      wasSubmittingRef.current = false;
+      setJustAdded(true);
+      const t = setTimeout(() => setJustAdded(false), 2000);
+      return () => clearTimeout(t);
+    }
+  }, [fetcher.state, fetcher.data]);
+
+  const pending = fetcher.state !== 'idle';
+  const label = justAdded ? 'Added ✓' : pending ? '…' : 'Add +';
+  const bg = justAdded
+    ? 'bg-[#10B981] hover:bg-[#059669]'
+    : 'bg-[#06B6D4] hover:bg-[#0891B2]';
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className={`text-[10px] font-semibold text-white ${bg} px-2.5 py-1 rounded-full transition-colors disabled:opacity-60`}
+    >
+      {label}
+    </button>
+  );
+}
+
 function ProductCard({product}) {
   const {title, url, image, price, variantId, available, reason} = product;
   const amountNum = price?.amount != null ? Number(price.amount) : null;
   const freeShipping = amountNum != null && amountNum >= 49;
 
   return (
-    <Link
-      to={url}
-      prefetch="intent"
-      className="flex-shrink-0 w-[160px] md:w-[180px] snap-start block"
-    >
-      <article className="flex flex-col h-full bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden group cursor-pointer hover:shadow-lg hover:scale-105 transition-all duration-200">
+    <article className="flex-shrink-0 w-[148px] md:w-[150px] snap-start flex flex-col bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden group hover:shadow-lg hover:scale-105 transition-all duration-200">
+      <Link to={url} prefetch="intent" className="block">
         {image?.url ? (
           <img
             src={image.url}
@@ -120,64 +161,58 @@ function ProductCard({product}) {
             🐾
           </div>
         )}
-        <div className="p-2.5 flex flex-col justify-between flex-1">
-          <div>
-            <h4 className="text-xs font-semibold text-gray-800 line-clamp-2 leading-tight">
+      </Link>
+      <div className="p-2.5 flex flex-col justify-between flex-1">
+        <div>
+          <Link to={url} prefetch="intent">
+            <h4 className="text-xs font-semibold text-gray-800 line-clamp-2 leading-tight hover:text-[#06B6D4] transition-colors">
               {title}
             </h4>
-            <div className="flex items-center gap-1 mt-0.5">
-              <span aria-label="Rated 4.8 out of 5" className="text-[10px] text-amber-400">
-                ★★★★★
-              </span>
-              <span className="text-[9px] text-gray-400">(234)</span>
-            </div>
-            {reason ? (
-              <p className="text-[10px] text-gray-400 italic line-clamp-1 mt-0.5">
-                {reason}
-              </p>
-            ) : null}
+          </Link>
+          <div className="flex items-center gap-1 mt-0.5">
+            <span
+              aria-label="Rated 4.8 out of 5"
+              className="text-[10px] text-amber-400"
+            >
+              ★★★★★
+            </span>
+            <span className="text-[9px] text-gray-400">(234)</span>
           </div>
-          <div className="mt-auto pt-1.5">
-            <div className="flex items-center justify-between">
-              {price ? (
-                <span className="text-sm font-bold text-gray-900">
-                  <Money data={price} />
-                </span>
-              ) : (
-                <span />
-              )}
-              {variantId && available ? (
-                <CartForm
-                  route="/cart"
-                  inputs={{lines: [{merchandiseId: variantId, quantity: 1}]}}
-                  action={CartForm.ACTIONS.LinesAdd}
-                >
-                  {(fetcher) => (
-                    <button
-                      type="submit"
-                      onClick={(e) => e.stopPropagation()}
-                      disabled={fetcher.state !== 'idle'}
-                      className="text-[10px] font-semibold text-white bg-[#06B6D4] px-2.5 py-1 rounded-full hover:bg-[#0891B2] transition-colors disabled:opacity-60"
-                    >
-                      {fetcher.state === 'idle' ? 'Add +' : '…'}
-                    </button>
-                  )}
-                </CartForm>
-              ) : (
-                <span className="text-[10px] font-semibold text-gray-500 border border-gray-200 px-2.5 py-1 rounded-full">
-                  View
-                </span>
-              )}
-            </div>
-            {freeShipping ? (
-              <span className="block text-[9px] text-teal-600 font-semibold mt-1">
-                FREE SHIPPING
-              </span>
-            ) : null}
-          </div>
+          {reason ? (
+            <p className="text-[10px] text-gray-400 italic line-clamp-1 mt-0.5">
+              {reason}
+            </p>
+          ) : null}
         </div>
-      </article>
-    </Link>
+        <div className="mt-auto pt-1.5">
+          <div className="flex items-center justify-between">
+            {price ? (
+              <span className="text-sm font-bold text-gray-900">
+                <Money data={price} />
+              </span>
+            ) : (
+              <span />
+            )}
+            {variantId && available ? (
+              <AdvisorAddButton variantId={variantId} />
+            ) : (
+              <Link
+                to={url}
+                prefetch="intent"
+                className="text-[10px] font-semibold text-gray-500 border border-gray-200 px-2.5 py-1 rounded-full hover:text-[#06B6D4] hover:border-[#06B6D4] transition-colors"
+              >
+                View
+              </Link>
+            )}
+          </div>
+          {freeShipping ? (
+            <span className="block text-[9px] text-teal-600 font-semibold mt-1">
+              FREE SHIPPING
+            </span>
+          ) : null}
+        </div>
+      </div>
+    </article>
   );
 }
 
@@ -197,7 +232,7 @@ function ProductRecommendations({products}) {
           type="button"
           onClick={scrollLeftBy}
           aria-label="Scroll left"
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white/90 shadow-md rounded-full flex items-center justify-center text-gray-600 hover:text-[#06B6D4] hover:shadow-lg transition-all opacity-0 group-hover:opacity-100"
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white/90 shadow-md rounded-full flex items-center justify-center text-gray-600 hover:text-[#06B6D4] hover:shadow-lg transition-all opacity-70 hover:opacity-100"
         >
           ‹
         </button>
@@ -213,7 +248,7 @@ function ProductRecommendations({products}) {
           type="button"
           onClick={scrollRightBy}
           aria-label="Scroll right"
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white/90 shadow-md rounded-full flex items-center justify-center text-gray-600 hover:text-[#06B6D4] hover:shadow-lg transition-all opacity-0 group-hover:opacity-100"
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white/90 shadow-md rounded-full flex items-center justify-center text-gray-600 hover:text-[#06B6D4] hover:shadow-lg transition-all opacity-70 hover:opacity-100"
         >
           ›
         </button>
