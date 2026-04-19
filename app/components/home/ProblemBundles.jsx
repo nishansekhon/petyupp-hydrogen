@@ -46,7 +46,7 @@ const ProblemBundles = () => {
     {/* Heading */}
               <div className="text-center mb-10">
                 <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-                  Solutions for Every Pup Problem
+                  Natural Relief for Every Pup
       </h2>
             <p className="mt-2 text-gray-500 text-base">
                   Curated bundles for common dog concerns

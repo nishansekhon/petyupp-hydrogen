@@ -36,7 +36,7 @@ const ChevronDown = ({ isOpen }) => (
 
 const footerColumns = [
   {
-    title: "Shop by Problem",
+    title: "Shop by Relief",
     links: [
       { label: "Dental Health", to: "/collections/dental-health" },
       { label: "Destructive Chewing", to: "/collections/destructive-chewing" },

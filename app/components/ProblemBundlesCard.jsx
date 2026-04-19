@@ -52,10 +52,10 @@ export function ProblemBundles() {
         {/* Heading */}
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold font-poppins mb-4">
-            What is your dog struggling with?
+            What does your dog need relief from?
           </h2>
           <p className="text-xl text-gray-600 font-inter">
-            Find natural solutions matched to your dog's exact problem
+            Find natural relief matched to your dog's exact needs
           </p>
         </div>
 

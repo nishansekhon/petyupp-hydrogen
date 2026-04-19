@@ -193,7 +193,7 @@ function Navbar() {
                         </ul>
                       </div>
                       <div>
-                        <h3 style={headerStyle}>Shop by Problem</h3>
+                        <h3 style={headerStyle}>Shop by Relief</h3>
                         <ul style={{listStyle: 'none', margin: 0, padding: 0}}>
                           {problemLinks.map((item) => {
                             const active = isActive(item.to);

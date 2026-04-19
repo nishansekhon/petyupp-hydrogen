@@ -26,12 +26,12 @@ export default function HomepageHero() {
         <div className="flex flex-col justify-center min-h-[400px] md:min-h-[480px]">
           <div className="w-12 h-1 bg-teal-500 rounded-full mb-4"></div>
           <p className="text-xs font-semibold text-[#06B6D4] tracking-widest uppercase mb-4">
-            Problem-first pet care
+            Natural relief for dogs
           </p>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 leading-tight mb-4">
-            Your dog&rsquo;s problem.
+            Your dog deserves relief.
             <br />
-            Our natural solution.
+            Nature provides it.
           </h1>
           <p className="text-base text-gray-500 mb-6 max-w-xl">
             Describe what&rsquo;s going on — our AI matches your dog to
@@ -54,12 +54,12 @@ export default function HomepageHero() {
         </div>
         <div
           aria-hidden="true"
-          className="hero-placeholder relative hidden md:block w-full max-h-[560px] rounded-2xl overflow-hidden shadow-2xl"
+          className="hero-placeholder relative hidden md:block w-full max-h-[600px] rounded-2xl overflow-hidden shadow-2xl"
         >
           <img
             src="https://res.cloudinary.com/petyupp-lifestyle/image/upload/v1776620340/nicholas-brownlow-lx_KwA7hlLU-unsplash_g37voz.jpg"
             alt="Happy dog parent kissing their golden retriever"
-            className="w-full h-full object-cover object-[center_75%]"
+            className="w-full h-full object-cover object-[center_85%]"
             loading="eager"
             width="800"
             height="1000"

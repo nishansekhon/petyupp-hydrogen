@@ -8,7 +8,7 @@ export function OrganizationSchema() {
     "name": "PetYupp",
     "url": "https://petyupp.com",
     "logo": "https://petyupp.com/petyupp-logo.png",
-    "description": "Natural solutions for your dog's real problems. Natural dog treats and supplements.",
+    "description": "Natural relief for your dog's real needs. Natural dog treats and supplements.",
     "contactPoint": {
       "@type": "ContactPoint",
       "email": "hello@petyupp.com",

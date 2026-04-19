@@ -55,7 +55,7 @@ function AboutPage() {
                 'Single-source, traceable, minimally processed. No artificial colors, flavors, or preservatives.',
             },
             {
-              title: 'Problem-First Approach',
+              title: 'Relief-First Approach',
               body:
                 'Every product maps to a real need — dental health, anxiety, joint support, or destructive chewing.',
             },

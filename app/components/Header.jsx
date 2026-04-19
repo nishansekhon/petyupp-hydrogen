@@ -65,7 +65,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
                   </ul>
                 </div>
                 <div>
-                  <h3 style={{color:"#9CA3AF"}} className="text-xs font-bold uppercase tracking-wider mb-4">Shop by Problem</h3>
+                  <h3 style={{color:"#9CA3AF"}} className="text-xs font-bold uppercase tracking-wider mb-4">Shop by Relief</h3>
                   <ul className="space-y-3">
                     <li><NavLink to="/collections" style={{color:"#111827",textDecoration:"none"}} className="text-sm font-medium block hover:!text-cyan-500">Separation Anxiety</NavLink></li>
                     <li><NavLink to="/collections" style={{color:"#111827",textDecoration:"none"}} className="text-sm font-medium block hover:!text-cyan-500">Dental Health</NavLink></li>

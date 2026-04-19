@@ -62,10 +62,10 @@ function HomePage({ products = [], collections = [] }) {
       <div className="hidden md:block max-w-7xl mx-auto px-4 md:px-6 pt-8 md:pt-12 mb-12">
         <div className="text-center mb-6">
           <h2 className="text-2xl md:text-3xl font-black text-gray-900 mb-2">
-            What is your dog struggling with?
+            What does your dog need relief from?
           </h2>
           <p className="text-gray-500 text-sm md:text-base">
-            Find natural solutions matched to your dog's exact problem
+            Find natural relief matched to your dog's exact needs
           </p>
         </div>
         <DogProblemSlider />

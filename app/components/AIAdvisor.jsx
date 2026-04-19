@@ -176,7 +176,7 @@ export const AIAdvisor = forwardRef(function AIAdvisor(props, ref) {
     <div className="ai-advisor">
       <form onSubmit={handleSubmit} className="relative max-w-xl">
         <label htmlFor="ai-advisor-input" className="sr-only">
-          Describe your dog&rsquo;s problem
+          Describe your dog&rsquo;s needs
         </label>
         <input
           id="ai-advisor-input"

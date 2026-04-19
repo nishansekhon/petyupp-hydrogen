@@ -97,7 +97,7 @@ const DogProblemSlider = () => {
               <div className="absolute bottom-0 left-0 right-0 p-7 text-white">
                 <div className="mb-1">
                   <span className="text-xs font-semibold uppercase tracking-widest text-cyan-400">
-                    Dog Problem
+                    Dog Relief
                   </span>
                 </div>
                 <h3 className="text-2xl md:text-3xl font-black mb-2 leading-tight">

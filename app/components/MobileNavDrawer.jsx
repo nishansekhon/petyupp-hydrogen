@@ -138,7 +138,7 @@ const MobileNavDrawer = ({ isOpen, onClose }) => {
           >
             <span className="flex items-center gap-2">
               <span>🐾</span>
-              <span>Shop by Problem</span>
+              <span>Shop by Relief</span>
             </span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="9 18 15 12 9 6" />
