@@ -1,17 +1,22 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { Link } from 'react-router';
 import { motion } from 'framer-motion';
 import { Star } from 'lucide-react';
 import HeroSlider from '@/components/HeroSlider';
 import { OrganizationSchema, WebsiteSchema } from '@/components/SEOSchema';
-import LatestBlogsSection from '@/components/LatestBlogsSection';
-import BarkReelsSection from '@/components/BarkReelsSection';
 import DogProblemSlider from '@/components/DogProblemSlider';
 import QuickCategoryScroll from '@/components/QuickCategoryScroll';
 import WhyPetYupp from '@/components/home/WhyPetYupp';
-import TestimonialSlider from '@/components/home/TestimonialSlider';
-import NewsletterSignup from '@/components/home/NewsletterSignup';
 import ShopCategories from '@/components/home/ShopCategories';
+
+const TestimonialSlider = lazy(() => import('@/components/home/TestimonialSlider'));
+const NewsletterSignup = lazy(() => import('@/components/home/NewsletterSignup'));
+const BarkReelsSection = lazy(() => import('@/components/BarkReelsSection'));
+const LatestBlogsSection = lazy(() => import('@/components/LatestBlogsSection'));
+
+const SectionFallback = ({ height = 'min-h-[200px]' }) => (
+  <div className={`${height} w-full bg-white`} aria-hidden="true" />
+);
 
 function adaptShopifyProduct(product) {
   const image = product.images?.nodes?.[0];
@@ -43,6 +48,10 @@ function HomePage({ products = [], collections = [] }) {
             <img
               src={product.image_url}
               alt={product.name}
+              width={400}
+              height={400}
+              loading={index === 0 ? 'eager' : 'lazy'}
+              decoding="async"
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
             {index === 0 && (
@@ -136,7 +145,9 @@ function HomePage({ products = [], collections = [] }) {
       <WhyPetYupp />
 
       {/* 6. Testimonials */}
-      <TestimonialSlider />
+      <Suspense fallback={<SectionFallback height="min-h-[300px]" />}>
+        <TestimonialSlider />
+      </Suspense>
 
       {/* 7. Dog Stories - See Why Dogs Love PetYupp */}
       <div className="bg-[#F9FAFB] py-10">
@@ -145,12 +156,16 @@ function HomePage({ products = [], collections = [] }) {
             See Why Dogs Love PetYupp 🐾
           </h2>
           <p className="text-gray-500 text-sm mb-8">Real dogs, real results</p>
-          <BarkReelsSection />
+          <Suspense fallback={<SectionFallback />}>
+            <BarkReelsSection />
+          </Suspense>
         </div>
       </div>
 
       {/* 8. Newsletter - Join the Pack */}
-      <NewsletterSignup />
+      <Suspense fallback={<SectionFallback height="min-h-[240px]" />}>
+        <NewsletterSignup />
+      </Suspense>
 
       {/* 9. From Our Blog */}
       <div className="py-10 bg-white">
@@ -161,7 +176,9 @@ function HomePage({ products = [], collections = [] }) {
               All Posts →
             </Link>
           </div>
-          <LatestBlogsSection />
+          <Suspense fallback={<SectionFallback />}>
+            <LatestBlogsSection />
+          </Suspense>
         </div>
       </div>
     </div>
