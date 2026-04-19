@@ -2,6 +2,7 @@ import { Suspense, useState, useEffect } from 'react';
 import { Await, Link, useAsyncValue, useLocation, useRouteLoaderData } from 'react-router';
 import { useOptimisticCart } from '@shopify/hydrogen';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useAside } from '~/components/Aside';
 import UserMenu from '@/components/UserMenu';
 import MobileNavDrawer from '@/components/MobileNavDrawer';
 
@@ -31,9 +32,9 @@ function CartCountInner() {
 function Navbar() {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
   const [isShopOpen, setIsShopOpen] = useState(false);
   const { isDarkMode, toggleTheme } = useTheme();
+  const {open: openAside} = useAside();
 
   useEffect(() => {
     setMobileMenuOpen(false);
@@ -218,15 +219,15 @@ function Navbar() {
             <span className={`absolute -bottom-1 left-0 h-0.5 bg-[#06B6D4] transition-all ${isActive('/about') ? 'w-full' : 'w-0 group-hover:w-full'}`} />
           </Link>
           <Link
-            to="/blogs/journal"
+            to="/blogs"
             className={`text-sm font-medium transition-colors relative group ${
-              isActive('/blogs/journal')
+              isActive('/blogs')
                 ? 'text-[#06B6D4]'
                 : 'text-gray-700 hover:text-[#06B6D4]'
             }`}
           >
             Blog
-            <span className={`absolute -bottom-1 left-0 h-0.5 bg-[#06B6D4] transition-all ${isActive('/blogs/journal') ? 'w-full' : 'w-0 group-hover:w-full'}`} />
+            <span className={`absolute -bottom-1 left-0 h-0.5 bg-[#06B6D4] transition-all ${isActive('/blogs') ? 'w-full' : 'w-0 group-hover:w-full'}`} />
           </Link>
         </nav>
 
@@ -252,7 +253,7 @@ function Navbar() {
           <button
             className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
             aria-label="Search"
-            onClick={() => setSearchOpen(!searchOpen)}
+            onClick={() => openAside('search')}
           >
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5">
               <circle cx="11" cy="11" r="8" />

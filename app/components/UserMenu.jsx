@@ -9,7 +9,7 @@ function UserMenu() {
   if (!user) {
     return (
       <Link
-        to="/login"
+        to="/account/login"
         className="flex items-center gap-1.5 px-3 py-2 rounded-xl hover:bg-gray-100 transition-colors text-sm font-semibold text-gray-700"
       >
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5">

@@ -43,6 +43,13 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* Accessible focus ring — keyboard only. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 /* Dark-mode overrides keyed to existing Tailwind utility classes. */
 [data-theme="dark"] .bg-white,
 [data-theme="dark"] [style*="background-color: white"],

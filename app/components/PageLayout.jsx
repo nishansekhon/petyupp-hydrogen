@@ -27,13 +27,19 @@ export function PageLayout({
 }) {
   return (
     <Aside.Provider>
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[10000] focus:px-4 focus:py-2 focus:bg-[#06B6D4] focus:text-white focus:font-semibold focus:rounded-lg focus:shadow-lg"
+      >
+        Skip to main content
+      </a>
       <NavigationProgress />
       <PromoBar />
       <CartAside cart={cart} />
       <SearchAside />
       <MobileMenuAside header={header} publicStoreDomain={publicStoreDomain} />
       <Navbar />
-      <main className="pb-16 md:pb-0">{children}</main>
+      <main id="main-content" className="pb-16 md:pb-0">{children}</main>
       <Footer
         footer={footer}
         header={header}

@@ -18,6 +18,17 @@ const SectionFallback = ({ height = 'min-h-[200px]' }) => (
   <div className={`${height} w-full bg-white`} aria-hidden="true" />
 );
 
+function withShopifyWidth(url, width) {
+  if (!url || typeof url !== 'string') return url;
+  try {
+    const u = new URL(url);
+    u.searchParams.set('width', String(width));
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
+
 function adaptShopifyProduct(product) {
   const image = product.images?.nodes?.[0];
   const price = Number(product.priceRange?.minVariantPrice?.amount ?? 0);
@@ -26,7 +37,7 @@ function adaptShopifyProduct(product) {
     id: product.id,
     slug: product.handle,
     name: product.title,
-    image_url: image?.url || '',
+    image_url: withShopifyWidth(image?.url, 400) || '',
     price,
     original_price: compareAt > price ? compareAt : null,
   };

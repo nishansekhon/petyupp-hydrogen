@@ -175,16 +175,16 @@ function Footer() {
             &copy; 2026 PetYupp Pet Lifestyle. All rights reserved.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3 md:gap-4">
-            <Link to="/privacy-policy" className="text-gray-500 hover:text-gray-300 text-xs transition-colors">
+            <Link to="/policies/privacy-policy" className="text-gray-500 hover:text-gray-300 text-xs transition-colors">
               Privacy Policy
             </Link>
-            <Link to="/terms-of-service" className="text-gray-500 hover:text-gray-300 text-xs transition-colors">
+            <Link to="/policies/terms-of-service" className="text-gray-500 hover:text-gray-300 text-xs transition-colors">
               Terms of Service
             </Link>
-            <Link to="/cookie-preferences" className="text-gray-500 hover:text-gray-300 text-xs transition-colors">
+            <Link to="/policies/privacy-policy" className="text-gray-500 hover:text-gray-300 text-xs transition-colors">
               Cookie Preferences
             </Link>
-            <Link to="/do-not-sell" className="text-gray-500 hover:text-gray-300 text-xs transition-colors">
+            <Link to="/policies/privacy-policy" className="text-gray-500 hover:text-gray-300 text-xs transition-colors">
               Do Not Sell My Info
             </Link>
           </div>

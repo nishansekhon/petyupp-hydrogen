@@ -90,7 +90,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
 
           {/* Blog Link */}
           <NavLink
-            to="/blogs/journal"
+            to="/blogs"
             className="header-menu-item text-sm font-medium text-gray-700 hover:text-[#06B6D4]"
             style={{color: '#374151'}}
           >
@@ -180,7 +180,7 @@ const FALLBACK_HEADER_MENU = {
       tags: [],
       title: 'Blog',
       type: 'HTTP',
-      url: '/blogs/journal',
+      url: '/blogs',
       items: [],
     },
     {
