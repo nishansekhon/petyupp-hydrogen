@@ -217,11 +217,12 @@ export async function action({request, context}) {
     .map((rec, i) => {
       const product = productDetails[i];
       if (!product) return null;
+      const fallbackImage = product.images?.nodes?.[0] ?? null;
       return {
         handle: product.handle,
         title: product.title,
         url: `/products/${product.handle}`,
-        image: product.featuredImage ?? null,
+        image: product.featuredImage ?? fallbackImage,
         price: product.priceRange?.minVariantPrice ?? null,
         variantId: product.selectedOrFirstAvailableVariant?.id ?? null,
         available:
@@ -275,6 +276,15 @@ const PRODUCT_BY_HANDLE_QUERY = `#graphql
         altText
         width
         height
+      }
+      images(first: 1) {
+        nodes {
+          id
+          url
+          altText
+          width
+          height
+        }
       }
       priceRange {
         minVariantPrice {

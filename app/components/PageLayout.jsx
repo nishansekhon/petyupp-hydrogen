@@ -1,6 +1,6 @@
 import {Await, Link} from 'react-router';
 import {Suspense, useId} from 'react';
-import {Aside} from '~/components/Aside';
+import {Aside, useAside} from '~/components/Aside';
 import Footer from '~/components/Footer';
 import {HeaderMenu} from '~/components/Header';
 import MobileBottomNav from '~/components/MobileBottomNav';
@@ -58,14 +58,20 @@ export function PageLayout({
 function CartAside({cart}) {
   return (
     <Aside type="cart" heading="CART">
-      <Suspense fallback={<p>Loading cart ...</p>}>
-        <Await resolve={cart}>
-          {(cart) => {
-            return <CartMain cart={cart} layout="aside" />;
-          }}
-        </Await>
-      </Suspense>
+      <CartAsideBody cart={cart} />
     </Aside>
+  );
+}
+
+function CartAsideBody({cart}) {
+  const {type} = useAside();
+  if (type !== 'cart') return null;
+  return (
+    <Suspense fallback={<p>Loading cart ...</p>}>
+      <Await resolve={cart}>
+        {(cart) => <CartMain cart={cart} layout="aside" />}
+      </Await>
+    </Suspense>
   );
 }
 
