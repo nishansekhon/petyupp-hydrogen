@@ -54,12 +54,12 @@ export default function HomepageHero() {
         </div>
         <div
           aria-hidden="true"
-          className="hero-placeholder relative hidden md:block w-full h-auto max-h-[600px] rounded-2xl overflow-hidden shadow-2xl"
+          className="hero-placeholder relative hidden md:block rounded-2xl overflow-hidden shadow-2xl"
         >
           <img
-            src="https://res.cloudinary.com/petyupp-lifestyle/image/upload/c_fill,g_auto,ar_3:4,w_800,f_auto,q_auto/v1776620340/nicholas-brownlow-lx_KwA7hlLU-unsplash_g37voz.jpg"
+            src="https://res.cloudinary.com/petyupp-lifestyle/image/upload/w_800,f_auto,q_auto/v1776620340/nicholas-brownlow-lx_KwA7hlLU-unsplash_g37voz.jpg"
             alt="Happy dog parent kissing their golden retriever"
-            className="w-full h-full object-cover rounded-2xl"
+            className="w-full h-auto rounded-2xl"
             loading="eager"
             width="800"
             height="1000"
