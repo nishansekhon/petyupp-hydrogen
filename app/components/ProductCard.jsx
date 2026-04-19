@@ -102,9 +102,12 @@ function ProductCard({ product, index = 0, showBadges = true }) {
       </div>
       </Link>
       <div className="px-3 pb-3 pt-2">
-        <button className="bg-[#06B6D4] text-white rounded-lg py-2 px-4 w-full text-sm font-medium hover:bg-[#0891B2] transition-colors">
-          Add to Cart
-        </button>
+        <Link
+          to={`/products/${product.slug || product.id}`}
+          className="bg-[#06B6D4] text-white rounded-lg py-2 px-4 w-full text-sm font-medium hover:bg-[#0891B2] transition-colors flex items-center justify-center"
+        >
+          View Product
+        </Link>
       </div>
     </div>
   );
