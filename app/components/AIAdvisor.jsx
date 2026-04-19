@@ -182,13 +182,41 @@ function ProductCard({product}) {
 }
 
 function ProductRecommendations({products}) {
+  const stripRef = useRef(null);
+  const scrollLeftBy = () =>
+    stripRef.current?.scrollBy({left: -200, behavior: 'smooth'});
+  const scrollRightBy = () =>
+    stripRef.current?.scrollBy({left: 200, behavior: 'smooth'});
+
   if (!Array.isArray(products) || products.length === 0) return null;
+
   return (
     <div className="max-h-[340px] overflow-y-auto">
-      <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide">
-        {products.map((p) => (
-          <ProductCard key={p.handle} product={p} />
-        ))}
+      <div className="relative group">
+        <button
+          type="button"
+          onClick={scrollLeftBy}
+          aria-label="Scroll left"
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white/90 shadow-md rounded-full flex items-center justify-center text-gray-600 hover:text-[#06B6D4] hover:shadow-lg transition-all opacity-0 group-hover:opacity-100"
+        >
+          ‹
+        </button>
+        <div
+          ref={stripRef}
+          className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide px-1"
+        >
+          {products.map((p) => (
+            <ProductCard key={p.handle} product={p} />
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={scrollRightBy}
+          aria-label="Scroll right"
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white/90 shadow-md rounded-full flex items-center justify-center text-gray-600 hover:text-[#06B6D4] hover:shadow-lg transition-all opacity-0 group-hover:opacity-100"
+        >
+          ›
+        </button>
       </div>
     </div>
   );
