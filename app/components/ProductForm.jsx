@@ -2,15 +2,29 @@ import {Link, useNavigate} from 'react-router';
 import {AddToCartButton} from './AddToCartButton';
 import {useAside} from './Aside';
 
+const MIN_QTY = 1;
+const MAX_QTY = 10;
+
 /**
  * @param {{
  *   productOptions: MappedProductOptions[];
  *   selectedVariant: ProductFragment['selectedOrFirstAvailableVariant'];
+ *   quantity?: number;
+ *   onQuantityChange?: (quantity: number) => void;
  * }}
  */
-export function ProductForm({productOptions, selectedVariant}) {
+export function ProductForm({
+  productOptions,
+  selectedVariant,
+  quantity = 1,
+  onQuantityChange,
+}) {
   const navigate = useNavigate();
   const {open} = useAside();
+  const setQty = (next) => {
+    const clamped = Math.max(MIN_QTY, Math.min(MAX_QTY, next));
+    onQuantityChange?.(clamped);
+  };
   return (
     <div className="product-form">
       {productOptions.map((option) => {
@@ -93,6 +107,37 @@ export function ProductForm({productOptions, selectedVariant}) {
           </div>
         );
       })}
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-900 mb-2">
+          Quantity
+        </label>
+        <div className="inline-flex items-center border border-gray-300 rounded-lg overflow-hidden">
+          <button
+            type="button"
+            aria-label="Decrease quantity"
+            onClick={() => setQty(quantity - 1)}
+            disabled={quantity <= MIN_QTY}
+            className="w-10 h-10 flex items-center justify-center text-gray-700 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            −
+          </button>
+          <span
+            aria-live="polite"
+            className="w-12 h-10 flex items-center justify-center text-sm font-medium text-gray-900 border-x border-gray-300"
+          >
+            {quantity}
+          </span>
+          <button
+            type="button"
+            aria-label="Increase quantity"
+            onClick={() => setQty(quantity + 1)}
+            disabled={quantity >= MAX_QTY}
+            className="w-10 h-10 flex items-center justify-center text-gray-700 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            +
+          </button>
+        </div>
+      </div>
       <AddToCartButton
         disabled={!selectedVariant || !selectedVariant.availableForSale}
         onClick={() => {
@@ -103,7 +148,7 @@ export function ProductForm({productOptions, selectedVariant}) {
             ? [
                 {
                   merchandiseId: selectedVariant.id,
-                  quantity: 1,
+                  quantity,
                   selectedVariant,
                 },
               ]

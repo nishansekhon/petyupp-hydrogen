@@ -1,5 +1,6 @@
 import {redirect, useLoaderData} from 'react-router';
 import {getPaginationVariables, Analytics} from '@shopify/hydrogen';
+import {Breadcrumbs} from '~/components/Breadcrumbs';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {ProductItem} from '~/components/ProductItem';
@@ -77,6 +78,13 @@ export default function Collection() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
+      <Breadcrumbs
+        items={[
+          {label: 'Home', to: '/'},
+          {label: 'Collections', to: '/collections'},
+          {label: collection.title},
+        ]}
+      />
       <h1 className="text-3xl font-bold mb-2 text-gray-900">{collection.title}</h1>
       {collection.description && (
         <p className="text-gray-600 mb-8 max-w-2xl">{collection.description}</p>

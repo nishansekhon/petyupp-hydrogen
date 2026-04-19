@@ -1,4 +1,5 @@
-import {useLoaderData} from 'react-router';
+import {Suspense, useState} from 'react';
+import {Await, useLoaderData} from 'react-router';
 import {
   getSelectedProductOptions,
   Analytics,
@@ -7,9 +8,12 @@ import {
   getAdjacentAndFirstAvailableVariants,
   useSelectedOptionInUrlParam,
 } from '@shopify/hydrogen';
+import {Breadcrumbs} from '~/components/Breadcrumbs';
 import {ProductPrice} from '~/components/ProductPrice';
-import {ProductImage} from '~/components/ProductImage';
+import {ProductImageGallery} from '~/components/ProductImageGallery';
 import {ProductForm} from '~/components/ProductForm';
+import {ProductItem} from '~/components/ProductItem';
+import {ProductSkeletonGrid} from '~/components/ProductSkeleton';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 
 /**
@@ -77,15 +81,24 @@ async function loadCriticalData({context, params, request}) {
  * @param {Route.LoaderArgs}
  */
 function loadDeferredData({context, params}) {
-  // Put any API calls that is not critical to be available on first page render
-  // For example: product reviews, product recommendations, social feeds.
+  const {storefront} = context;
+  const {handle} = params;
 
-  return {};
+  const recommendations = storefront
+    .query(PRODUCT_RECOMMENDATIONS_QUERY, {variables: {handle}})
+    .then((result) => result?.productRecommendations ?? [])
+    .catch((error) => {
+      console.error(error);
+      return [];
+    });
+
+  return {recommendations};
 }
 
 export default function Product() {
   /** @type {LoaderReturnData} */
-  const {product} = useLoaderData();
+  const {product, recommendations} = useLoaderData();
+  const [quantity, setQuantity] = useState(1);
 
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -104,12 +117,23 @@ export default function Product() {
   });
 
   const {title, descriptionHtml} = product;
+  const productImages = product.images?.nodes ?? [];
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
+      <Breadcrumbs
+        items={[
+          {label: 'Home', to: '/'},
+          {label: 'Products', to: '/collections/all'},
+          {label: title},
+        ]}
+      />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="md:sticky md:top-4 md:self-start">
-          <ProductImage image={selectedVariant?.image} />
+          <ProductImageGallery
+            variantImage={selectedVariant?.image}
+            images={productImages}
+          />
         </div>
         <div>
           <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
@@ -123,6 +147,8 @@ export default function Product() {
             <ProductForm
               productOptions={productOptions}
               selectedVariant={selectedVariant}
+              quantity={quantity}
+              onQuantityChange={setQuantity}
             />
           </div>
           <div className="mt-5 flex flex-wrap gap-3">
@@ -149,6 +175,7 @@ export default function Product() {
           </div>
         </div>
       </div>
+      <RelatedProducts recommendations={recommendations} />
       <Analytics.ProductView
         data={{
           products: [
@@ -159,12 +186,35 @@ export default function Product() {
               vendor: product.vendor,
               variantId: selectedVariant?.id || '',
               variantTitle: selectedVariant?.title || '',
-              quantity: 1,
+              quantity,
             },
           ],
         }}
       />
     </div>
+  );
+}
+
+function RelatedProducts({recommendations}) {
+  return (
+    <section className="mt-16 pt-8 border-t border-gray-200">
+      <h2 className="text-2xl font-bold text-gray-900 mb-6">
+        You May Also Like
+      </h2>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+        <Suspense fallback={<ProductSkeletonGrid count={4} />}>
+          <Await resolve={recommendations} errorElement={null}>
+            {(items) => {
+              const list = (items ?? []).slice(0, 4);
+              if (list.length === 0) return null;
+              return list.map((product) => (
+                <ProductItem key={product.id} product={product} />
+              ));
+            }}
+          </Await>
+        </Suspense>
+      </div>
+    </section>
   );
 }
 
@@ -215,6 +265,15 @@ const PRODUCT_FRAGMENT = `#graphql
     description
     encodedVariantExistence
     encodedVariantAvailability
+    images(first: 6) {
+      nodes {
+        id
+        url
+        altText
+        width
+        height
+      }
+    }
     options {
       name
       optionValues {
@@ -258,6 +317,37 @@ const PRODUCT_QUERY = `#graphql
     }
   }
   ${PRODUCT_FRAGMENT}
+`;
+
+const PRODUCT_RECOMMENDATIONS_QUERY = `#graphql
+  query ProductRecommendations(
+    $country: CountryCode
+    $handle: String!
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
+    productRecommendations(productHandle: $handle) {
+      id
+      handle
+      title
+      featuredImage {
+        id
+        altText
+        url
+        width
+        height
+      }
+      priceRange {
+        minVariantPrice {
+          amount
+          currencyCode
+        }
+        maxVariantPrice {
+          amount
+          currencyCode
+        }
+      }
+    }
+  }
 `;
 
 /** @typedef {import('./+types/products.$handle').Route} Route */
