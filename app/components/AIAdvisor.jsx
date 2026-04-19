@@ -264,7 +264,7 @@ export const AIAdvisor = forwardRef(function AIAdvisor(props, ref) {
           disabled={pending || input.trim().length === 0}
           className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#06B6D4] hover:bg-[#0891B2] text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          {pending ? 'Fetching…' : 'Fetch 🐕'}
+          {pending ? 'Asking…' : 'Ask AI 🐾'}
         </button>
       </div>
 
@@ -278,11 +278,24 @@ export const AIAdvisor = forwardRef(function AIAdvisor(props, ref) {
             <MessageBubble key={idx} turn={turn} />
           ))}
           {pending && (
-            <div className="flex flex-col items-center justify-center py-8 gap-3">
-              <div className="text-4xl animate-bounce">🐕</div>
-              <p className="text-sm text-gray-500 font-medium animate-pulse">
-                Fetching the best picks for your pup...
+            <div className="flex items-center justify-center py-6 gap-1">
+              <p className="text-sm text-gray-400 font-medium">
+                Finding the perfect match
               </p>
+              <span className="inline-flex gap-0.5">
+                <span
+                  className="w-1 h-1 bg-[#06B6D4] rounded-full animate-bounce"
+                  style={{animationDelay: '0ms'}}
+                ></span>
+                <span
+                  className="w-1 h-1 bg-[#06B6D4] rounded-full animate-bounce"
+                  style={{animationDelay: '150ms'}}
+                ></span>
+                <span
+                  className="w-1 h-1 bg-[#06B6D4] rounded-full animate-bounce"
+                  style={{animationDelay: '300ms'}}
+                ></span>
+              </span>
             </div>
           )}
           {error && (
