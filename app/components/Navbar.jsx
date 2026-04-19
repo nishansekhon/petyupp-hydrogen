@@ -56,7 +56,7 @@ function Navbar() {
 
   return (
     <>
-      <div className="fixed top-0 left-0 right-0 z-[100] bg-[#111827] text-white py-1.5 h-[28px] overflow-hidden flex items-center text-xs">
+      <div className="fixed top-7 left-0 right-0 z-[100] bg-[#111827] text-white py-1.5 h-[28px] overflow-hidden flex items-center text-xs">
         <div className="flex items-center animate-ticker whitespace-nowrap" style={{ width: '200%' }}>
           <span className="inline-block px-8 text-xs sm:text-sm font-medium">
             Free shipping on orders over $49 across US and Canada
@@ -82,7 +82,7 @@ function Navbar() {
         </div>
       </div>
 
-      <header className="fixed top-[28px] left-0 right-0 z-[99] flex items-center justify-between px-4 sm:px-6 lg:px-8 bg-white py-5">
+      <header className="fixed top-[56px] left-0 right-0 z-[99] flex items-center justify-between px-4 sm:px-6 lg:px-8 bg-white py-5">
         <div className="flex items-center gap-3">
           <button
             className="p-2 -ml-1 rounded-lg hover:bg-gray-100 transition-colors lg:hidden"

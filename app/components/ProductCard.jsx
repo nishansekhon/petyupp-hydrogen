@@ -1,115 +1,144 @@
 import React from 'react';
-import { API_BASE_URL } from '@/config/api';
-import { Link } from 'react-router';
-
-const BACKEND_URL = API_BASE_URL;
+import {Link} from 'react-router';
 
 /**
- * PetYupp ProductCard - White theme, teal/green accents, $ currency
+ * PetYupp ProductCard — 2026 editorial redesign.
+ * White background, no border, single soft shadow; editorial brand row
+ * above the title; problem-tag overlay on the image; inline Add +.
  */
-function ProductCard({ product, index = 0, showBadges = true }) {
+function formatPrice(price) {
+  if (price == null || price === '') return '';
+  if (typeof price === 'number') return price.toFixed(2);
+  const num = Number(price);
+  return Number.isFinite(num) ? num.toFixed(2) : String(price);
+}
+
+function Stars({rating = 4.8}) {
+  return (
+    <span
+      aria-label={`${rating} out of 5 stars`}
+      className="inline-flex items-center gap-0.5 text-[10px] text-gray-600"
+    >
+      <span className="text-yellow-400">★</span>
+      <span className="font-semibold text-gray-900">{rating}</span>
+    </span>
+  );
+}
+
+function ProductCard({product, index = 0, showBadges = true}) {
+  const slug = product.slug || product.id;
   const discountPercent = product.original_price
-    ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
+    ? Math.round(
+        ((product.original_price - product.price) / product.original_price) *
+          100,
+      )
     : 0;
 
-  const imageUrl = product.image_url?.startsWith('http')
-    ? product.image_url
-    : product.image || `${BACKEND_URL}${product.image_url}`;
-
-  const formatPrice = (price) => {
-    if (typeof price === 'number') return price.toFixed(2);
-    return price;
-  };
+  const rating = product.rating ?? 4.8;
+  const reviewCount = product.reviewCount ?? 234;
+  const problemTags =
+    (Array.isArray(product.problemTags) && product.problemTags) ||
+    (Array.isArray(product.displayTags?.problems) &&
+      product.displayTags.problems) ||
+    [];
 
   return (
-    <div className="rounded-2xl overflow-hidden shadow-sm transition-all hover:shadow-md bg-white border border-gray-100 flex flex-col">
+    <article className="bg-white rounded-2xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,.04)] hover:shadow-md transition-all duration-200 flex flex-col">
       <Link
-        to={`/products/${product.slug || product.id}`}
-        className="block flex-1"
+        to={`/products/${slug}`}
+        className="block relative aspect-square bg-gray-50 overflow-hidden"
       >
-      {/* Product Image */}
-      <div className="relative aspect-square overflow-hidden bg-gray-50">
         <img
-          src={imageUrl}
+          src={product.image_url}
           alt={product.name}
+          width={400}
+          height={400}
+          loading={index === 0 ? 'eager' : 'lazy'}
+          decoding="async"
           className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-          loading="lazy"
         />
 
-        {/* Badges - Top Left */}
+        {/* Badges (top) */}
         {showBadges && (
-          <div className="absolute top-1.5 left-1.5 flex flex-col gap-1">
+          <div className="absolute top-2 left-2 flex flex-col gap-1">
             {(product.displayTags?.isBestseller || index === 0) && (
-              <span className="px-2 py-0.5 bg-[#06B6D4] text-white text-[9px] font-bold rounded-full uppercase shadow-sm">
+              <span className="bg-[#06B6D4] text-white text-[8px] font-bold tracking-wide px-2 py-1 rounded uppercase">
                 Bestseller
               </span>
             )}
             {(product.displayTags?.isNewLaunch || index === 1) && (
-              <span className="px-2 py-0.5 bg-[#10B981] text-white text-[9px] font-bold rounded-full uppercase shadow-sm">
+              <span className="bg-[#10B981] text-white text-[8px] font-bold tracking-wide px-2 py-1 rounded uppercase">
                 New
               </span>
             )}
           </div>
         )}
-
-        {/* Discount Badge */}
         {discountPercent > 0 && (
-          <div className="absolute top-1.5 right-1.5">
-            <span className="px-2 py-0.5 bg-[#10B981] text-white text-[9px] font-bold rounded-full">
+          <div className="absolute top-2 right-2">
+            <span className="bg-[#10B981] text-white text-[8px] font-bold tracking-wide px-2 py-1 rounded">
               {discountPercent}% OFF
             </span>
           </div>
         )}
 
-        {/* Rating */}
-        {product.rating && (
-          <div className="absolute bottom-1.5 right-1.5 flex items-center gap-0.5 px-2 py-0.5 bg-black/60 rounded-full text-white text-[9px] font-semibold backdrop-blur-sm">
-            <span className="text-yellow-400">★</span>
-            <span>{product.rating}</span>
+        {/* Problem-tag overlay (bottom of image) */}
+        {problemTags.length > 0 && (
+          <div className="absolute bottom-2 left-2 right-2 flex gap-1 flex-wrap">
+            {problemTags.slice(0, 3).map((tag) => (
+              <span
+                key={tag}
+                className="bg-black/60 backdrop-blur-sm text-white text-[8px] px-2 py-1 rounded"
+              >
+                {tag}
+              </span>
+            ))}
           </div>
         )}
-      </div>
+      </Link>
 
-      {/* Product Info */}
-      <div className="p-3">
-        <h3 className="text-xs font-semibold leading-tight line-clamp-2 min-h-[32px] mb-1.5 text-gray-900">
-          {product.name}
-        </h3>
-            {/* Star ratings */}
-            <div className="flex items-center gap-1 mb-1">
-              {[1,2,3,4,5].map((star) => (
-                <svg key={star} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#F59E0B" className="w-3.5 h-3.5">
-                  <path fillRule="evenodd" d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z" clipRule="evenodd" />
-                </svg>
-              ))}
-              <span className="text-xs font-medium text-gray-700">
-                {product.rating || '4.8'}
-              </span>
-              <span className="text-xs text-gray-400">
-                ({product.reviewCount || '234'})
-              </span>
-            </div>
-        <div className="flex items-baseline gap-1.5">
-          <span className="text-sm font-black text-gray-900">
-            ${formatPrice(product.price)}
+      <div className="px-3.5 py-3 flex flex-col flex-1">
+        {/* Brand row */}
+        <div className="flex justify-between items-center">
+          <span className="text-[9px] font-semibold text-[#06B6D4] tracking-wide uppercase">
+            PetYupp
           </span>
-          {product.original_price && product.original_price > product.price && (
-            <span className="text-xs line-through text-gray-400">
-              ${formatPrice(product.original_price)}
+          <span className="inline-flex items-center gap-1 text-[10px]">
+            <Stars rating={rating} />
+            <span className="text-gray-400">({reviewCount})</span>
+          </span>
+        </div>
+
+        <Link
+          to={`/products/${slug}`}
+          className="text-sm font-semibold text-gray-900 line-clamp-2 mt-1 leading-snug hover:text-[#06B6D4] transition-colors"
+        >
+          {product.name}
+        </Link>
+
+        <div className="flex justify-between items-center mt-2 mb-1">
+          <div className="flex items-baseline gap-2">
+            <span className="text-base font-extrabold text-gray-900">
+              ${formatPrice(product.price)}
             </span>
-          )}
+            {product.original_price &&
+            product.original_price > product.price ? (
+              <span className="text-xs line-through text-gray-400">
+                ${formatPrice(product.original_price)}
+              </span>
+            ) : (
+              <span className="text-[10px] text-green-600">Free ship</span>
+            )}
+          </div>
+          <Link
+            to={`/products/${slug}`}
+            className="bg-[#06B6D4] hover:bg-[#0891B2] text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors"
+            aria-label={`View ${product.name}`}
+          >
+            Add +
+          </Link>
         </div>
       </div>
-      </Link>
-      <div className="px-3 pb-3 pt-2">
-        <Link
-          to={`/products/${product.slug || product.id}`}
-          className="bg-[#06B6D4] text-white rounded-lg py-2 px-4 w-full text-sm font-medium hover:bg-[#0891B2] transition-colors flex items-center justify-center"
-        >
-          View Product
-        </Link>
-      </div>
-    </div>
+    </article>
   );
 }
 

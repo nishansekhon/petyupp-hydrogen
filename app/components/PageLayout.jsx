@@ -7,6 +7,7 @@ import MobileBottomNav from '~/components/MobileBottomNav';
 import Navbar from '~/components/Navbar';
 import {NavigationProgress} from '~/components/NavigationProgress';
 import {PromoBar} from '~/components/PromoBar';
+import {TrustMicroBar} from '~/components/TrustMicroBar';
 import {CartMain} from '~/components/CartMain';
 import {
   SEARCH_ENDPOINT,
@@ -35,6 +36,7 @@ export function PageLayout({
       </a>
       <NavigationProgress />
       <PromoBar />
+      <TrustMicroBar />
       <CartAside cart={cart} />
       <SearchAside />
       <MobileMenuAside header={header} publicStoreDomain={publicStoreDomain} />
