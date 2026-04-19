@@ -193,7 +193,9 @@ body {
 [data-theme="dark"] .bg-\[\#F9FAFB\],
 [data-theme="dark"] .bg-\[\#f9fafb\],
 [data-theme="dark"] .bg-\[\#FAFAFA\],
-[data-theme="dark"] .bg-\[\#fafafa\] {
+[data-theme="dark"] .bg-\[\#fafafa\],
+[data-theme="dark"] .bg-\[\#FDF8F4\],
+[data-theme="dark"] .bg-\[\#fdf8f4\] {
   background-color: var(--bg-secondary) !important;
 }
 

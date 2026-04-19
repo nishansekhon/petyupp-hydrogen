@@ -238,21 +238,22 @@ function Footer() {
             <Link to="/policies/terms-of-service" className="text-gray-500 hover:text-gray-300 text-xs transition-colors">
               Terms of Service
             </Link>
-            <Link to="/policies/privacy-policy" className="text-gray-500 hover:text-gray-300 text-xs transition-colors">
-              Cookie Preferences
+            <Link to="/policies/refund-policy" className="text-gray-500 hover:text-gray-300 text-xs transition-colors">
+              Refund Policy
             </Link>
-            <Link to="/policies/privacy-policy" className="text-gray-500 hover:text-gray-300 text-xs transition-colors">
-              Do Not Sell My Info
+            <Link to="/policies/shipping-policy" className="text-gray-500 hover:text-gray-300 text-xs transition-colors">
+              Shipping Policy
             </Link>
           </div>
         </div>
-      </div>
-            <div className="flex justify-center pt-4">
+
+        <div className="flex justify-center pt-4">
           <Link to="/admin" aria-label="Admin login" className="text-gray-600 hover:text-gray-400 text-xs opacity-60 hover:opacity-100 transition-opacity">
             <span role="img" aria-hidden="true">⚙️</span>
           </Link>
         </div>
-      </footer>
+      </div>
+    </footer>
   );
 }
 
