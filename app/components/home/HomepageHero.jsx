@@ -50,18 +50,6 @@ const QUICK_PROBLEMS = [
     query:
       'My dog always chews sticks on walks. Want a safe natural wood chew alternative for indoors.',
   },
-  {
-    emoji: '📐',
-    label: 'Tall dog strains to eat',
-    query:
-      'My large dog has to bend down too far to eat. Need an elevated diner or raised bowl.',
-  },
-  {
-    emoji: '🤢',
-    label: 'Sensitive stomach',
-    query:
-      'My dog has frequent digestive issues. Need gentle, single-ingredient natural treats.',
-  },
 ];
 
 export default function HomepageHero() {
@@ -90,21 +78,22 @@ export default function HomepageHero() {
             vet-approved chews and treats that actually help.
           </p>
           <AIAdvisor ref={advisorRef} />
-          <div className="flex flex-wrap gap-2 mt-3">
+          <div className="flex flex-wrap gap-2.5 mt-4 max-w-[580px]">
             {QUICK_PROBLEMS.map((problem, index) => (
               <button
                 key={problem.label}
                 type="button"
                 onClick={() => handleChipClick(problem.query)}
-                className={`inline-flex items-center gap-1.5 px-4 py-2.5 bg-white border border-gray-200 rounded-full text-sm font-semibold text-gray-700 hover:border-[#06B6D4] hover:text-[#06B6D4] hover:shadow-md transition-all duration-200 cursor-pointer ${
-                  index >= 6
-                    ? 'hidden md:inline-flex'
-                    : index >= 4
-                      ? 'hidden sm:inline-flex'
-                      : ''
+                className={`group inline-flex items-center gap-2 px-5 py-2.5 bg-white/80 backdrop-blur-sm border border-gray-200/60 rounded-full text-[13px] font-semibold text-gray-600 shadow-sm hover:bg-[#06B6D4]/10 hover:border-[#06B6D4]/40 hover:text-[#06B6D4] hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all duration-200 ease-out cursor-pointer select-none ${
+                  index >= 4 ? 'hidden md:inline-flex' : ''
                 }`}
               >
-                <span aria-hidden="true">{problem.emoji}</span>
+                <span
+                  aria-hidden="true"
+                  className="text-sm opacity-70 group-hover:opacity-100 transition-opacity"
+                >
+                  {problem.emoji}
+                </span>
                 {problem.label}
               </button>
             ))}
