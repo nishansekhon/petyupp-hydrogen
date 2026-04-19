@@ -2,14 +2,42 @@ import {useRef} from 'react';
 import {AIAdvisor} from '~/components/AIAdvisor';
 
 const QUICK_PROBLEMS = [
-  {icon: '🦷', label: 'Bad breath', query: 'My dog has bad breath'},
   {
-    icon: '🪑',
-    label: 'Destroys furniture',
-    query: 'My dog destroys furniture when I leave',
+    emoji: '🐾',
+    label: 'Chews everything in sight',
+    query:
+      'My dog chews everything — furniture, shoes, walls. I need something safe to redirect the chewing.',
   },
-  {icon: '😰', label: 'Anxious alone', query: 'My dog gets anxious when alone'},
-  {icon: '🦴', label: 'Joint stiffness', query: 'My dog has joint stiffness'},
+  {
+    emoji: '😰',
+    label: 'Cries when I leave',
+    query:
+      "My dog whines and barks the whole time I'm gone. Separation anxiety is really bad.",
+  },
+  {
+    emoji: '🦷',
+    label: 'Breath smells terrible',
+    query:
+      "My dog's breath is really bad. Looking for natural dental chews that actually work.",
+  },
+  {
+    emoji: '🦴',
+    label: 'Slowing down on walks',
+    query:
+      'My older dog is getting stiff and slowing down on walks. Need joint support.',
+  },
+  {
+    emoji: '🤢',
+    label: 'Upset stomach often',
+    query:
+      'My dog throws up or has diarrhea frequently. Sensitive stomach.',
+  },
+  {
+    emoji: '⚡',
+    label: "Won't calm down",
+    query:
+      'My dog is constantly hyper and won\u2019t settle. Needs something to take the edge off.',
+  },
 ];
 
 export default function HomepageHero() {
@@ -25,10 +53,10 @@ export default function HomepageHero() {
         <div className="grid grid-cols-1 md:grid-cols-[55%_45%] gap-10 items-center">
         <div className="flex flex-col justify-center min-h-[400px] md:min-h-[480px]">
           <div className="w-12 h-1 bg-teal-500 rounded-full mb-4"></div>
-          <p className="text-xs font-semibold text-[#06B6D4] tracking-widest uppercase mb-4">
+          <p className="font-heading text-sm font-bold tracking-[0.2em] uppercase text-[#06B6D4] mb-4">
             Natural relief for dogs
           </p>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 leading-tight mb-4">
+          <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-gray-900 leading-tight mb-4">
             Your dog deserves relief.
             <br />
             Nature provides it.
@@ -39,14 +67,16 @@ export default function HomepageHero() {
           </p>
           <AIAdvisor ref={advisorRef} />
           <div className="flex flex-wrap gap-2 mt-4">
-            {QUICK_PROBLEMS.map((problem) => (
+            {QUICK_PROBLEMS.map((problem, index) => (
               <button
                 key={problem.label}
                 type="button"
                 onClick={() => handleChipClick(problem.query)}
-                className="text-xs text-gray-600 border border-gray-200 rounded-full px-3 py-1.5 bg-white hover:border-[#06B6D4] hover:text-[#06B6D4] transition-colors cursor-pointer inline-flex items-center gap-1.5"
+                className={`${
+                  index >= 4 ? 'hidden md:inline-flex' : 'inline-flex'
+                } text-xs text-gray-600 border border-gray-200 rounded-full px-3 py-1.5 bg-white hover:border-[#06B6D4] hover:text-[#06B6D4] transition-colors cursor-pointer items-center gap-1.5`}
               >
-                <span aria-hidden="true">{problem.icon}</span>
+                <span aria-hidden="true">{problem.emoji}</span>
                 {problem.label}
               </button>
             ))}
