@@ -31,13 +31,12 @@ function LoadingDots() {
 }
 
 function ProductCard({product}) {
-  const {handle, title, url, image, price, variantId, available, reason} = product;
-  const amount = price?.amount != null ? Number(price.amount) : null;
-  const freeShipping = amount != null && amount >= 49;
+  const {handle, title, url, image, price, variantId, available, reason} =
+    product;
 
   return (
-    <article className="flex-shrink-0 w-60 md:w-auto snap-center bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow flex flex-col">
-      <Link to={url} className="block p-3 pb-0" prefetch="intent">
+    <article className="flex-shrink-0 w-[160px] md:w-[180px] snap-start bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden group cursor-pointer hover:shadow-lg hover:scale-105 transition-all duration-200">
+      <Link to={url} prefetch="intent" className="block">
         {image?.url ? (
           <img
             src={image.url}
@@ -46,41 +45,36 @@ function ProductCard({product}) {
             height={image.height || 400}
             loading="lazy"
             decoding="async"
-            className="aspect-square w-full object-cover rounded-xl"
+            className="aspect-square w-full object-cover bg-gray-50"
           />
         ) : (
           <div
             aria-hidden="true"
-            className="aspect-square w-full rounded-xl bg-gray-100 flex items-center justify-center text-3xl text-gray-300"
+            className="aspect-square w-full bg-gray-50 flex items-center justify-center text-3xl text-gray-300"
           >
             🐾
           </div>
         )}
       </Link>
-      <div className="p-3 pt-2 flex flex-col flex-1">
-        <Link to={url} prefetch="intent" className="block">
-          <h3 className="font-semibold text-gray-900 text-sm leading-snug line-clamp-2 hover:text-[#06B6D4] transition-colors">
+      <div className="p-2.5">
+        <Link to={url} prefetch="intent">
+          <h4 className="text-xs font-semibold text-gray-800 line-clamp-2 leading-tight">
             {title}
-          </h3>
+          </h4>
         </Link>
         {reason ? (
-          <p className="italic text-sm text-gray-500 mt-1 leading-snug line-clamp-3">
+          <p className="text-[10px] text-gray-400 italic line-clamp-1 mt-0.5">
             {reason}
           </p>
         ) : null}
-        <div className="flex items-baseline gap-2 mt-2">
+        <div className="flex items-center justify-between mt-2">
           {price ? (
-            <span className="font-bold text-gray-900 text-base">
+            <span className="text-sm font-bold text-gray-900">
               <Money data={price} />
             </span>
-          ) : null}
-          {freeShipping ? (
-            <span className="text-[10px] text-green-600 font-semibold">
-              Free shipping
-            </span>
-          ) : null}
-        </div>
-        <div className="mt-auto pt-3">
+          ) : (
+            <span />
+          )}
           {variantId && available ? (
             <CartForm
               route="/cart"
@@ -91,9 +85,9 @@ function ProductCard({product}) {
                 <button
                   type="submit"
                   disabled={fetcher.state !== 'idle'}
-                  className="w-full py-2.5 rounded-lg bg-[#06B6D4] hover:bg-[#0891B2] text-white font-semibold text-sm transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="text-[10px] font-semibold text-white bg-[#06B6D4] px-2.5 py-1 rounded-full hover:bg-[#0891B2] transition-colors disabled:opacity-60"
                 >
-                  {fetcher.state === 'idle' ? 'Add to Cart' : 'Adding…'}
+                  {fetcher.state === 'idle' ? 'Add +' : '…'}
                 </button>
               )}
             </CartForm>
@@ -101,9 +95,9 @@ function ProductCard({product}) {
             <Link
               to={url}
               prefetch="intent"
-              className="block text-center w-full py-2.5 rounded-lg border border-gray-200 text-sm font-semibold text-gray-600 hover:border-[#06B6D4] hover:text-[#06B6D4] transition-colors"
+              className="text-[10px] font-semibold text-gray-500 border border-gray-200 px-2.5 py-1 rounded-full hover:text-[#06B6D4] hover:border-[#06B6D4] transition-colors"
             >
-              View product
+              View
             </Link>
           )}
         </div>
@@ -115,10 +109,12 @@ function ProductCard({product}) {
 function ProductRecommendations({products}) {
   if (!Array.isArray(products) || products.length === 0) return null;
   return (
-    <div className="-mx-1 mt-3 flex gap-3 overflow-x-auto pb-2 snap-x px-1 md:grid md:grid-cols-2 md:gap-4 md:overflow-visible md:pb-0 md:mx-0 md:px-0">
-      {products.map((p) => (
-        <ProductCard key={p.handle} product={p} />
-      ))}
+    <div className="max-h-[280px] overflow-y-auto">
+      <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide">
+        {products.map((p) => (
+          <ProductCard key={p.handle} product={p} />
+        ))}
+      </div>
     </div>
   );
 }
@@ -138,7 +134,7 @@ function MessageBubble({turn}) {
     <div className="flex justify-start">
       <div className="bg-gray-50 border border-gray-100 rounded-xl rounded-bl-sm px-3.5 py-3 max-w-full w-full">
         {intro ? (
-          <p className="text-sm text-gray-800 leading-snug whitespace-pre-wrap">
+          <p className="text-sm text-gray-500 italic mb-2 leading-snug">
             {intro}
           </p>
         ) : null}
