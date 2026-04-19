@@ -59,7 +59,7 @@ function HomePage({ products = [], collections = [] }) {
       <HomepageHero />
 
       {/* 2. Dog Problem Slider - Desktop only */}
-      <div className="hidden md:block max-w-7xl mx-auto px-4 md:px-6 mt-12 mb-12">
+      <div className="hidden md:block max-w-7xl mx-auto px-4 md:px-6 pt-8 md:pt-12 mb-12">
         <div className="text-center mb-6">
           <h2 className="text-2xl md:text-3xl font-black text-gray-900 mb-2">
             What is your dog struggling with?

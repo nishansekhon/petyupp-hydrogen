@@ -186,7 +186,7 @@ export const AIAdvisor = forwardRef(function AIAdvisor(props, ref) {
           onChange={(e) => setInput(e.target.value)}
           disabled={pending}
           placeholder="e.g. My dog has bad breath and chews everything"
-          className="w-full border-2 border-[#06B6D4] rounded-xl shadow-sm bg-white px-5 py-4 pr-32 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#06B6D4]/40 disabled:opacity-60"
+          className="w-full border-2 border-[#06B6D4] rounded-xl shadow-lg bg-white px-5 py-4 pr-32 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-400 disabled:opacity-60"
         />
         <button
           type="submit"

@@ -20,13 +20,15 @@ export default function HomepageHero() {
   };
 
   return (
-    <section className="homepage-hero max-w-7xl mx-auto px-4 py-8 md:py-12">
-      <div className="grid grid-cols-1 md:grid-cols-[55%_45%] gap-10 items-center">
-        <div className="flex flex-col justify-center">
+    <section className="homepage-hero bg-[#FDF8F4] pt-8 md:pt-12 pb-0">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-[55%_45%] gap-10 items-center">
+        <div className="flex flex-col justify-center min-h-[400px] md:min-h-[480px]">
+          <div className="w-12 h-1 bg-teal-500 rounded-full mb-4"></div>
           <p className="text-xs font-semibold text-[#06B6D4] tracking-widest uppercase mb-4">
             Problem-first pet care
           </p>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-4">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 leading-tight mb-4">
             Your dog&rsquo;s problem.
             <br />
             Our natural solution.
@@ -52,16 +54,17 @@ export default function HomepageHero() {
         </div>
         <div
           aria-hidden="true"
-          className="hero-placeholder relative hidden md:block w-full max-h-[480px] rounded-bl-[48px] rounded-tr-[24px] overflow-hidden"
+          className="hero-placeholder relative hidden md:block w-full max-h-[480px] rounded-2xl overflow-hidden shadow-2xl"
         >
           <img
             src="https://res.cloudinary.com/petyupp-lifestyle/image/upload/v1776620340/nicholas-brownlow-lx_KwA7hlLU-unsplash_g37voz.jpg"
             alt="Happy dog parent kissing their golden retriever"
-            className="w-full h-full object-cover object-center"
+            className="w-full h-full object-cover object-[center_20%]"
             loading="eager"
             width="800"
             height="1000"
           />
+        </div>
         </div>
       </div>
     </section>
