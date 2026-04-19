@@ -1,4 +1,10 @@
-import {Link, redirect, useLoaderData} from 'react-router';
+import {
+  Form,
+  Link,
+  redirect,
+  useLoaderData,
+  useSearchParams,
+} from 'react-router';
 import {getPaginationVariables, Analytics} from '@shopify/hydrogen';
 import {Breadcrumbs} from '~/components/Breadcrumbs';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
@@ -12,6 +18,60 @@ function humanizeHandle(handle) {
     .filter(Boolean)
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
+}
+
+const SORT_OPTIONS = {
+  featured: {label: 'Featured', sortKey: 'BEST_SELLING', reverse: false},
+  'price-asc': {label: 'Price: Low to High', sortKey: 'PRICE', reverse: false},
+  'price-desc': {label: 'Price: High to Low', sortKey: 'PRICE', reverse: true},
+  newest: {label: 'Newest', sortKey: 'CREATED', reverse: true},
+};
+
+function CollectionToolbar({productCount}) {
+  const [searchParams] = useSearchParams();
+  const currentSort = resolveSort(searchParams);
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+      <p className="text-sm text-gray-600">
+        Showing <span className="font-semibold text-gray-900">{productCount}</span>{' '}
+        {productCount === 1 ? 'product' : 'products'}
+      </p>
+      <Form method="get" className="flex items-center gap-2">
+        <label
+          htmlFor="sort-by"
+          className="text-sm text-gray-600 whitespace-nowrap"
+        >
+          Sort by:
+        </label>
+        <select
+          id="sort-by"
+          name="sort_by"
+          defaultValue={currentSort}
+          onChange={(e) => e.currentTarget.form?.requestSubmit()}
+          className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white hover:border-gray-400 focus:border-[#06B6D4] focus:ring-1 focus:ring-[#06B6D4] focus:outline-none transition-colors"
+        >
+          {Object.entries(SORT_OPTIONS).map(([value, option]) => (
+            <option key={value} value={value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        <noscript>
+          <button
+            type="submit"
+            className="text-sm px-3 py-2 rounded-lg bg-[#06B6D4] text-white"
+          >
+            Apply
+          </button>
+        </noscript>
+      </Form>
+    </div>
+  );
+}
+
+function resolveSort(searchParams) {
+  const key = searchParams.get('sort_by');
+  return SORT_OPTIONS[key] ? key : 'featured';
 }
 
 /**
@@ -59,6 +119,9 @@ export async function loader(args) {
 async function loadCriticalData({context, params, request}) {
   const {handle} = params;
   const {storefront} = context;
+  const url = new URL(request.url);
+  const sortKey = resolveSort(url.searchParams);
+  const sort = SORT_OPTIONS[sortKey];
   const paginationVariables = getPaginationVariables(request, {
     pageBy: 8,
   });
@@ -70,7 +133,12 @@ async function loadCriticalData({context, params, request}) {
   let collection = null;
   try {
     const result = await storefront.query(COLLECTION_QUERY, {
-      variables: {handle, ...paginationVariables},
+      variables: {
+        handle,
+        sortKey: sort.sortKey,
+        reverse: sort.reverse,
+        ...paginationVariables,
+      },
     });
     collection = result?.collection ?? null;
   } catch (error) {
@@ -160,8 +228,9 @@ export default function Collection() {
       />
       <h1 className="text-3xl font-bold mb-2 text-gray-900">{collection.title}</h1>
       {collection.description && (
-        <p className="text-gray-600 mb-8 max-w-2xl">{collection.description}</p>
+        <p className="text-gray-600 mb-4 max-w-2xl">{collection.description}</p>
       )}
+      <CollectionToolbar productCount={collection.products?.nodes?.length ?? 0} />
       <PaginatedResourceSection
         connection={collection.products}
         resourcesClassName="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"
@@ -224,6 +293,8 @@ const COLLECTION_QUERY = `#graphql
     $last: Int
     $startCursor: String
     $endCursor: String
+    $sortKey: ProductCollectionSortKeys
+    $reverse: Boolean
   ) @inContext(country: $country, language: $language) {
     collection(handle: $handle) {
       id
@@ -234,7 +305,9 @@ const COLLECTION_QUERY = `#graphql
         first: $first,
         last: $last,
         before: $startCursor,
-        after: $endCursor
+        after: $endCursor,
+        sortKey: $sortKey,
+        reverse: $reverse
       ) {
         nodes {
           ...ProductItem
