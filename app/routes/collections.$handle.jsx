@@ -1,4 +1,4 @@
-import {redirect, useLoaderData} from 'react-router';
+import {Link, redirect, useLoaderData} from 'react-router';
 import {getPaginationVariables, Analytics} from '@shopify/hydrogen';
 import {Breadcrumbs} from '~/components/Breadcrumbs';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
@@ -6,20 +6,35 @@ import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {ProductItem} from '~/components/ProductItem';
 import {createSeoMeta, excerpt, SITE_URL} from '~/lib/seo';
 
+function humanizeHandle(handle) {
+  return (handle ?? '')
+    .split('-')
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
 /**
  * @type {Route.MetaFunction}
  */
-export const meta = ({data}) => {
+export const meta = ({data, params}) => {
   const collection = data?.collection;
-  if (!collection) return createSeoMeta({title: 'PetYupp'});
-  const title = `PetYupp | ${collection.title}`;
-  const description =
-    excerpt(collection.description) ||
-    `Shop the ${collection.title} collection at PetYupp — natural, vet-approved dog products.`;
+  if (collection) {
+    const title = `PetYupp | ${collection.title}`;
+    const description =
+      excerpt(collection.description) ||
+      `Shop the ${collection.title} collection at PetYupp — natural, vet-approved dog products.`;
+    return createSeoMeta({
+      title,
+      description,
+      url: `${SITE_URL}/collections/${collection.handle}`,
+    });
+  }
+  const fallbackTitle = humanizeHandle(params.handle);
   return createSeoMeta({
-    title,
-    description,
-    url: `${SITE_URL}/collections/${collection.handle}`,
+    title: `PetYupp | ${fallbackTitle}`,
+    description: `We're curating the best products for ${fallbackTitle}. Check back soon.`,
+    url: `${SITE_URL}/collections/${params.handle}`,
   });
 };
 
@@ -52,17 +67,23 @@ async function loadCriticalData({context, params, request}) {
     throw redirect('/collections');
   }
 
-  const [{collection}] = await Promise.all([
-    storefront.query(COLLECTION_QUERY, {
+  let collection = null;
+  try {
+    const result = await storefront.query(COLLECTION_QUERY, {
       variables: {handle, ...paginationVariables},
-      // Add other queries here, so that they are loaded in parallel
-    }),
-  ]);
+    });
+    collection = result?.collection ?? null;
+  } catch (error) {
+    console.error('Collection query failed:', error);
+  }
 
   if (!collection) {
-    throw new Response(`Collection ${handle} not found`, {
-      status: 404,
-    });
+    const {products} = await storefront.query(FALLBACK_PRODUCTS_QUERY);
+    return {
+      collection: null,
+      fallbackTitle: humanizeHandle(handle),
+      recommendedProducts: products?.nodes ?? [],
+    };
   }
 
   // The API handle might be localized, so redirect to the localized handle
@@ -85,7 +106,48 @@ function loadDeferredData({context}) {
 
 export default function Collection() {
   /** @type {LoaderReturnData} */
-  const {collection} = useLoaderData();
+  const {collection, fallbackTitle, recommendedProducts} = useLoaderData();
+
+  if (!collection) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <Breadcrumbs
+          items={[
+            {label: 'Home', to: '/'},
+            {label: 'Collections', to: '/collections'},
+            {label: fallbackTitle},
+          ]}
+        />
+        <div className="text-center py-10 mb-8 rounded-2xl bg-gray-50 border border-gray-100">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            {fallbackTitle}
+          </h1>
+          <p className="text-gray-600 max-w-xl mx-auto mb-6">
+            We&rsquo;re curating the best products for {fallbackTitle}. Check
+            back soon!
+          </p>
+          <Link
+            to="/collections/all"
+            className="inline-block px-6 py-3 rounded-lg bg-[#06B6D4] hover:bg-[#0891B2] text-white font-semibold transition-colors"
+          >
+            Browse All Products
+          </Link>
+        </div>
+        {recommendedProducts?.length ? (
+          <section>
+            <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6">
+              You might like
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+              {recommendedProducts.slice(0, 4).map((product) => (
+                <ProductItem key={product.id} product={product} />
+              ))}
+            </div>
+          </section>
+        ) : null}
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
@@ -183,6 +245,20 @@ const COLLECTION_QUERY = `#graphql
           endCursor
           startCursor
         }
+      }
+    }
+  }
+`;
+
+const FALLBACK_PRODUCTS_QUERY = `#graphql
+  ${PRODUCT_ITEM_FRAGMENT}
+  query FallbackCollectionProducts(
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
+    products(first: 4, sortKey: BEST_SELLING) {
+      nodes {
+        ...ProductItem
       }
     }
   }
