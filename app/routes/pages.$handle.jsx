@@ -5,8 +5,16 @@ import {redirectIfHandleIsLocalized} from '~/lib/redirect';
  * @type {Route.MetaFunction}
  */
 export const meta = ({data}) => {
-  return [{title: `PetYupp | ${data?.page.title ?? ''}`}];
+  return [{title: `PetYupp | ${data?.page?.title ?? data?.fallbackTitle ?? ''}`}];
 };
+
+function humanizeHandle(handle) {
+  return handle
+    .split('-')
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
 
 /**
  * @param {Route.LoaderArgs} args
@@ -41,7 +49,10 @@ async function loadCriticalData({context, request, params}) {
   ]);
 
   if (!page) {
-    throw new Response('Not Found', {status: 404});
+    return {
+      page: null,
+      fallbackTitle: humanizeHandle(params.handle),
+    };
   }
 
   redirectIfHandleIsLocalized(request, {handle: params.handle, data: page});
@@ -63,14 +74,33 @@ function loadDeferredData({context}) {
 
 export default function Page() {
   /** @type {LoaderReturnData} */
-  const {page} = useLoaderData();
+  const {page, fallbackTitle} = useLoaderData();
+
+  if (!page) {
+    return (
+      <div className="max-w-3xl mx-auto px-4 py-16">
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">{fallbackTitle}</h1>
+        <p className="text-gray-600">
+          Content coming soon. Please contact us at{' '}
+          <a
+            href="mailto:hello@petyupp.com"
+            className="text-[#06B6D4] hover:text-[#0891B2] underline"
+          >
+            hello@petyupp.com
+          </a>{' '}
+          for any questions.
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <div className="page">
-      <header>
-        <h1>{page.title}</h1>
-      </header>
-      <main dangerouslySetInnerHTML={{__html: page.body}} />
+    <div className="max-w-3xl mx-auto px-4 py-12">
+      <h1 className="text-3xl font-bold text-gray-900 mb-6">{page.title}</h1>
+      <div
+        className="prose prose-sm max-w-none text-gray-700"
+        dangerouslySetInnerHTML={{__html: page.body}}
+      />
     </div>
   );
 }

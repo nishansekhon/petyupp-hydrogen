@@ -3,6 +3,7 @@ import {Suspense, useId} from 'react';
 import {Aside} from '~/components/Aside';
 import Footer from '~/components/Footer';
 import {HeaderMenu} from '~/components/Header';
+import MobileBottomNav from '~/components/MobileBottomNav';
 import Navbar from '~/components/Navbar';
 import {PromoBar} from '~/components/PromoBar';
 import {CartMain} from '~/components/CartMain';
@@ -30,12 +31,13 @@ export function PageLayout({
       <SearchAside />
       <MobileMenuAside header={header} publicStoreDomain={publicStoreDomain} />
       <Navbar />
-      <main>{children}</main>
+      <main className="pb-16 md:pb-0">{children}</main>
       <Footer
         footer={footer}
         header={header}
         publicStoreDomain={publicStoreDomain}
       />
+      <MobileBottomNav />
     </Aside.Provider>
   );
 }

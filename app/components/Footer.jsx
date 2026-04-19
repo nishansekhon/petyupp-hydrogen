@@ -113,7 +113,7 @@ function Footer() {
     <footer style={{ backgroundColor: "#1C1917", color: "#fff" }}>
       <div className="max-w-7xl mx-auto px-4 md:px-6 pt-12 pb-6">
         {/* Main columns grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-0 md:gap-8 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 sm:gap-8 mb-8">
           {/* Columns 1-3: Shop by Problem, Products, Company */}
           {footerColumns.map((col) => (
             <AccordionSection key={col.title} title={col.title} links={col.links} />

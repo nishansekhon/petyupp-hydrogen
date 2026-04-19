@@ -1,12 +1,34 @@
-import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router';
+import { Suspense, useState, useEffect } from 'react';
+import { Await, Link, useAsyncValue, useLocation, useRouteLoaderData } from 'react-router';
+import { useOptimisticCart } from '@shopify/hydrogen';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useCartStore } from '@/store/cartStore';
 import UserMenu from '@/components/UserMenu';
 import MobileNavDrawer from '@/components/MobileNavDrawer';
 
+function CartCountBadge() {
+  const rootData = useRouteLoaderData('root');
+  return (
+    <Suspense fallback={null}>
+      <Await resolve={rootData?.cart} errorElement={null}>
+        <CartCountInner />
+      </Await>
+    </Suspense>
+  );
+}
+
+function CartCountInner() {
+  const originalCart = useAsyncValue();
+  const cart = useOptimisticCart(originalCart);
+  const count = cart?.totalQuantity ?? 0;
+  if (count <= 0) return null;
+  return (
+    <span className="absolute -top-2 -right-2 min-w-[18px] h-[18px] bg-[#06B6D4] text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1">
+      {count > 99 ? '99+' : count}
+    </span>
+  );
+}
+
 function Navbar() {
-  const cartItemsCount = useCartStore((state) => state.getItemCount());
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -249,11 +271,7 @@ function Navbar() {
               <path d="M3 6h18" />
               <path d="M16 10a4 4 0 01-8 0" />
             </svg>
-            {cartItemsCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] bg-[#06B6D4] text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1">
-                {cartItemsCount > 99 ? '99+' : cartItemsCount}
-              </span>
-            )}
+            <CartCountBadge />
           </Link>
 
           <div className="hidden sm:block">

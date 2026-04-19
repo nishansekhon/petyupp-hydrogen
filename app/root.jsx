@@ -209,25 +209,60 @@ export default function App() {
 
 export function ErrorBoundary() {
   const error = useRouteError();
-  let errorMessage = 'Unknown error';
+  let errorMessage = '';
   let errorStatus = 500;
 
   if (isRouteErrorResponse(error)) {
-    errorMessage = error?.data?.message ?? error.data;
+    errorMessage = error?.data?.message ?? error.data ?? '';
     errorStatus = error.status;
   } else if (error instanceof Error) {
     errorMessage = error.message;
   }
 
+  const isNotFound = errorStatus === 404;
+  const heading = isNotFound
+    ? 'Oops! This page went for a walk'
+    : 'Something went wrong';
+  const subheading = isNotFound
+    ? "We couldn't fetch the page you were looking for. Let's get you back on the trail."
+    : 'Our pack is on it. Please try again in a moment.';
+
   return (
-    <div className="route-error">
-      <h1>Oops</h1>
-      <h2>{errorStatus}</h2>
-      {errorMessage && (
-        <fieldset>
-          <pre>{errorMessage}</pre>
-        </fieldset>
-      )}
+    <div className="min-h-[70vh] flex items-center justify-center px-4 py-16">
+      <div className="max-w-lg w-full text-center">
+        <div className="text-7xl mb-4" aria-hidden="true">🐕</div>
+        <p className="text-sm font-semibold uppercase tracking-wider text-[#06B6D4] mb-2">
+          {errorStatus} {isNotFound ? 'Not found' : 'Error'}
+        </p>
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+          {heading}
+        </h1>
+        <p className="text-gray-600 mb-8">{subheading}</p>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <a
+            href="/"
+            className="inline-block px-6 py-3 rounded-lg bg-[#06B6D4] hover:bg-[#0891B2] text-white font-semibold transition-colors"
+          >
+            Back to Home
+          </a>
+          <a
+            href="/collections/all"
+            className="inline-block px-6 py-3 rounded-lg border border-[#06B6D4] text-[#06B6D4] hover:bg-[#06B6D4] hover:text-white font-semibold transition-colors"
+          >
+            Browse Products
+          </a>
+        </div>
+        {!isNotFound && errorMessage && (
+          <details className="mt-8 text-left">
+            <summary className="text-xs text-gray-400 cursor-pointer">
+              Error details
+            </summary>
+            <pre className="mt-2 text-xs text-gray-500 bg-gray-50 p-3 rounded overflow-auto">
+              {errorMessage}
+            </pre>
+          </details>
+        )}
+      </div>
     </div>
   );
 }

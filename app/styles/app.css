@@ -130,11 +130,17 @@ aside {
   background: var(--color-light);
   box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
   height: 100vh;
-  width: min(var(--aside-width), 100vw);
+  width: min(var(--aside-width), 85vw);
   position: fixed;
   right: calc(-1 * var(--aside-width));
   top: 0;
   transition: transform 200ms ease-in-out;
+}
+
+@media (min-width: 768px) {
+  aside {
+    width: var(--aside-width);
+  }
 }
 
 aside header {

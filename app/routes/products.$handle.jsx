@@ -125,7 +125,22 @@ export default function Product() {
               selectedVariant={selectedVariant}
             />
           </div>
-          <div className="mt-8">
+          <div className="mt-5 flex flex-wrap gap-3">
+            {[
+              '✓ Vet Approved',
+              '🚚 Free Ship $49+',
+              '↩ 30-Day Returns',
+              '🇺🇸 Made in USA',
+            ].map((label) => (
+              <span
+                key={label}
+                className="text-xs text-gray-600 bg-gray-50 px-3 py-1.5 rounded-full"
+              >
+                {label}
+              </span>
+            ))}
+          </div>
+          <div className="mt-8 pt-8 border-t border-gray-200">
             <p className="font-semibold text-gray-900 mb-2">Description</p>
             <div
               className="text-gray-700 prose prose-sm max-w-none"

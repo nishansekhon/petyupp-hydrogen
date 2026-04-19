@@ -1,4 +1,4 @@
-import {useLoaderData} from 'react-router';
+import {Link, useLoaderData} from 'react-router';
 import {getPaginationVariables, Analytics} from '@shopify/hydrogen';
 import {SearchForm} from '~/components/SearchForm';
 import {SearchResults} from '~/components/SearchResults';
@@ -38,30 +38,56 @@ export default function SearchPage() {
   if (type === 'predictive') return null;
 
   return (
-    <div className="search">
-      <h1>Search</h1>
-      <SearchForm>
-        {({inputRef}) => (
-          <>
-            <input
-              defaultValue={term}
-              name="q"
-              placeholder="Search…"
-              ref={inputRef}
-              type="search"
-            />
-            &nbsp;
-            <button type="submit">Search</button>
-          </>
-        )}
-      </SearchForm>
-      {error && <p style={{color: 'red'}}>{error}</p>}
+    <div className="max-w-7xl mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold text-gray-900 mb-2">Search</h1>
+      {term && (
+        <p className="text-gray-600 mb-6">
+          Results for <span className="font-medium text-gray-900">“{term}”</span>
+        </p>
+      )}
+      <div className="mb-8">
+        <SearchForm>
+          {({inputRef}) => (
+            <div className="flex gap-2 max-w-xl">
+              <input
+                defaultValue={term}
+                name="q"
+                placeholder="Search products, pages, articles…"
+                ref={inputRef}
+                type="search"
+                className="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#06B6D4] focus:border-transparent"
+              />
+              <button
+                type="submit"
+                className="px-6 py-2.5 rounded-lg bg-[#06B6D4] hover:bg-[#0891B2] text-white font-semibold transition-colors"
+              >
+                Search
+              </button>
+            </div>
+          )}
+        </SearchForm>
+      </div>
+      {error && (
+        <p className="text-red-600 mb-4 text-sm">{error}</p>
+      )}
       {!term || !result?.total ? (
-        <SearchResults.Empty />
+        <div className="text-center py-16">
+          <p className="text-gray-600 mb-4">
+            {term
+              ? `No results for “${term}”. Try a different search.`
+              : 'Start typing to find products, pages, and articles.'}
+          </p>
+          <Link
+            to="/collections/all"
+            className="inline-block px-6 py-3 rounded-lg bg-[#06B6D4] hover:bg-[#0891B2] text-white font-semibold transition-colors"
+          >
+            Browse all products
+          </Link>
+        </div>
       ) : (
         <SearchResults result={result} term={term}>
           {({articles, pages, products, term}) => (
-            <div>
+            <div className="space-y-10">
               <SearchResults.Products products={products} term={term} />
               <SearchResults.Pages pages={pages} term={term} />
               <SearchResults.Articles articles={articles} term={term} />
