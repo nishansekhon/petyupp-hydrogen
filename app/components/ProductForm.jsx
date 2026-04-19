@@ -11,6 +11,7 @@ const MAX_QTY = 10;
  *   selectedVariant: ProductFragment['selectedOrFirstAvailableVariant'];
  *   quantity?: number;
  *   onQuantityChange?: (quantity: number) => void;
+ *   priceLabel?: string | null;
  * }}
  */
 export function ProductForm({
@@ -18,6 +19,7 @@ export function ProductForm({
   selectedVariant,
   quantity = 1,
   onQuantityChange,
+  priceLabel,
 }) {
   const navigate = useNavigate();
   const {open} = useAside();
@@ -155,7 +157,11 @@ export function ProductForm({
             : []
         }
       >
-        {selectedVariant?.availableForSale ? 'Add to cart' : 'Sold out'}
+        {selectedVariant?.availableForSale
+          ? priceLabel
+            ? `Add to Cart — ${priceLabel}`
+            : 'Add to Cart'
+          : 'Sold out'}
       </AddToCartButton>
     </div>
   );

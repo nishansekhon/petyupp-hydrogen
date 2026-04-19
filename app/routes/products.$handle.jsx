@@ -3,6 +3,7 @@ import {Await, useLoaderData} from 'react-router';
 import {
   getSelectedProductOptions,
   Analytics,
+  Money,
   useOptimisticVariant,
   getProductOptions,
   getAdjacentAndFirstAvailableVariants,
@@ -169,17 +170,56 @@ export default function Product() {
           />
         </div>
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">{title}</h1>
-          <div className="mt-3">
-            <ProductPrice
-              price={selectedVariant?.price}
-              compareAtPrice={selectedVariant?.compareAtPrice}
-              size="lg"
-            />
+          <p className="text-[10px] font-semibold text-[#06B6D4] tracking-widest uppercase mb-1">
+            PetYupp
+          </p>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 leading-tight mb-2">
+            {title}
+          </h1>
+          <div className="flex items-center gap-2 text-sm mb-4">
+            <span
+              aria-label="4.8 out of 5 stars"
+              className="text-yellow-400"
+            >
+              ★★★★★
+            </span>
+            <span className="font-semibold text-gray-900">4.8</span>
+            <span className="text-gray-400">(234 reviews)</span>
+            <span className="ml-1 inline-flex items-center gap-1 bg-green-50 text-green-700 text-[10px] font-semibold px-2 py-0.5 rounded">
+              ✓ Verified
+            </span>
           </div>
+          <div className="flex items-baseline gap-2 mt-2">
+            {selectedVariant?.price ? (
+              <span className="text-3xl font-extrabold text-gray-900">
+                <Money data={selectedVariant.price} />
+              </span>
+            ) : null}
+            {selectedVariant?.compareAtPrice &&
+            Number(selectedVariant.compareAtPrice.amount) >
+              Number(selectedVariant.price?.amount ?? 0) ? (
+              <span className="text-lg text-gray-400 line-through">
+                <Money data={selectedVariant.compareAtPrice} />
+              </span>
+            ) : null}
+          </div>
+          <p className="text-sm text-green-600 mt-1 font-medium">
+            Free shipping on orders $49+
+          </p>
+          <div className="flex flex-wrap gap-2 mt-4">
+            {['✓ Dental Health', '✓ Vet Approved', '✓ Natural'].map((tag) => (
+              <span
+                key={tag}
+                className="bg-green-50 text-green-800 text-xs font-medium px-3 py-1.5 rounded-md"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+          <div className="border-t border-gray-100 my-4" />
           <div
             aria-live="polite"
-            className="mt-3 inline-flex items-center gap-2 text-sm font-medium"
+            className="inline-flex items-center gap-2 text-sm font-medium mb-4"
           >
             <span
               aria-hidden="true"
@@ -199,31 +239,38 @@ export default function Product() {
               {selectedVariant?.availableForSale ? 'In Stock' : 'Out of Stock'}
             </span>
           </div>
-          <div className="mt-6">
-            <ProductForm
-              productOptions={productOptions}
-              selectedVariant={selectedVariant}
-              quantity={quantity}
-              onQuantityChange={setQuantity}
-            />
-          </div>
-          <div className="mt-5 flex flex-wrap gap-3">
+          <ProductForm
+            productOptions={productOptions}
+            selectedVariant={selectedVariant}
+            quantity={quantity}
+            onQuantityChange={setQuantity}
+            priceLabel={
+              selectedVariant?.price
+                ? `$${Number(selectedVariant.price.amount).toFixed(2)}`
+                : null
+            }
+          />
+          <div className="grid grid-cols-4 gap-2 py-3 mt-3 border-t border-b border-gray-100 text-center">
             {[
-              '✓ Vet Approved',
-              '🚚 Free Ship $49+',
-              '↩ 30-Day Returns',
-              '🇺🇸 Made in USA',
-            ].map((label) => (
-              <span
-                key={label}
-                className="text-xs text-gray-600 bg-gray-50 px-3 py-1.5 rounded-full"
-              >
-                {label}
-              </span>
+              {icon: '🛡', label: 'Vet Approved'},
+              {icon: '🚚', label: 'Free Ship $49+'},
+              {icon: '↩', label: '30-Day Returns'},
+              {icon: '🇺🇸', label: 'US Warehouse'},
+            ].map((item) => (
+              <div key={item.label} className="flex flex-col items-center">
+                <span className="text-base mb-0.5" aria-hidden="true">
+                  {item.icon}
+                </span>
+                <span className="text-[10px] text-gray-500 leading-tight">
+                  {item.label}
+                </span>
+              </div>
             ))}
           </div>
-          <div className="mt-8 pt-8 border-t border-gray-200">
-            <p className="font-semibold text-gray-900 mb-2">Description</p>
+          <div className="mt-8">
+            <p className="font-semibold text-gray-900 mb-3 uppercase text-xs tracking-wider">
+              Details
+            </p>
             <div
               className="text-gray-700 prose prose-sm max-w-none"
               dangerouslySetInnerHTML={{__html: descriptionHtml}}

@@ -65,7 +65,7 @@ function AddToCartInner({fetcher, analytics, disabled, onClick, children}) {
           onClick?.(e);
         }}
         disabled={disabled ?? fetcher.state !== 'idle'}
-        className={`w-full py-3 px-6 rounded-lg text-white font-semibold transition-all duration-150 disabled:cursor-not-allowed ${
+        className={`w-full py-3.5 px-6 rounded-xl text-white text-base font-semibold transition-all duration-150 disabled:cursor-not-allowed ${
           justAdded
             ? 'bg-[#10B981] hover:bg-[#059669]'
             : 'bg-[#06B6D4] hover:bg-[#0891B2] disabled:opacity-60'
