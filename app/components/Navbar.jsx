@@ -1,4 +1,4 @@
-import { Suspense, useState, useEffect } from 'react';
+import { Suspense, useState, useEffect, useRef } from 'react';
 import { Await, Link, useAsyncValue, useLocation, useRouteLoaderData } from 'react-router';
 import { useOptimisticCart } from '@shopify/hydrogen';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -21,9 +21,20 @@ function CartCountInner() {
   const originalCart = useAsyncValue();
   const cart = useOptimisticCart(originalCart);
   const count = cart?.totalQuantity ?? 0;
+  const prevCountRef = useRef(count);
+  const [pulseKey, setPulseKey] = useState(0);
+  useEffect(() => {
+    if (count !== prevCountRef.current) {
+      prevCountRef.current = count;
+      if (count > 0) setPulseKey((k) => k + 1);
+    }
+  }, [count]);
   if (count <= 0) return null;
   return (
-    <span className="absolute -top-2 -right-2 min-w-[18px] h-[18px] bg-[#06B6D4] text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1">
+    <span
+      key={pulseKey}
+      className="petyupp-pulse absolute -top-2 -right-2 min-w-[18px] h-[18px] bg-[#06B6D4] text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1"
+    >
       {count > 99 ? '99+' : count}
     </span>
   );

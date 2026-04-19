@@ -231,18 +231,32 @@ export default function Collection() {
         <p className="text-gray-600 mb-4 max-w-2xl">{collection.description}</p>
       )}
       <CollectionToolbar productCount={collection.products?.nodes?.length ?? 0} />
-      <PaginatedResourceSection
-        connection={collection.products}
-        resourcesClassName="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"
-      >
-        {({node: product, index}) => (
-          <ProductItem
-            key={product.id}
-            product={product}
-            loading={index < 8 ? 'eager' : undefined}
-          />
-        )}
-      </PaginatedResourceSection>
+      {collection.products?.nodes?.length === 0 ? (
+        <div className="text-center py-16 rounded-2xl bg-gray-50 border border-gray-100">
+          <p className="text-gray-700 mb-4">
+            No products in this collection yet.
+          </p>
+          <Link
+            to="/collections/all"
+            className="inline-block px-6 py-3 rounded-lg bg-[#06B6D4] hover:bg-[#0891B2] text-white font-semibold transition-colors"
+          >
+            Browse All Products
+          </Link>
+        </div>
+      ) : (
+        <PaginatedResourceSection
+          connection={collection.products}
+          resourcesClassName="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"
+        >
+          {({node: product, index}) => (
+            <ProductItem
+              key={product.id}
+              product={product}
+              loading={index < 8 ? 'eager' : undefined}
+            />
+          )}
+        </PaginatedResourceSection>
+      )}
       <Analytics.CollectionView
         data={{
           collection: {
