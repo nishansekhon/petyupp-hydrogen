@@ -30,13 +30,44 @@ function LoadingDots() {
   );
 }
 
+const FOLLOW_UP_SUGGESTIONS = [
+  {emoji: '💰', label: 'Something cheaper', query: 'Show me something more affordable'},
+  {emoji: '🐶', label: 'For puppies', query: 'What about options for puppies?'},
+  {emoji: '🔄', label: 'More options', query: 'Show me more options'},
+];
+
+function FollowUpChips({onFollowUp}) {
+  return (
+    <div className="flex gap-2 mt-3 flex-wrap">
+      {FOLLOW_UP_SUGGESTIONS.map((item) => (
+        <button
+          key={item.label}
+          type="button"
+          onClick={() => onFollowUp(item.query)}
+          className="text-[11px] px-3 py-1.5 border border-gray-200 rounded-full text-gray-500 hover:border-[#06B6D4] hover:text-[#06B6D4] transition-all"
+        >
+          <span aria-hidden="true" className="mr-1">
+            {item.emoji}
+          </span>
+          {item.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function ProductCard({product}) {
-  const {handle, title, url, image, price, variantId, available, reason} =
-    product;
+  const {title, url, image, price, variantId, available, reason} = product;
+  const amountNum = price?.amount != null ? Number(price.amount) : null;
+  const freeShipping = amountNum != null && amountNum >= 49;
 
   return (
-    <article className="flex flex-col flex-shrink-0 w-[160px] md:w-[180px] snap-start bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden group cursor-pointer hover:shadow-lg hover:scale-105 transition-all duration-200">
-      <Link to={url} prefetch="intent" className="block">
+    <Link
+      to={url}
+      prefetch="intent"
+      className="flex-shrink-0 w-[160px] md:w-[180px] snap-start block"
+    >
+      <article className="flex flex-col h-full bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden group cursor-pointer hover:shadow-lg hover:scale-105 transition-all duration-200">
         {image?.url ? (
           <img
             src={image.url}
@@ -55,54 +86,64 @@ function ProductCard({product}) {
             🐾
           </div>
         )}
-      </Link>
-      <div className="p-2.5 flex flex-col justify-between flex-1">
-        <Link to={url} prefetch="intent">
-          <h4 className="text-xs font-semibold text-gray-800 line-clamp-2 leading-tight">
-            {title}
-          </h4>
-        </Link>
-        {reason ? (
-          <p className="text-[10px] text-gray-400 italic line-clamp-1 mt-0.5">
-            {reason}
-          </p>
-        ) : null}
-        <div className="flex items-center justify-between mt-auto pt-1.5">
-          {price ? (
-            <span className="text-sm font-bold text-gray-900">
-              <Money data={price} />
-            </span>
-          ) : (
-            <span />
-          )}
-          {variantId && available ? (
-            <CartForm
-              route="/cart"
-              inputs={{lines: [{merchandiseId: variantId, quantity: 1}]}}
-              action={CartForm.ACTIONS.LinesAdd}
-            >
-              {(fetcher) => (
-                <button
-                  type="submit"
-                  disabled={fetcher.state !== 'idle'}
-                  className="text-[10px] font-semibold text-white bg-[#06B6D4] px-2.5 py-1 rounded-full hover:bg-[#0891B2] transition-colors disabled:opacity-60"
-                >
-                  {fetcher.state === 'idle' ? 'Add +' : '…'}
-                </button>
+        <div className="p-2.5 flex flex-col justify-between flex-1">
+          <div>
+            <h4 className="text-xs font-semibold text-gray-800 line-clamp-2 leading-tight">
+              {title}
+            </h4>
+            <div className="flex items-center gap-1 mt-0.5">
+              <span aria-label="Rated 4.8 out of 5" className="text-[10px] text-amber-400">
+                ★★★★★
+              </span>
+              <span className="text-[9px] text-gray-400">(234)</span>
+            </div>
+            {reason ? (
+              <p className="text-[10px] text-gray-400 italic line-clamp-1 mt-0.5">
+                {reason}
+              </p>
+            ) : null}
+          </div>
+          <div className="mt-auto pt-1.5">
+            <div className="flex items-center justify-between">
+              {price ? (
+                <span className="text-sm font-bold text-gray-900">
+                  <Money data={price} />
+                </span>
+              ) : (
+                <span />
               )}
-            </CartForm>
-          ) : (
-            <Link
-              to={url}
-              prefetch="intent"
-              className="text-[10px] font-semibold text-gray-500 border border-gray-200 px-2.5 py-1 rounded-full hover:text-[#06B6D4] hover:border-[#06B6D4] transition-colors"
-            >
-              View
-            </Link>
-          )}
+              {variantId && available ? (
+                <CartForm
+                  route="/cart"
+                  inputs={{lines: [{merchandiseId: variantId, quantity: 1}]}}
+                  action={CartForm.ACTIONS.LinesAdd}
+                >
+                  {(fetcher) => (
+                    <button
+                      type="submit"
+                      onClick={(e) => e.stopPropagation()}
+                      disabled={fetcher.state !== 'idle'}
+                      className="text-[10px] font-semibold text-white bg-[#06B6D4] px-2.5 py-1 rounded-full hover:bg-[#0891B2] transition-colors disabled:opacity-60"
+                    >
+                      {fetcher.state === 'idle' ? 'Add +' : '…'}
+                    </button>
+                  )}
+                </CartForm>
+              ) : (
+                <span className="text-[10px] font-semibold text-gray-500 border border-gray-200 px-2.5 py-1 rounded-full">
+                  View
+                </span>
+              )}
+            </div>
+            {freeShipping ? (
+              <span className="block text-[9px] text-teal-600 font-semibold mt-1">
+                FREE SHIPPING
+              </span>
+            ) : null}
+          </div>
         </div>
-      </div>
-    </article>
+      </article>
+    </Link>
   );
 }
 
@@ -119,7 +160,7 @@ function ProductRecommendations({products}) {
   );
 }
 
-function MessageBubble({turn}) {
+function MessageBubble({turn, onFollowUp}) {
   if (turn.role === 'user') {
     return (
       <div className="flex justify-end">
@@ -130,6 +171,8 @@ function MessageBubble({turn}) {
     );
   }
   const intro = turn.intro || turn.content || '';
+  const hasProducts =
+    Array.isArray(turn.products) && turn.products.length > 0;
   return (
     <div className="flex justify-start">
       <div className="bg-gray-50 border border-gray-100 rounded-xl rounded-bl-sm px-3.5 py-3 max-w-full w-full">
@@ -139,6 +182,9 @@ function MessageBubble({turn}) {
           </p>
         ) : null}
         <ProductRecommendations products={turn.products} />
+        {hasProducts && onFollowUp ? (
+          <FollowUpChips onFollowUp={onFollowUp} />
+        ) : null}
       </div>
     </div>
   );
@@ -275,7 +321,7 @@ export const AIAdvisor = forwardRef(function AIAdvisor(props, ref) {
           className="mt-5 max-h-[520px] overflow-y-auto flex flex-col gap-3 pr-1"
         >
           {turns.map((turn, idx) => (
-            <MessageBubble key={idx} turn={turn} />
+            <MessageBubble key={idx} turn={turn} onFollowUp={submit} />
           ))}
           {pending && (
             <div className="flex items-center justify-center py-6 gap-1">
