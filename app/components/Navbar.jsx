@@ -160,6 +160,7 @@ function Navbar() {
                       {to: '/collections/dog-diners', label: 'Dog Diners'},
                       {to: '/collections/dog-bowls', label: 'Bowls and Buckets'},
                       {to: '/collections/non-skid-mats-for-dogs', label: 'Non-Skid Mats'},
+                      {to: '/collections/all', label: 'All Products'},
                     ].map((item) => (
                       <li key={item.to}>
                         <Link
@@ -185,7 +186,7 @@ function Navbar() {
                       {to: '/collections/separation-anxiety', label: 'Separation Anxiety'},
                       {to: '/collections/dental-health', label: 'Dental Health'},
                       {to: '/collections/destructive-chewing', label: 'Destructive Chewing'},
-                      {to: '/collections/joint-support', label: 'Joint Pain'},
+                      {to: '/collections/joint-pain', label: 'Joint Pain'},
                       {to: '/collections/digestive-issues', label: 'Digestive Issues'},
                       {to: '/collections/hyperactivity', label: 'Hyperactivity'},
                     ].map((item) => (

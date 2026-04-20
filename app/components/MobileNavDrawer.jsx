@@ -18,6 +18,16 @@ const categories = [
   { label: 'Non-Skid Mats', path: '/collections/non-skid-mats-for-dogs' },
 ];
 
+const problems = [
+  { label: 'Dental Health', path: '/collections/dental-health' },
+  { label: 'Destructive Chewing', path: '/collections/destructive-chewing' },
+  { label: 'Digestive Issues', path: '/collections/digestive-issues' },
+  { label: 'Hyperactivity', path: '/collections/hyperactivity' },
+  { label: 'Joint Pain', path: '/collections/joint-pain' },
+  { label: 'Separation Anxiety', path: '/collections/separation-anxiety' },
+  { label: 'All Products', path: '/collections/all' },
+];
+
 const MobileNavDrawer = ({ isOpen, onClose }) => {
   const cartItemsCount = useCartStore((state) => state.getItemCount());
 
@@ -128,7 +138,25 @@ const MobileNavDrawer = ({ isOpen, onClose }) => {
           ))}
         </div>
 
-        {/* Shop by Problem teal row */}
+        {/* Shop by Problem list */}
+        <div className="px-2 mt-2">
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-2 mb-1">Shop by Problem</p>
+          {problems.map((p) => (
+            <Link
+              key={p.label}
+              to={p.path}
+              onClick={onClose}
+              className="flex items-center justify-between px-3 py-3 rounded-lg hover:bg-gray-50 text-gray-800 font-medium text-sm transition-colors"
+            >
+              <span>{p.label}</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </Link>
+          ))}
+        </div>
+
+        {/* Shop by Relief teal row */}
         <div className="mx-4 mt-2">
           <Link
             to="/collections/all"
