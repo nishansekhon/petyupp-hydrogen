@@ -4,7 +4,6 @@ import HomepageHero from '@/components/home/HomepageHero';
 import ProductCard from '@/components/ProductCard';
 import { OrganizationSchema, WebsiteSchema } from '@/components/SEOSchema';
 import DogProblemSlider from '@/components/DogProblemSlider';
-import QuickCategoryScroll from '@/components/QuickCategoryScroll';
 import WhyPetYupp from '@/components/home/WhyPetYupp';
 import ShopCategories from '@/components/home/ShopCategories';
 
@@ -49,11 +48,6 @@ function HomePage({ products = [], collections = [] }) {
     <div className="min-h-screen bg-white">
       <OrganizationSchema />
       <WebsiteSchema />
-
-      {/* Mobile Quick Categories */}
-      <div className="md:hidden w-full bg-white">
-        <QuickCategoryScroll />
-      </div>
 
       {/* 1. Hero */}
       <HomepageHero />
