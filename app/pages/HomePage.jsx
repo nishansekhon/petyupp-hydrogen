@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import { Suspense, lazy } from 'react';
 import { Link } from 'react-router';
 import HomepageHero from '@/components/home/HomepageHero';
 import ProductCard from '@/components/ProductCard';
@@ -59,7 +59,7 @@ function HomePage({ products = [], collections = [] }) {
             What does your dog need relief from?
           </h2>
           <p className="text-gray-500 text-sm md:text-base">
-            Find natural relief matched to your dog's exact needs
+            Find natural relief matched to your dog&rsquo;s exact needs
           </p>
         </div>
         <DogProblemSlider />
