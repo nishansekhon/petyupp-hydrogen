@@ -93,13 +93,13 @@ export default function HomepageHero() {
             Natural relief for dogs
           </p>
           <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-gray-900 leading-tight mb-4">
-            Your dog deserves relief.
+            Your dog deserves the best.
             <br />
-            Nature provides it.
+            Nature made it.
           </h1>
           <p className="text-base text-gray-500 mb-6 max-w-xl">
-            Describe what&rsquo;s going on — our AI matches your dog to
-            vet-approved chews and treats that actually help.
+            Tell us about your dog — our AI picks the perfect natural chews,
+            toys, and treats they&rsquo;ll love.
           </p>
           <AIAdvisor ref={advisorRef} />
           <div className="flex flex-wrap gap-2 mt-4">
