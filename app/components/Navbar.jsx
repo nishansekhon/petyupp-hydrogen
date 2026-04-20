@@ -116,10 +116,10 @@ function Navbar() {
           </button>
 
           <Link to="/" className="flex items-center">
-            <span className="flex flex-col sm:flex-row sm:items-baseline sm:gap-2 leading-none text-[#06B6D4] whitespace-nowrap">
+            <span className="flex flex-row items-baseline gap-2 leading-none text-[#06B6D4] whitespace-nowrap">
               <span className="text-2xl font-bold tracking-tight">PetYupp</span>
               <span className="hidden sm:inline text-2xl font-bold opacity-40">|</span>
-              <span className="text-xs sm:text-2xl font-medium sm:font-bold tracking-wide sm:tracking-tight opacity-70 sm:opacity-100 mt-0.5 sm:mt-0">Pet Lifestyle</span>
+              <span className="hidden sm:inline text-2xl font-bold tracking-tight">Pet Lifestyle</span>
             </span>
           </Link>
         </div>
