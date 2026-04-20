@@ -58,8 +58,8 @@ function HomePage({ products = [], collections = [] }) {
       {/* 1. Hero */}
       <HomepageHero />
 
-      {/* 2. Dog Problem Slider - Desktop only */}
-      <div className="hidden md:block max-w-7xl mx-auto px-4 md:px-6 pt-8 md:pt-12 mb-12">
+      {/* 2. Dog Problem Slider */}
+      <div className="max-w-7xl mx-auto px-4 md:px-6 pt-8 md:pt-12 mb-12">
         <div className="text-center mb-6">
           <h2 className="text-2xl md:text-3xl font-black text-gray-900 mb-2">
             What does your dog need relief from?
@@ -89,7 +89,7 @@ function HomePage({ products = [], collections = [] }) {
             View all →
           </Link>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {featuredProducts.map((product, index) => (
             <ProductCard key={product.id + '-best'} product={product} index={index} />
           ))}

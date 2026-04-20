@@ -109,14 +109,14 @@ export default function HomepageHero() {
             </svg>
             <span className="text-sm text-gray-500 font-medium tracking-wide">or just tap one</span>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
             {QUICK_PROBLEMS.map((problem, index) => (
               <button
                 key={problem.label}
                 type="button"
                 onClick={() => handleChipClick(problem.label)}
-                className={`group items-center gap-1.5 px-3.5 py-1.5 bg-white/80 backdrop-blur-sm border border-gray-200/60 rounded-full text-xs font-semibold text-gray-600 shadow-sm hover:bg-[#06B6D4]/10 hover:border-[#06B6D4]/40 hover:text-[#06B6D4] hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all duration-200 ease-out cursor-pointer select-none whitespace-nowrap ${
-                  index >= 8 ? 'hidden sm:inline-flex' : 'inline-flex'
+                className={`group flex items-center justify-center gap-1.5 px-3.5 py-1.5 bg-white/80 backdrop-blur-sm border border-gray-200/60 rounded-full text-xs font-semibold text-gray-600 shadow-sm hover:bg-[#06B6D4]/10 hover:border-[#06B6D4]/40 hover:text-[#06B6D4] hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all duration-200 ease-out cursor-pointer select-none whitespace-normal sm:whitespace-nowrap text-center leading-tight min-w-0 w-full sm:w-auto ${
+                  index >= 8 ? 'hidden sm:inline-flex' : ''
                 }`}
               >
                 <span
