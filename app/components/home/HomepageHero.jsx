@@ -132,29 +132,15 @@ export default function HomepageHero() {
         </div>
         <div
           aria-hidden="true"
-          className="hero-placeholder relative block rounded-2xl overflow-hidden shadow-2xl"
+          className="hero-placeholder relative block rounded-l-2xl overflow-hidden shadow-2xl"
         >
           <img
             src="https://res.cloudinary.com/petyupp-lifestyle/image/upload/w_800,f_auto,q_auto/v1776620340/nicholas-brownlow-lx_KwA7hlLU-unsplash_g37voz.jpg"
             alt="Happy dog parent kissing their golden retriever"
-            className="w-full max-h-[250px] md:max-h-none h-auto object-cover rounded-2xl"
+            className="w-full max-h-[250px] md:max-h-none h-auto object-cover rounded-l-2xl"
             loading="eager"
             width="800"
             height="1000"
-          />
-          <div
-            className="absolute inset-0 pointer-events-none dark:hidden"
-            style={{
-              background:
-                'linear-gradient(to bottom, transparent 50%, #FDF8F4 100%), linear-gradient(to right, transparent 70%, #FDF8F4 100%)',
-            }}
-          />
-          <div
-            className="absolute inset-0 pointer-events-none hidden dark:block"
-            style={{
-              background:
-                'linear-gradient(to bottom, transparent 50%, #1a1a1a 100%), linear-gradient(to right, transparent 70%, #1a1a1a 100%)',
-            }}
           />
         </div>
         </div>
