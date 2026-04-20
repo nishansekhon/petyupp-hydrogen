@@ -69,7 +69,10 @@ function formatCatalog(entries) {
   const lines = entries
     .map((p) => {
       const type = p?.productType ? ` [${p.productType}]` : '';
-      return `- ${p.handle}: ${p.title}${type}`;
+      const tags = Array.isArray(p?.tags) && p.tags.length
+        ? ` {tags: ${p.tags.join(', ')}}`
+        : '';
+      return `- ${p.handle}: ${p.title}${type}${tags}`;
     })
     .join('\n');
   return `\n\nPRODUCT CATALOG (use these exact handles; do not invent new ones):\n${lines}`;
@@ -255,6 +258,7 @@ const PRODUCT_CATALOG_QUERY = `#graphql
         handle
         title
         productType
+        tags
       }
     }
   }
