@@ -74,13 +74,31 @@ const QUICK_PROBLEMS = [
     query:
       "My large dog bends down too far to eat and it's uncomfortable. Need an elevated diner or raised bowl stand.",
   },
+  {
+    emoji: '🐕‍🦺',
+    label: 'We have multiple dogs',
+    query:
+      'We have multiple dogs — looking for products that work for a multi-dog household, ideally in packs or larger sizes so we are not re-ordering constantly.',
+  },
+  {
+    emoji: '🏕️',
+    label: 'Outdoor kennel setup',
+    query:
+      'Our dog lives in an outdoor kennel setup. We need heavy-duty, weather-resistant feeding and watering gear that can handle the elements.',
+  },
+  {
+    emoji: '🏠',
+    label: 'In a crate during the day',
+    query:
+      'Our dog is crated during the workday. Looking for bowls or buckets that attach to the crate, plus long-lasting chews that keep them occupied.',
+  },
 ];
 
 export default function HomepageHero() {
   const advisorRef = useRef(null);
 
-  const handleChipClick = (label) => {
-    advisorRef.current?.submitQuery(label);
+  const handleChipClick = (query) => {
+    advisorRef.current?.submitQuery(query);
   };
 
   return (
@@ -114,7 +132,7 @@ export default function HomepageHero() {
               <button
                 key={problem.label}
                 type="button"
-                onClick={() => handleChipClick(problem.label)}
+                onClick={() => handleChipClick(problem.query)}
                 className={`group flex items-center justify-center gap-1.5 px-3.5 py-1.5 bg-white/80 backdrop-blur-sm border border-gray-200/60 rounded-full text-xs font-semibold text-gray-600 shadow-sm hover:bg-[#06B6D4]/10 hover:border-[#06B6D4]/40 hover:text-[#06B6D4] hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all duration-200 ease-out cursor-pointer select-none whitespace-normal sm:whitespace-nowrap text-center leading-tight min-w-0 w-full sm:w-auto ${
                   index >= 8 ? 'hidden sm:inline-flex' : ''
                 }`}
