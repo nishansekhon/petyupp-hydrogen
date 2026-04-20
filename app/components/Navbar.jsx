@@ -6,15 +6,6 @@ import { useAside } from '~/components/Aside';
 import UserMenu from '@/components/UserMenu';
 import MobileNavDrawer from '@/components/MobileNavDrawer';
 
-const SHOP_COLLECTIONS = [
-  {to: '/collections/natural-treats-and-chews', label: 'Natural Treats & Chews'},
-  {to: '/collections/yak-chews', label: 'Yak Chews'},
-  {to: '/collections/dog-toys', label: 'Dog Toys'},
-  {to: '/collections/dog-diners', label: 'Dog Diners'},
-  {to: '/collections/bowls', label: 'Bowls'},
-  {to: '/collections/all', label: 'All Products'},
-];
-
 function CartCountBadge() {
   const rootData = useRouteLoaderData('root');
   return (
@@ -149,32 +140,73 @@ function Navbar() {
             </button>
 
             <div
-              role="menu"
-              className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-white shadow-xl rounded-lg border border-gray-100 py-2 z-50 w-64 origin-top transition duration-150 ease-out ${
+              className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-white shadow-xl rounded-lg border border-gray-100 p-6 z-50 origin-top transition duration-150 ease-out ${
                 isShopOpen
                   ? 'opacity-100 scale-100 pointer-events-auto'
                   : 'opacity-0 scale-95 pointer-events-none'
               }`}
+              style={{minWidth: '620px'}}
             >
-              {SHOP_COLLECTIONS.map((item) => {
-                const active = isActive(item.to);
-                return (
-                  <Link
-                    key={item.to}
-                    to={item.to}
-                    prefetch="intent"
-                    role="menuitem"
-                    onClick={() => setIsShopOpen(false)}
-                    className={`block px-4 py-2 text-sm font-medium transition-colors ${
-                      active
-                        ? 'text-[#06B6D4] bg-[#06B6D4]/5'
-                        : 'text-gray-700 hover:text-[#06B6D4] hover:bg-gray-50'
-                    }`}
-                  >
-                    {item.label}
-                  </Link>
-                );
-              })}
+              <div className="grid grid-cols-2 gap-12">
+                <div>
+                  <h3 className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-4">Shop by Product</h3>
+                  <ul className="space-y-0">
+                    {[
+                      {to: '/collections/natural-treats-and-chews', label: 'Natural Treats and Chews'},
+                      {to: '/collections/yak-chews', label: 'Yak Chews'},
+                      {to: '/collections/bully-sticks', label: 'Bully Sticks'},
+                      {to: '/collections/wooden-chews', label: 'Wooden Chews'},
+                      {to: '/collections/dog-toys', label: 'Dog Toys'},
+                      {to: '/collections/dog-diners', label: 'Dog Diners'},
+                      {to: '/collections/dog-bowls', label: 'Bowls and Buckets'},
+                      {to: '/collections/non-skid-mats-for-dogs', label: 'Non-Skid Mats'},
+                    ].map((item) => (
+                      <li key={item.to}>
+                        <Link
+                          to={item.to}
+                          prefetch="intent"
+                          onClick={() => setIsShopOpen(false)}
+                          className={`block py-1.5 pl-3 text-sm font-medium border-l-[3px] transition-all ${
+                            location.pathname === item.to
+                              ? 'border-[#06B6D4] text-[#06B6D4]'
+                              : 'border-transparent text-gray-700 hover:border-[#06B6D4] hover:text-[#06B6D4]'
+                          }`}
+                        >
+                          {item.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-4">Shop by Relief</h3>
+                  <ul className="space-y-0">
+                    {[
+                      {to: '/collections/separation-anxiety', label: 'Separation Anxiety'},
+                      {to: '/collections/dental-health', label: 'Dental Health'},
+                      {to: '/collections/destructive-chewing', label: 'Destructive Chewing'},
+                      {to: '/collections/joint-support', label: 'Joint Pain'},
+                      {to: '/collections/digestive-issues', label: 'Digestive Issues'},
+                      {to: '/collections/hyperactivity', label: 'Hyperactivity'},
+                    ].map((item) => (
+                      <li key={item.to}>
+                        <Link
+                          to={item.to}
+                          prefetch="intent"
+                          onClick={() => setIsShopOpen(false)}
+                          className={`block py-1.5 pl-3 text-sm font-medium border-l-[3px] transition-all ${
+                            location.pathname === item.to
+                              ? 'border-[#06B6D4] text-[#06B6D4]'
+                              : 'border-transparent text-gray-700 hover:border-[#06B6D4] hover:text-[#06B6D4]'
+                          }`}
+                        >
+                          {item.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
           <Link
