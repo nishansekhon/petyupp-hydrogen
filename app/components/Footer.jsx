@@ -41,7 +41,7 @@ const footerColumns = [
       { label: "Dental Health", to: "/collections/dental-health" },
       { label: "Destructive Chewing", to: "/collections/destructive-chewing" },
       { label: "Separation Anxiety", to: "/collections/separation-anxiety" },
-      { label: "Joint Support", to: "/collections/joint-support" },
+      { label: "Joint Support", to: "/collections/joint-pain" },
       { label: "Digestive Issues", to: "/collections/digestive-issues" },
       { label: "Hyperactivity", to: "/collections/hyperactivity" },
     ],
