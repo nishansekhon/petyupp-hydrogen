@@ -8,10 +8,12 @@ import {createSeoMeta, SITE_URL} from '~/lib/seo';
 export const meta = () => {
   return createSeoMeta({
     title:
-      'PetYupp | Natural Dog Chews & Treats – Happier Dogs Start Here',
+      'PetYupp | Natural Dog Chews, Treats & Toys — Happier Dogs Start Here',
     description:
-      "Premium natural dog chews, treats & supplies matched to your dog's exact need. Vet approved. Free shipping on orders $49+. Shop by problem or product.",
+      'AI-powered product discovery for natural dog chews, toys, and treats. Free shipping on orders over $49 across US and Canada.',
     url: SITE_URL,
+    image:
+      'https://res.cloudinary.com/petyupp-lifestyle/image/upload/w_1200,f_auto,q_auto/v1776620340/nicholas-brownlow-lx_KwA7hlLU-unsplash_g37voz.jpg',
   });
 };
 

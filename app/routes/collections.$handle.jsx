@@ -80,19 +80,20 @@ function resolveSort(searchParams) {
 export const meta = ({data, params}) => {
   const collection = data?.collection;
   if (collection) {
-    const title = `PetYupp | ${collection.title}`;
+    const title = `${collection.title} | PetYupp`;
     const description =
-      excerpt(collection.description) ||
+      excerpt(collection.description, 155) ||
       `Shop the ${collection.title} collection at PetYupp — natural, vet-approved dog products.`;
     return createSeoMeta({
       title,
       description,
       url: `${SITE_URL}/collections/${collection.handle}`,
+      image: collection.image?.url,
     });
   }
   const fallbackTitle = humanizeHandle(params.handle);
   return createSeoMeta({
-    title: `PetYupp | ${fallbackTitle}`,
+    title: `${fallbackTitle} | PetYupp`,
     description: `We're curating the best products for ${fallbackTitle}. Check back soon.`,
     url: `${SITE_URL}/collections/${params.handle}`,
   });
@@ -315,6 +316,12 @@ const COLLECTION_QUERY = `#graphql
       handle
       title
       description
+      image {
+        url
+        altText
+        width
+        height
+      }
       products(
         first: $first,
         last: $last,

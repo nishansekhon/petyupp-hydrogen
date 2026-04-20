@@ -24,11 +24,13 @@ import {createSeoMeta, excerpt, SITE_URL} from '~/lib/seo';
 export const meta = ({data}) => {
   const product = data?.product;
   if (!product) return createSeoMeta({title: 'PetYupp'});
-  const title = `PetYupp | ${product.title}`;
+  const title = `${product.title} | PetYupp`;
   const description =
-    excerpt(product.seo?.description || product.description) ||
+    excerpt(product.seo?.description || product.description, 155) ||
     `Shop ${product.title} at PetYupp — natural, vet-approved dog products.`;
-  const image = product.selectedOrFirstAvailableVariant?.image?.url;
+  const image =
+    product.selectedOrFirstAvailableVariant?.image?.url ||
+    product.featuredImage?.url;
   return createSeoMeta({
     title,
     description,
