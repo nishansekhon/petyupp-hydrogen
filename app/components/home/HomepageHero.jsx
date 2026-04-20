@@ -142,6 +142,20 @@ export default function HomepageHero() {
             width="800"
             height="1000"
           />
+          <div
+            className="absolute inset-0 pointer-events-none dark:hidden"
+            style={{
+              background:
+                'linear-gradient(to bottom, transparent 50%, #FDF8F4 100%), linear-gradient(to right, transparent 70%, #FDF8F4 100%)',
+            }}
+          />
+          <div
+            className="absolute inset-0 pointer-events-none hidden dark:block"
+            style={{
+              background:
+                'linear-gradient(to bottom, transparent 50%, #1a1a1a 100%), linear-gradient(to right, transparent 70%, #1a1a1a 100%)',
+            }}
+          />
         </div>
         </div>
       </div>
