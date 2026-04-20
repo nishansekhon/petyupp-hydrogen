@@ -101,7 +101,7 @@ function Navbar() {
         </div>
       </div>
 
-      <header className="fixed top-[56px] left-0 right-0 z-[99] flex items-center justify-between px-4 sm:px-6 lg:px-8 bg-white py-3 sm:py-5">
+      <header className="fixed top-[56px] left-0 right-0 z-[99] flex items-center justify-between px-4 sm:px-6 lg:px-8 bg-white py-1.5 sm:py-5">
         <div className="flex items-center gap-3">
           <button
             className="p-2 -ml-1 rounded-lg hover:bg-gray-100 transition-colors lg:hidden"
