@@ -6,6 +6,15 @@ import { useAside } from '~/components/Aside';
 import UserMenu from '@/components/UserMenu';
 import MobileNavDrawer from '@/components/MobileNavDrawer';
 
+const SHOP_COLLECTIONS = [
+  {to: '/collections/natural-treats-and-chews', label: 'Natural Treats & Chews'},
+  {to: '/collections/yak-chews', label: 'Yak Chews'},
+  {to: '/collections/dog-toys', label: 'Dog Toys'},
+  {to: '/collections/dog-diners', label: 'Dog Diners'},
+  {to: '/collections/bowls', label: 'Bowls'},
+  {to: '/collections/all', label: 'All Products'},
+];
+
 function CartCountBadge() {
   const rootData = useRouteLoaderData('root');
   return (
@@ -46,11 +55,30 @@ function Navbar() {
   const [isShopOpen, setIsShopOpen] = useState(false);
   const { isDarkMode, toggleTheme } = useTheme();
   const {open: openAside} = useAside();
+  const shopMenuRef = useRef(null);
 
   useEffect(() => {
     setMobileMenuOpen(false);
     setIsShopOpen(false);
   }, [location]);
+
+  useEffect(() => {
+    if (!isShopOpen) return;
+    function handleOutside(event) {
+      if (shopMenuRef.current && !shopMenuRef.current.contains(event.target)) {
+        setIsShopOpen(false);
+      }
+    }
+    function handleEscape(event) {
+      if (event.key === 'Escape') setIsShopOpen(false);
+    }
+    document.addEventListener('mousedown', handleOutside);
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('mousedown', handleOutside);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [isShopOpen]);
 
   const isActive = (path) => location.pathname === path;
 
@@ -104,14 +132,15 @@ function Navbar() {
         </div>
 
         <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 transform -translate-x-1/2">
-          <div className="relative">
+          <div className="relative" ref={shopMenuRef}>
             <button
               type="button"
               className={`text-sm font-medium transition-colors flex items-center gap-1 ${
-                isActive('/shop') ? 'text-[#06B6D4]' : 'text-gray-700 hover:text-[#06B6D4]'
+                isShopOpen ? 'text-[#06B6D4]' : 'text-gray-700 hover:text-[#06B6D4]'
               }`}
               onClick={() => setIsShopOpen((open) => !open)}
               aria-expanded={isShopOpen}
+              aria-haspopup="true"
             >
               Shop
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" className={`transition-transform duration-200 ${isShopOpen ? 'rotate-180' : ''}`}>
@@ -119,126 +148,58 @@ function Navbar() {
               </svg>
             </button>
 
-            <div className={isShopOpen ? 'block' : 'hidden'}>
-              <div className="absolute top-full left-1/2 -translate-x-1/2 bg-white shadow-xl rounded-lg border border-gray-100 p-6 z-50" style={{minWidth:'620px'}}>
-                {(() => {
-                  const headerStyle = {
-                    fontSize: '11px',
-                    fontWeight: 600,
-                    color: '#9CA3AF',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.05em',
-                    marginBottom: '16px',
-                  };
-                  const linkStyle = (active) => ({
-                    borderLeft: active ? '3px solid #06B6D4' : '3px solid transparent',
-                    color: active ? '#06B6D4' : '#374151',
-                    paddingLeft: '12px',
-                    paddingTop: '6px',
-                    paddingBottom: '6px',
-                    display: 'block',
-                    fontSize: '14px',
-                    fontWeight: 500,
-                    transition: 'all 0.15s ease',
-                    textDecoration: 'none',
-                  });
-                  const onEnter = (e) => {
-                    e.currentTarget.style.borderLeftColor = '#06B6D4';
-                    e.currentTarget.style.color = '#06B6D4';
-                  };
-                  const onLeave = (active) => (e) => {
-                    if (!active) {
-                      e.currentTarget.style.borderLeftColor = 'transparent';
-                      e.currentTarget.style.color = '#374151';
-                    }
-                  };
-                  const productLinks = [
-                    {to: '/collections/treats', label: 'Natural Treats and Chews'},
-                    {to: '/collections/yak-chews', label: 'Yak Chews'},
-                    {to: '/collections/bully-sticks', label: 'Bully Sticks'},
-                    {to: '/collections/wooden-chews', label: 'Wooden Chews'},
-                    {to: '/collections/dog-toys', label: 'Dog Toys'},
-                    {to: '/collections/dog-diners', label: 'Dog Diners'},
-                    {to: '/collections/dog-bowls', label: 'Bowls and Buckets'},
-                    {to: '/collections/non-skid-mats-for-dogs', label: 'Non-Skid Mats'},
-                  ];
-                  const problemLinks = [
-                    {to: '/collections/separation-anxiety', label: 'Separation Anxiety'},
-                    {to: '/collections/dental-health', label: 'Dental Health'},
-                    {to: '/collections/destructive-chewing', label: 'Destructive Chewing'},
-                    {to: '/collections/joint-support', label: 'Joint Pain'},
-                    {to: '/collections/digestive-issues', label: 'Digestive Issues'},
-                    {to: '/collections/hyperactivity', label: 'Hyperactivity'},
-                  ];
-                  return (
-                    <div className="grid grid-cols-2" style={{gap: '48px'}}>
-                      <div>
-                        <h3 style={headerStyle}>Shop by Product</h3>
-                        <ul style={{listStyle: 'none', margin: 0, padding: 0}}>
-                          {productLinks.map((item) => {
-                            const active = isActive(item.to);
-                            return (
-                              <li key={item.to}>
-                                <Link
-                                  to={item.to}
-                                  style={linkStyle(active)}
-                                  onMouseEnter={onEnter}
-                                  onMouseLeave={onLeave(active)}
-                                >
-                                  {item.label}
-                                </Link>
-                              </li>
-                            );
-                          })}
-                        </ul>
-                      </div>
-                      <div>
-                        <h3 style={headerStyle}>Shop by Relief</h3>
-                        <ul style={{listStyle: 'none', margin: 0, padding: 0}}>
-                          {problemLinks.map((item) => {
-                            const active = isActive(item.to);
-                            return (
-                              <li key={item.to}>
-                                <Link
-                                  to={item.to}
-                                  style={linkStyle(active)}
-                                  onMouseEnter={onEnter}
-                                  onMouseLeave={onLeave(active)}
-                                >
-                                  {item.label}
-                                </Link>
-                              </li>
-                            );
-                          })}
-                        </ul>
-                      </div>
-                    </div>
-                  );
-                })()}
-              </div>
+            <div
+              role="menu"
+              className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-white shadow-xl rounded-lg border border-gray-100 py-2 z-50 w-64 origin-top transition duration-150 ease-out ${
+                isShopOpen
+                  ? 'opacity-100 scale-100 pointer-events-auto'
+                  : 'opacity-0 scale-95 pointer-events-none'
+              }`}
+            >
+              {SHOP_COLLECTIONS.map((item) => {
+                const active = isActive(item.to);
+                return (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    prefetch="intent"
+                    role="menuitem"
+                    onClick={() => setIsShopOpen(false)}
+                    className={`block px-4 py-2 text-sm font-medium transition-colors ${
+                      active
+                        ? 'text-[#06B6D4] bg-[#06B6D4]/5'
+                        : 'text-gray-700 hover:text-[#06B6D4] hover:bg-gray-50'
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
             </div>
           </div>
           <Link
-            to="/about"
+            to="/pages/about"
+            prefetch="intent"
             className={`text-sm font-medium transition-colors relative group ${
-              isActive('/about')
+              isActive('/pages/about')
                 ? 'text-[#06B6D4]'
                 : 'text-gray-700 hover:text-[#06B6D4]'
             }`}
           >
             About
-            <span className={`absolute -bottom-1 left-0 h-0.5 bg-[#06B6D4] transition-all ${isActive('/about') ? 'w-full' : 'w-0 group-hover:w-full'}`} />
+            <span className={`absolute -bottom-1 left-0 h-0.5 bg-[#06B6D4] transition-all ${isActive('/pages/about') ? 'w-full' : 'w-0 group-hover:w-full'}`} />
           </Link>
           <Link
-            to="/blogs"
+            to="/blogs/news"
+            prefetch="intent"
             className={`text-sm font-medium transition-colors relative group ${
-              isActive('/blogs')
+              isActive('/blogs/news')
                 ? 'text-[#06B6D4]'
                 : 'text-gray-700 hover:text-[#06B6D4]'
             }`}
           >
             Blog
-            <span className={`absolute -bottom-1 left-0 h-0.5 bg-[#06B6D4] transition-all ${isActive('/blogs') ? 'w-full' : 'w-0 group-hover:w-full'}`} />
+            <span className={`absolute -bottom-1 left-0 h-0.5 bg-[#06B6D4] transition-all ${isActive('/blogs/news') ? 'w-full' : 'w-0 group-hover:w-full'}`} />
           </Link>
         </nav>
 
@@ -272,10 +233,11 @@ function Navbar() {
             </svg>
           </button>
 
-          <Link
-            to="/cart"
+          <button
+            type="button"
+            onClick={() => openAside('cart')}
             className="p-2 rounded-lg hover:bg-gray-100 transition-colors relative"
-            aria-label="Cart"
+            aria-label="Open cart"
             data-testid="nav-cart"
           >
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -284,7 +246,7 @@ function Navbar() {
               <path d="M16 10a4 4 0 01-8 0" />
             </svg>
             <CartCountBadge />
-          </Link>
+          </button>
 
           <div className="hidden sm:block">
             <UserMenu />
