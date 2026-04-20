@@ -1,4 +1,5 @@
 import {useRef} from 'react';
+import {Leaf} from 'lucide-react';
 import {AIAdvisor} from '~/components/AIAdvisor';
 
 const QUICK_PROBLEMS = [
@@ -129,11 +130,15 @@ export default function HomepageHero() {
           <p className="font-heading text-sm font-bold tracking-[0.2em] uppercase text-[#06B6D4] mb-4">
             Natural relief for dogs
           </p>
-          <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-gray-900 leading-tight mb-2 sm:mb-4">
-            Your dog deserves the best.
-            <br />
-            Nature made it.
+          <h1 className="font-heading text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-gray-900 leading-tight">
+            <span className="block">Your dog deserves the best.</span>
+            <span className="block italic mt-1" style={{color: '#7C9C87'}}>
+              Nature made it.
+            </span>
           </h1>
+          <div className="mt-2 mb-4 sm:mt-3 sm:mb-6" aria-hidden="true">
+            <Leaf className="w-5 h-5" style={{color: '#7C9C87'}} />
+          </div>
           <p className="text-sm sm:text-base text-gray-500 leading-snug sm:leading-normal mb-3 sm:mb-6 max-w-xl">
             Tell us about your dog — our AI picks the perfect natural chews,
             toys, and treats they&rsquo;ll love.
