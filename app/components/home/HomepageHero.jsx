@@ -102,7 +102,14 @@ export default function HomepageHero() {
             toys, and treats they&rsquo;ll love.
           </p>
           <AIAdvisor ref={advisorRef} />
-          <div className="flex flex-wrap gap-2 mt-4">
+          <div className="flex items-center gap-2 mt-4 mb-1 ml-1">
+            <svg width="28" height="24" viewBox="0 0 28 24" fill="none" className="text-[#06B6D4] flex-shrink-0" style={{transform: 'rotate(15deg)'}}>
+              <path d="M2 2C8 4 14 12 16 20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" fill="none" strokeDasharray="2 3"/>
+              <path d="M12 18L16 22L18 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+            </svg>
+            <span className="text-xs text-gray-400 italic tracking-wide">or just tap one</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
             {QUICK_PROBLEMS.map((problem, index) => (
               <button
                 key={problem.label}
