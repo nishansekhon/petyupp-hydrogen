@@ -27,15 +27,11 @@ const SORT_OPTIONS = {
   newest: {label: 'Newest', sortKey: 'CREATED', reverse: true},
 };
 
-function CollectionToolbar({productCount}) {
+function CollectionToolbar() {
   const [searchParams] = useSearchParams();
   const currentSort = resolveSort(searchParams);
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-      <p className="text-sm text-gray-600">
-        Showing <span className="font-semibold text-gray-900">{productCount}</span>{' '}
-        {productCount === 1 ? 'product' : 'products'}
-      </p>
+    <div className="flex flex-wrap items-center justify-end gap-3 mb-6">
       <Form method="get" className="flex items-center gap-2">
         <label
           htmlFor="sort-by"
@@ -124,7 +120,7 @@ async function loadCriticalData({context, params, request}) {
   const sortKey = resolveSort(url.searchParams);
   const sort = SORT_OPTIONS[sortKey];
   const paginationVariables = getPaginationVariables(request, {
-    pageBy: 8,
+    pageBy: 24,
   });
 
   if (!handle) {
@@ -231,7 +227,7 @@ export default function Collection() {
       {collection.description && (
         <p className="text-gray-600 mb-4 max-w-2xl">{collection.description}</p>
       )}
-      <CollectionToolbar productCount={collection.products?.nodes?.length ?? 0} />
+      <CollectionToolbar />
       {collection.products?.nodes?.length === 0 ? (
         <div className="text-center py-16 rounded-2xl bg-gray-50 border border-gray-100">
           <p className="text-gray-700 mb-4">

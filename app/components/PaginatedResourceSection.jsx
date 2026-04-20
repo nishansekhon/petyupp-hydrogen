@@ -11,24 +11,31 @@ export function PaginatedResourceSection({
   ariaLabel,
   resourcesClassName,
 }) {
+  const buttonClass =
+    'inline-flex items-center gap-2 px-8 py-3 rounded-lg bg-[#06B6D4] hover:bg-[#0891B2] text-white font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#06B6D4] focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed';
+
   return (
     <Pagination connection={connection}>
-      {({nodes, isLoading, PreviousLink, NextLink}) => {
+      {({nodes, isLoading, hasPreviousPage, hasNextPage, PreviousLink, NextLink}) => {
         const resourcesMarkup = nodes.map((node, index) =>
           children({node, index}),
         );
 
         return (
           <div>
-            <PreviousLink>
-              {isLoading ? (
-                'Loading...'
-              ) : (
-                <span>
-                  <span aria-hidden="true">↑</span> Load previous
-                </span>
-              )}
-            </PreviousLink>
+            {hasPreviousPage && (
+              <div className="flex justify-center mt-6 mb-8">
+                <PreviousLink className={buttonClass}>
+                  {isLoading ? (
+                    'Loading…'
+                  ) : (
+                    <span>
+                      <span aria-hidden="true">↑</span> Load previous
+                    </span>
+                  )}
+                </PreviousLink>
+              </div>
+            )}
             {resourcesClassName ? (
               <div
                 aria-label={ariaLabel}
@@ -40,15 +47,19 @@ export function PaginatedResourceSection({
             ) : (
               resourcesMarkup
             )}
-            <NextLink>
-              {isLoading ? (
-                'Loading...'
-              ) : (
-                <span>
-                  Load more <span aria-hidden="true">↓</span>
-                </span>
-              )}
-            </NextLink>
+            {hasNextPage && (
+              <div className="flex justify-center mt-12">
+                <NextLink className={buttonClass}>
+                  {isLoading ? (
+                    'Loading…'
+                  ) : (
+                    <span>
+                      Load more <span aria-hidden="true">↓</span>
+                    </span>
+                  )}
+                </NextLink>
+              </div>
+            )}
           </div>
         );
       }}
