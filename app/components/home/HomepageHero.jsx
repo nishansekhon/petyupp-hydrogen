@@ -130,17 +130,13 @@ export default function HomepageHero() {
           <p className="font-heading text-sm font-bold tracking-[0.2em] uppercase text-[#06B6D4] mb-4">
             Natural relief for dogs
           </p>
-          <h1
-            className="font-heading font-extrabold tracking-tight leading-[1.1] text-gray-900 mb-4 sm:mb-6"
-            style={{fontSize: 'clamp(1.625rem, 6vw, 4rem)'}}
-          >
+          <h1 className="font-heading font-medium text-gray-900 text-xl sm:text-3xl md:text-5xl lg:text-6xl leading-[1.25] sm:leading-tight sm:tracking-tight mb-4 sm:mb-6">
             <span className="block">Your dog deserves the best.</span>
             <span className="block italic mt-1" style={{color: '#7C9C87'}}>
-              Nature made it.
-              <Leaf
+              Nature made it.<Leaf
                 aria-hidden="true"
-                className="inline-block align-[-0.125em] ml-1"
-                style={{width: '0.8em', height: '0.8em', strokeWidth: 1.75}}
+                className="inline-block align-[-1px] ml-0.5"
+                style={{width: '14px', height: '14px', strokeWidth: 1.75}}
               />
             </span>
           </h1>
