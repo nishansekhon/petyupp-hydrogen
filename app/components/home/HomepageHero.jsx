@@ -94,6 +94,25 @@ const QUICK_PROBLEMS = [
   },
 ];
 
+function renderChip(problem, onClick) {
+  return (
+    <button
+      key={problem.label}
+      type="button"
+      onClick={() => onClick(problem.query)}
+      className="group flex items-center justify-center gap-1.5 px-3.5 py-1.5 bg-white/80 backdrop-blur-sm border border-gray-200/60 rounded-full text-xs font-semibold text-gray-600 shadow-sm hover:bg-[#06B6D4]/10 hover:border-[#06B6D4]/40 hover:text-[#06B6D4] hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all duration-200 ease-out cursor-pointer select-none whitespace-nowrap text-center leading-tight flex-shrink-0 snap-start"
+    >
+      <span
+        aria-hidden="true"
+        className="text-sm opacity-70 group-hover:opacity-100 transition-opacity"
+      >
+        {problem.emoji}
+      </span>
+      {problem.label}
+    </button>
+  );
+}
+
 export default function HomepageHero() {
   const advisorRef = useRef(null);
 
@@ -104,46 +123,51 @@ export default function HomepageHero() {
   return (
     <section className="homepage-hero bg-[#FDF8F4] pt-40 md:pt-44 pb-0">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-[55%_45%] gap-6 md:gap-10 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-[55%_45%] gap-3 sm:gap-6 md:gap-10 items-start">
         <div className="flex flex-col">
           <div className="w-12 h-1 bg-teal-500 rounded-full mb-4"></div>
           <p className="font-heading text-sm font-bold tracking-[0.2em] uppercase text-[#06B6D4] mb-4">
             Natural relief for dogs
           </p>
-          <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-gray-900 leading-tight mb-4">
+          <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-gray-900 leading-tight mb-2 sm:mb-4">
             Your dog deserves the best.
             <br />
             Nature made it.
           </h1>
-          <p className="text-base text-gray-500 mb-6 max-w-xl">
+          <p className="text-sm sm:text-base text-gray-500 leading-snug sm:leading-normal mb-3 sm:mb-6 max-w-xl">
             Tell us about your dog — our AI picks the perfect natural chews,
             toys, and treats they&rsquo;ll love.
           </p>
           <AIAdvisor ref={advisorRef} />
-          <div className="flex items-center gap-2 mt-4 mb-1 ml-1">
+          <div className="flex items-center gap-2 mt-2 sm:mt-4 mb-1 ml-1">
             <svg width="32" height="28" viewBox="0 0 28 24" fill="none" className="text-[#06B6D4] flex-shrink-0" style={{transform: 'rotate(15deg)'}}>
               <path d="M2 2C8 4 14 12 16 20" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" fill="none" strokeDasharray="2 3"/>
               <path d="M12 18L16 22L18 16" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
             </svg>
             <span className="text-sm text-gray-500 font-medium tracking-wide">or just tap one</span>
           </div>
-          <div className="flex flex-row overflow-x-auto gap-2 px-4 -mx-4 pb-2 snap-x snap-mandatory scrollbar-hide sm:flex-wrap sm:overflow-visible sm:mx-0 sm:px-0 sm:pb-0 sm:gap-3">
-            {QUICK_PROBLEMS.map((problem) => (
-              <button
-                key={problem.label}
-                type="button"
-                onClick={() => handleChipClick(problem.query)}
-                className="group flex items-center justify-center gap-1.5 px-3.5 py-1.5 bg-white/80 backdrop-blur-sm border border-gray-200/60 rounded-full text-xs font-semibold text-gray-600 shadow-sm hover:bg-[#06B6D4]/10 hover:border-[#06B6D4]/40 hover:text-[#06B6D4] hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all duration-200 ease-out cursor-pointer select-none whitespace-nowrap text-center leading-tight flex-shrink-0 snap-start sm:flex-shrink sm:snap-align-none"
-              >
-                <span
+
+          {/* Mobile: 2 horizontally-scrollable rows, right-edge fade hints more */}
+          <div className="flex flex-col gap-2 sm:hidden">
+            {[
+              {id: 'row-1', chips: QUICK_PROBLEMS.slice(0, 8)},
+              {id: 'row-2', chips: QUICK_PROBLEMS.slice(8)},
+            ].map(({id, chips}) => (
+              <div key={id} className="relative">
+                <div className="flex flex-row overflow-x-auto gap-2 -mx-4 px-4 pb-2 snap-x snap-mandatory scrollbar-hide">
+                  {chips.map((problem) => renderChip(problem, handleChipClick))}
+                </div>
+                <div
                   aria-hidden="true"
-                  className="text-sm opacity-70 group-hover:opacity-100 transition-opacity"
-                >
-                  {problem.emoji}
-                </span>
-                {problem.label}
-              </button>
+                  className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-[#FDF8F4] to-transparent"
+                />
+              </div>
             ))}
+          </div>
+
+          {/* Desktop: single flex-wrap row (unchanged layout) */}
+          <div className="hidden sm:flex sm:flex-wrap sm:gap-3">
+            {QUICK_PROBLEMS.map((problem) => renderChip(problem, handleChipClick))}
           </div>
         </div>
         <div
