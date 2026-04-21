@@ -104,7 +104,7 @@ function Navbar() {
       <header className="fixed top-[56px] left-0 right-0 z-[99] flex items-center justify-between px-4 sm:px-6 lg:px-8 bg-white py-1.5 sm:py-5">
         <div className="flex items-center gap-3">
           <button
-            className="p-2 -ml-1 rounded-lg hover:bg-gray-100 transition-colors lg:hidden"
+            className="p-2 -ml-1 rounded-lg hover:bg-gray-100 transition-colors md:hidden"
             onClick={() => setMobileMenuOpen(true)}
             aria-label="Open menu"
           >
@@ -118,13 +118,13 @@ function Navbar() {
           <Link to="/" className="flex items-center">
             <span className="flex flex-row items-baseline gap-2 leading-none text-[#06B6D4] whitespace-nowrap">
               <span className="text-2xl font-bold tracking-tight">PetYupp</span>
-              <span className="hidden sm:inline text-2xl font-bold opacity-40">|</span>
-              <span className="hidden sm:inline text-2xl font-bold tracking-tight">Pet Lifestyle</span>
+              <span className="hidden lg:inline text-2xl font-bold opacity-40">|</span>
+              <span className="hidden lg:inline text-2xl font-bold tracking-tight">Pet Lifestyle</span>
             </span>
           </Link>
         </div>
 
-        <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 transform -translate-x-1/2">
+        <nav className="hidden md:flex items-center gap-8 absolute left-1/2 transform -translate-x-1/2">
           <div className="relative" ref={shopMenuRef}>
             <button
               type="button"
