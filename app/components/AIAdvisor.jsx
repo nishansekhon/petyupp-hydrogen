@@ -17,6 +17,22 @@ const STORAGE_TTL_MS = 30 * 60 * 1000; // 30 minutes
 const FALLBACK_ERROR =
   'Our advisor is taking a break. Browse products instead.';
 
+const STATIC_PLACEHOLDER = 'Tell us about your dog...';
+const ROTATING_PLACEHOLDERS = [
+  "My dog's breath smells terrible...",
+  'She cries when I leave for work...',
+  'Puppy is teething on everything...',
+  "What's a safe rawhide alternative?",
+  'He destroys every toy in minutes...',
+  'Big dog who eats way too fast...',
+  'Bowl slides across the floor...',
+  "What's good for separation anxiety?",
+];
+const PLACEHOLDER_INITIAL_DELAY_MS = 1500;
+const PLACEHOLDER_CYCLE_MS = 3500;
+const PLACEHOLDER_FADE_MS = 200;
+const PLACEHOLDER_TYPE_MS = 600;
+
 function readSavedResults() {
   if (typeof window === 'undefined') return null;
   try {
@@ -366,8 +382,11 @@ export const AIAdvisor = forwardRef(function AIAdvisor(props, ref) {
   const [turns, setTurns] = useState([]);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState(null);
+  const [placeholder, setPlaceholder] = useState(STATIC_PLACEHOLDER);
+  const [placeholderFading, setPlaceholderFading] = useState(false);
   const inputRef = useRef(null);
   const scrollRef = useRef(null);
+  const stopPlaceholderRotationRef = useRef(null);
 
   useImperativeHandle(
     ref,
@@ -423,6 +442,94 @@ export const AIAdvisor = forwardRef(function AIAdvisor(props, ref) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [turns, pending, error]);
+
+  // Rotating placeholder: after a short read delay, cycle through example
+  // questions so users learn what to ask by example. Stops permanently on
+  // focus or keystroke — then the static prompt returns.
+  useEffect(() => {
+    const reducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let stopped = false;
+    const timeouts = new Set();
+    let index = 0;
+
+    const schedule = (fn, ms) => {
+      const id = setTimeout(() => {
+        timeouts.delete(id);
+        if (!stopped) fn();
+      }, ms);
+      timeouts.add(id);
+      return id;
+    };
+
+    const clearAll = () => {
+      timeouts.forEach(clearTimeout);
+      timeouts.clear();
+    };
+
+    const stop = () => {
+      if (stopped) return;
+      stopped = true;
+      clearAll();
+      setPlaceholderFading(false);
+      setPlaceholder(STATIC_PLACEHOLDER);
+    };
+    stopPlaceholderRotationRef.current = stop;
+
+    const typeIn = (target, onDone) => {
+      if (reducedMotion) {
+        setPlaceholder(target);
+        onDone();
+        return;
+      }
+      const perCharMs = PLACEHOLDER_TYPE_MS / Math.max(target.length, 1);
+      let i = 0;
+      setPlaceholder('');
+      const step = () => {
+        i += 1;
+        setPlaceholder(target.slice(0, i));
+        if (i < target.length) {
+          const jitter = perCharMs * (0.8 + Math.random() * 0.4);
+          schedule(step, jitter);
+        } else {
+          onDone();
+        }
+      };
+      schedule(step, perCharMs);
+    };
+
+    const rotateNext = () => {
+      const target =
+        ROTATING_PLACEHOLDERS[index % ROTATING_PLACEHOLDERS.length];
+      index += 1;
+
+      const runTypewriter = () => {
+        setPlaceholderFading(false);
+        typeIn(target, () => {
+          const holdMs =
+            PLACEHOLDER_CYCLE_MS - PLACEHOLDER_FADE_MS - PLACEHOLDER_TYPE_MS;
+          schedule(rotateNext, Math.max(holdMs, 500));
+        });
+      };
+
+      if (reducedMotion) {
+        runTypewriter();
+        return;
+      }
+      setPlaceholderFading(true);
+      schedule(runTypewriter, PLACEHOLDER_FADE_MS);
+    };
+
+    schedule(rotateNext, PLACEHOLDER_INITIAL_DELAY_MS);
+
+    return () => {
+      stopped = true;
+      clearAll();
+      stopPlaceholderRotationRef.current = null;
+    };
+  }, []);
 
   function handleClear() {
     setTurns([]);
@@ -490,10 +597,15 @@ export const AIAdvisor = forwardRef(function AIAdvisor(props, ref) {
   }
 
   function handleKeyDown(event) {
+    stopPlaceholderRotationRef.current?.();
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       submit();
     }
+  }
+
+  function handleFocus() {
+    stopPlaceholderRotationRef.current?.();
   }
 
   return (
@@ -509,9 +621,10 @@ export const AIAdvisor = forwardRef(function AIAdvisor(props, ref) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
+          onFocus={handleFocus}
           disabled={pending}
-          placeholder="Tell us about your dog..."
-          className="w-full border-2 border-[#06B6D4] rounded-xl shadow-lg bg-white px-5 py-4 pr-32 md:pr-36 text-sm md:text-base text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-400 disabled:opacity-60"
+          placeholder={placeholder}
+          className={`w-full border-2 border-[#06B6D4] rounded-xl shadow-lg bg-white px-5 py-4 pr-32 md:pr-36 text-sm md:text-base text-gray-900 placeholder:text-gray-400 placeholder:transition-opacity placeholder:duration-200 focus:outline-none focus:ring-2 focus:ring-teal-400 disabled:opacity-60 ${placeholderFading ? 'placeholder:opacity-0' : ''}`}
         />
         <button
           type="button"
