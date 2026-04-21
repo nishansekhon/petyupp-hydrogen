@@ -236,10 +236,15 @@ export default function HomepageHero() {
               />
             </span>
           </h1>
-          <p className="text-sm sm:text-base text-gray-500 leading-snug sm:leading-normal mb-3 sm:mb-6 max-w-xl">
-            Tell us about your dog — our AI picks the perfect natural chews,
-            toys, and treats they&rsquo;ll love.
-          </p>
+          <div className="mb-3 sm:mb-4 max-w-xl">
+            <p className="flex items-center gap-1.5 text-base font-semibold text-[#06B6D4]">
+              <span aria-hidden="true">✦</span>
+              Meet PetYupp AI
+            </p>
+            <p className="text-sm text-gray-600 leading-snug mt-0.5">
+              Trained on 367+ natural dog products. Built for problem-first discovery.
+            </p>
+          </div>
           <AIAdvisor ref={advisorRef} />
           <div className="flex items-center gap-2 mt-2 sm:mt-4 mb-1 ml-1">
             <svg width="32" height="28" viewBox="0 0 28 24" fill="none" className="text-[#06B6D4] flex-shrink-0" style={{transform: 'rotate(15deg)'}}>

@@ -7,6 +7,7 @@ import {
 } from 'react';
 import {Link} from 'react-router';
 import {CartForm, Money} from '@shopify/hydrogen';
+import {ThumbsUp, ThumbsDown} from 'lucide-react';
 
 const ENDPOINT = '/api/ai-advisor';
 const MAX_HISTORY = 10;
@@ -257,7 +258,63 @@ function ProductRecommendations({products}) {
   );
 }
 
-function MessageBubble({turn, onFollowUp, onClear}) {
+function FeedbackRow({query, responseId}) {
+  const [rating, setRating] = useState(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (rating === null) return;
+    const id = requestAnimationFrame(() => setVisible(true));
+    return () => cancelAnimationFrame(id);
+  }, [rating]);
+
+  function handleClick(value) {
+    if (rating !== null) return;
+    setRating(value);
+    // eslint-disable-next-line no-console
+    console.log('ai_feedback', {rating: value, query, response_id: responseId});
+  }
+
+  if (rating !== null) {
+    return (
+      <p
+        className="text-sm text-teal-600 mt-3"
+        style={{
+          opacity: visible ? 1 : 0,
+          transition: 'opacity 300ms ease-out',
+        }}
+      >
+        Thanks for your feedback!
+      </p>
+    );
+  }
+
+  return (
+    <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
+      <span className="text-xs text-gray-500">Was this helpful?</span>
+      <div className="flex items-center">
+        <button
+          type="button"
+          onClick={() => handleClick('up')}
+          aria-label="Helpful"
+          className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full text-gray-400 hover:text-teal-600 transition-colors"
+        >
+          <ThumbsUp size={16} strokeWidth={2} />
+        </button>
+        <button
+          type="button"
+          onClick={() => handleClick('down')}
+          aria-label="Not helpful"
+          className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full text-gray-400 hover:text-teal-600 transition-colors"
+        >
+          <ThumbsDown size={16} strokeWidth={2} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function MessageBubble({turn, onFollowUp, onClear, query}) {
   if (turn.role === 'user') {
     return (
       <div className="flex justify-end">
@@ -298,6 +355,7 @@ function MessageBubble({turn, onFollowUp, onClear}) {
         {hasProducts && onFollowUp ? (
           <FollowUpChips onFollowUp={onFollowUp} />
         ) : null}
+        <FeedbackRow query={query} responseId={turn.id} />
       </div>
     </div>
   );
@@ -350,6 +408,7 @@ export const AIAdvisor = forwardRef(function AIAdvisor(props, ref) {
     if (introText || savedProducts.length > 0) {
       restored.push({
         role: 'assistant',
+        id: crypto.randomUUID(),
         intro: introText,
         products: savedProducts,
         content: introText,
@@ -409,6 +468,7 @@ export const AIAdvisor = forwardRef(function AIAdvisor(props, ref) {
         ...current,
         {
           role: 'assistant',
+          id: crypto.randomUUID(),
           intro,
           products,
           content: intro,
@@ -463,6 +523,10 @@ export const AIAdvisor = forwardRef(function AIAdvisor(props, ref) {
         </button>
       </div>
 
+      <p className="text-xs text-gray-500 italic mt-2 text-center sm:text-left max-w-xl">
+        PetYupp AI helps you find natural products for your dog. Not a substitute for veterinary advice.
+      </p>
+
       {(turns.length > 0 || pending || error) && (
         <div
           ref={scrollRef}
@@ -472,12 +536,17 @@ export const AIAdvisor = forwardRef(function AIAdvisor(props, ref) {
           {turns.map((turn, idx) => {
             const isLatestAssistant =
               turn.role === 'assistant' && idx === turns.length - 1;
+            const precedingUser =
+              turn.role === 'assistant' && turns[idx - 1]?.role === 'user'
+                ? turns[idx - 1].content
+                : '';
             return (
               <MessageBubble
                 key={idx}
                 turn={turn}
                 onFollowUp={submit}
                 onClear={isLatestAssistant ? handleClear : undefined}
+                query={precedingUser}
               />
             );
           })}
