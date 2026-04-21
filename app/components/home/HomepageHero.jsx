@@ -122,12 +122,12 @@ export default function HomepageHero() {
   };
 
   return (
-    <section className="homepage-hero bg-[#FDF8F4] pt-6 md:pt-10 lg:pt-14 pb-0">
+    <section className="homepage-hero bg-[#FDF8F4] pt-8 md:pt-10 lg:pt-14 pb-0">
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-[55%_45%] gap-3 sm:gap-6 md:gap-10 items-start">
         <div className="flex flex-col">
-          <div className="w-12 h-1 bg-teal-500 rounded-full mb-4"></div>
-          <p className="font-heading text-sm font-bold tracking-[0.2em] uppercase text-[#06B6D4] mb-4">
+          <div className="hidden sm:block w-12 h-1 bg-teal-500 rounded-full mb-4"></div>
+          <p className="hidden sm:block font-heading text-sm font-bold tracking-[0.2em] uppercase text-[#06B6D4] mb-4">
             Natural relief for dogs
           </p>
           <h1 className="font-heading font-medium text-gray-900 text-xl sm:text-2xl md:text-4xl lg:text-5xl xl:text-6xl leading-[1.25] sm:leading-tight sm:tracking-tight mb-4 sm:mb-6">
