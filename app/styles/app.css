@@ -9,8 +9,8 @@
 
   /* Total fixed nav chrome height — drives <main> padding-top and
      scroll-padding-top so every route clears the nav without per-page hacks.
-     28px TrustMicroBar + 28px ticker + 50px header (py-1.5 + 38px content) */
-  --nav-height: 106px;
+     28px TrustMicroBar + 28px ticker + 46px header (py-1 + 38px content) */
+  --nav-height: 102px;
 
   /* PetYupp Brand Colors */
   --petyupp-primary-green: #10B981;
@@ -22,9 +22,9 @@
 
 @media (min-width: 640px) {
   :root {
-    /* Desktop header uses py-5 (20+20=40) + 38px content = 78px header
-       → 28 + 28 + 78 = 134px total */
-    --nav-height: 134px;
+    /* Desktop header uses py-2 (8+8=16) + 38px content = 54px header
+       → 28 + 28 + 54 = 110px total */
+    --nav-height: 110px;
   }
 }
 
