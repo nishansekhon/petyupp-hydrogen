@@ -49,12 +49,12 @@ const footerColumns = [
   {
     title: "Products",
     links: [
-      { label: "Natural Treats", to: "/collections/natural-treats" },
+      { label: "Natural Treats", to: "/collections/natural-treats-and-chews" },
       { label: "Yak Chews", to: "/collections/yak-chews" },
-      { label: "Bowls & Buckets", to: "/collections/bowls-buckets" },
-      { label: "Diners", to: "/collections/diners" },
-      { label: "Toys", to: "/collections/toys" },
-      { label: "Non-Skid Mats", to: "/collections/non-skid-mats" },
+      { label: "Bowls & Buckets", to: "/collections/dog-bowls" },
+      { label: "Diners", to: "/collections/dog-diners" },
+      { label: "Toys", to: "/collections/dog-toys" },
+      { label: "Non-Skid Mats", to: "/collections/non-skid-mats-for-dogs" },
     ],
   },
   {
