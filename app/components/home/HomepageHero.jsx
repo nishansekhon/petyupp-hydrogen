@@ -1,5 +1,5 @@
-import {useRef} from 'react';
-import {Leaf} from 'lucide-react';
+import {useEffect, useRef, useState} from 'react';
+import {ChevronRight, Leaf} from 'lucide-react';
 import {AIAdvisor} from '~/components/AIAdvisor';
 
 const QUICK_PROBLEMS = [
@@ -114,6 +114,102 @@ function renderChip(problem, onClick) {
   );
 }
 
+function ScrollableChipRow({chips, onClick}) {
+  const scrollRef = useRef(null);
+  const [hinting, setHinting] = useState(true);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    if (window.matchMedia('(min-width: 640px)').matches) return;
+
+    const reducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+
+    let cancelled = false;
+    let rafId = null;
+    let startTimer = null;
+    let pauseTimer = null;
+    const speedPxPerMs = 30 / 1000;
+    const pauseMs = 1000;
+    const startDelayMs = 800;
+
+    const stop = () => {
+      cancelled = true;
+      if (rafId) cancelAnimationFrame(rafId);
+      if (startTimer) clearTimeout(startTimer);
+      if (pauseTimer) clearTimeout(pauseTimer);
+      setHinting(false);
+    };
+
+    const events = ['touchstart', 'mousedown', 'wheel', 'pointerdown'];
+    events.forEach((e) =>
+      el.addEventListener(e, stop, {once: true, passive: true}),
+    );
+
+    if (!reducedMotion) {
+      const animate = (direction, startTime, startScroll) => {
+        const step = (now) => {
+          if (cancelled) return;
+          const elapsed = now - startTime;
+          const pos = startScroll + direction * speedPxPerMs * elapsed;
+          const max = el.scrollWidth - el.clientWidth;
+          if (direction > 0 && pos >= max) {
+            el.scrollLeft = max;
+            pauseTimer = setTimeout(() => {
+              if (cancelled) return;
+              animate(-1, performance.now(), max);
+            }, pauseMs);
+            return;
+          }
+          if (direction < 0 && pos <= 0) {
+            el.scrollLeft = 0;
+            return;
+          }
+          el.scrollLeft = pos;
+          rafId = requestAnimationFrame(step);
+        };
+        rafId = requestAnimationFrame(step);
+      };
+      startTimer = setTimeout(() => {
+        if (cancelled) return;
+        animate(1, performance.now(), 0);
+      }, startDelayMs);
+    }
+
+    return () => {
+      cancelled = true;
+      if (rafId) cancelAnimationFrame(rafId);
+      if (startTimer) clearTimeout(startTimer);
+      if (pauseTimer) clearTimeout(pauseTimer);
+      events.forEach((e) => el.removeEventListener(e, stop));
+    };
+  }, []);
+
+  return (
+    <div className="relative">
+      <div
+        ref={scrollRef}
+        className="flex flex-row overflow-x-auto gap-2 -mx-4 px-4 pb-2 snap-x snap-mandatory scrollbar-hide"
+      >
+        {chips.map((problem) => renderChip(problem, onClick))}
+      </div>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-[#FDF8F4] to-transparent"
+      />
+      <ChevronRight
+        aria-hidden="true"
+        strokeWidth={2.5}
+        className={`petyupp-chip-chevron-pulse pointer-events-none absolute right-1 top-1/2 w-5 h-5 text-[#06B6D4] transition-opacity duration-300 ${
+          hinting ? 'opacity-100' : 'opacity-0'
+        }`}
+      />
+    </div>
+  );
+}
+
 export default function HomepageHero() {
   const advisorRef = useRef(null);
 
@@ -153,21 +249,18 @@ export default function HomepageHero() {
             <span className="text-sm text-gray-500 font-medium tracking-wide">or just tap one</span>
           </div>
 
-          {/* Mobile: 2 horizontally-scrollable rows, right-edge fade hints more */}
+          {/* Mobile: 2 scrollable rows. Auto-scroll on mount + pulsing chevron
+              signal "swipe" until first user interaction. */}
           <div className="flex flex-col gap-2 sm:hidden">
             {[
               {id: 'row-1', chips: QUICK_PROBLEMS.slice(0, 8)},
               {id: 'row-2', chips: QUICK_PROBLEMS.slice(8)},
             ].map(({id, chips}) => (
-              <div key={id} className="relative">
-                <div className="flex flex-row overflow-x-auto gap-2 -mx-4 px-4 pb-2 snap-x snap-mandatory scrollbar-hide">
-                  {chips.map((problem) => renderChip(problem, handleChipClick))}
-                </div>
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-[#FDF8F4] to-transparent"
-                />
-              </div>
+              <ScrollableChipRow
+                key={id}
+                chips={chips}
+                onClick={handleChipClick}
+              />
             ))}
           </div>
 

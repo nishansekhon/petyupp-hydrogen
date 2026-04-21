@@ -50,6 +50,22 @@ html {
   display: none;
 }
 
+/* Hero chip-row "swipe me" indicator — pulses until first user interaction.
+   translateY keeps it vertically centered since we own the transform here. */
+@keyframes petyupp-chip-chevron-pulse {
+  0%, 100% { transform: translateY(-50%) scale(1); }
+  50%      { transform: translateY(-50%) scale(1.15); }
+}
+.petyupp-chip-chevron-pulse {
+  animation: petyupp-chip-chevron-pulse 1.5s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .petyupp-chip-chevron-pulse {
+    animation: none;
+    transform: translateY(-50%);
+  }
+}
+
 /* Hero Slider Styles */
 .hero {
   position: relative;
