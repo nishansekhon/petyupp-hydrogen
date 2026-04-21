@@ -220,7 +220,7 @@ export default function HomepageHero() {
   return (
     <section className="homepage-hero bg-[#FDF8F4] pt-2 md:pt-12 lg:pt-16 pb-0">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-[55%_45%] gap-3 sm:gap-6 md:gap-10 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-[11fr_9fr] gap-3 sm:gap-6 md:gap-10 items-start">
         <div className="flex flex-col">
           <div className="hidden sm:block w-12 h-1 bg-teal-500 rounded-full mb-4"></div>
           <p className="hidden sm:block font-heading text-sm font-bold tracking-[0.2em] uppercase text-[#06B6D4] mb-4">
