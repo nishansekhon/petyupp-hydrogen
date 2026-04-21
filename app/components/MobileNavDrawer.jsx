@@ -6,11 +6,11 @@ const bestSellers = [
   { label: 'Yak Chews', emoji: '🧀', path: '/collections/yak-chews' },
   { label: 'Bully Sticks', emoji: '🥩', path: '/collections/bully-sticks' },
   { label: 'Coffee Wood', emoji: '🪵', path: '/collections/wooden-chews' },
-  { label: 'Buffalo Chews', emoji: '🦬', path: '/collections/treats' },
+  { label: 'Buffalo Chews', emoji: '🦬', path: '/collections/natural-treats-and-chews' },
 ];
 
 const categories = [
-  { label: 'Natural Treats', path: '/collections/treats' },
+  { label: 'Natural Treats', path: '/collections/natural-treats-and-chews' },
   { label: 'Yak Chews', path: '/collections/yak-chews' },
   { label: 'Dog Toys', path: '/collections/dog-toys' },
   { label: 'Bowls & Buckets', path: '/collections/dog-bowls' },
@@ -180,9 +180,9 @@ const MobileNavDrawer = ({ isOpen, onClose }) => {
         {/* Footer links */}
         <div className="px-4 pb-4 flex flex-col gap-1">
           {[
-            { label: 'About', path: '/about' },
-            { label: 'Contact', path: '/contact' },
-            { label: 'Shipping Info', path: '/shipping' },
+            { label: 'About', path: '/pages/about' },
+            { label: 'Contact', path: '/pages/contact' },
+            { label: 'Shipping Info', path: '/pages/shipping' },
           ].map((link) => (
             <Link
               key={link.label}
