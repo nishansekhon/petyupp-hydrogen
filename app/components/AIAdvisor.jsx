@@ -523,10 +523,6 @@ export const AIAdvisor = forwardRef(function AIAdvisor(props, ref) {
         </button>
       </div>
 
-      <p className="text-xs text-gray-500 italic mt-2 text-center sm:text-left max-w-xl">
-        367+ natural products. Not vet advice.
-      </p>
-
       {(turns.length > 0 || pending || error) && (
         <div
           ref={scrollRef}

@@ -226,7 +226,7 @@ export default function HomepageHero() {
           <p className="hidden sm:block font-heading text-sm font-bold tracking-[0.2em] uppercase text-[#06B6D4] mb-4">
             Natural relief for dogs
           </p>
-          <h1 className="font-heading font-medium text-gray-900 text-xl sm:text-2xl md:text-4xl lg:text-5xl xl:text-6xl leading-[1.25] sm:leading-tight sm:tracking-tight mt-0 sm:mt-8 mb-4 sm:mb-6">
+          <h1 className="font-heading font-medium text-gray-900 text-lg sm:text-xl md:text-4xl lg:text-5xl xl:text-6xl leading-[1.25] sm:leading-tight sm:tracking-tight mt-0 sm:mt-8 mb-4 sm:mb-6">
             <span className="block">Your dog deserves the best.</span>
             <span className="block italic mt-1" style={{color: '#5A7664'}}>
               Nature made it.<Leaf
@@ -237,16 +237,10 @@ export default function HomepageHero() {
             </span>
           </h1>
           <AIAdvisor ref={advisorRef} />
-          <div className="flex items-center mt-2 sm:mt-4 mb-1 ml-1">
-            <svg width="32" height="28" viewBox="0 0 28 24" fill="none" className="text-[#06B6D4] flex-shrink-0" style={{transform: 'rotate(15deg)'}}>
-              <path d="M2 2C8 4 14 12 16 20" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" fill="none" strokeDasharray="2 3"/>
-              <path d="M12 18L16 22L18 16" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-            </svg>
-          </div>
 
           {/* Mobile: 2 scrollable rows. Auto-scroll on mount + pulsing chevron
               signal "swipe" until first user interaction. */}
-          <div className="flex flex-col gap-2 sm:hidden">
+          <div className="flex flex-col gap-2 sm:hidden mt-3">
             {[
               {id: 'row-1', chips: QUICK_PROBLEMS.slice(0, 8)},
               {id: 'row-2', chips: QUICK_PROBLEMS.slice(8)},
@@ -260,7 +254,7 @@ export default function HomepageHero() {
           </div>
 
           {/* Desktop: single flex-wrap row (unchanged layout) */}
-          <div className="hidden sm:flex sm:flex-wrap sm:gap-3">
+          <div className="hidden sm:flex sm:flex-wrap sm:gap-3 sm:mt-4">
             {QUICK_PROBLEMS.map((problem) => renderChip(problem, handleChipClick))}
           </div>
         </div>

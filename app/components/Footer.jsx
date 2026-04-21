@@ -228,8 +228,10 @@ function Footer() {
           className="flex flex-col md:flex-row items-center justify-between gap-3 pt-6"
           style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}
         >
-          <p className="text-gray-500 text-xs">
+          <p className="text-gray-500 text-xs text-center md:text-left">
             &copy; 2026 PetYupp Pet Lifestyle. All rights reserved.
+            {" · "}
+            Yupp is an AI assistant. Not a substitute for veterinary advice.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3 md:gap-4">
             <Link to="/policies/privacy-policy" className="text-gray-500 hover:text-gray-300 text-xs transition-colors">
