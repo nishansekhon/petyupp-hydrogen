@@ -26,13 +26,13 @@ function BlogPostPage() {
   }, [slug]);
 
   if (loading) return (
-    <div className="min-h-screen bg-white pt-[96px] flex items-center justify-center">
+    <div className="min-h-screen bg-white flex items-center justify-center">
       <div className="w-8 h-8 border-4 border-[#06B6D4] border-t-transparent rounded-full animate-spin" />
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-white pt-[96px]">
+    <div className="min-h-screen bg-white">
       <div className="max-w-3xl mx-auto px-4 py-8">
         {/* Breadcrumb */}
         <div className="flex items-center gap-1 text-xs text-gray-500 mb-6">

@@ -18,7 +18,7 @@ function LoginPage() {
     finally { setLoading(false); }
   };
   return (
-    <div className="min-h-screen bg-[#F9FAFB] pt-[96px] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#F9FAFB] flex items-center justify-center px-4">
       <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 w-full max-w-sm">
         <div className="text-center mb-6">
           <span className="text-3xl font-black text-[#06B6D4]">PetYupp</span>

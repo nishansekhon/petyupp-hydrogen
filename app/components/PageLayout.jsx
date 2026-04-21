@@ -6,7 +6,6 @@ import {HeaderMenu} from '~/components/Header';
 import MobileBottomNav from '~/components/MobileBottomNav';
 import Navbar from '~/components/Navbar';
 import {NavigationProgress} from '~/components/NavigationProgress';
-import {PromoBar} from '~/components/PromoBar';
 import {TrustMicroBar} from '~/components/TrustMicroBar';
 import {CartMain} from '~/components/CartMain';
 import {
@@ -35,13 +34,12 @@ export function PageLayout({
         Skip to main content
       </a>
       <NavigationProgress />
-      <PromoBar />
       <TrustMicroBar />
       <CartAside cart={cart} />
       <SearchAside />
       <MobileMenuAside header={header} publicStoreDomain={publicStoreDomain} />
       <Navbar />
-      <main id="main-content" className="pb-16 md:pb-0">{children}</main>
+      <main id="main-content" className="pt-[var(--nav-height)] pb-16 md:pb-0">{children}</main>
       <Footer
         footer={footer}
         header={header}

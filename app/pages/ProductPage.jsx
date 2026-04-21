@@ -172,13 +172,13 @@ function ProductPage() {
   };
 
   if (loading) return (
-    <div className="min-h-screen bg-white flex items-center justify-center pt-[106px]">
+    <div className="min-h-screen bg-white flex items-center justify-center">
       <div className="w-10 h-10 border-4 border-[#06B6D4] border-t-transparent rounded-full animate-spin" />
     </div>
   );
 
   if (!product || !view) return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center gap-3 pt-[106px] py-24">
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center gap-3 py-24">
       <p className="text-gray-500">Product not found.</p>
       <Link to="/shop" className="text-[#06B6D4] font-semibold hover:text-[#0891B2]">Back to shop →</Link>
     </div>
@@ -188,7 +188,7 @@ function ProductPage() {
   const categoryHref = view.category ? `/shop?category=${encodeURIComponent(view.category)}` : '/shop';
 
   return (
-    <div className="min-h-screen bg-white pt-[106px]">
+    <div className="min-h-screen bg-white">
       {/* Breadcrumb: Home > Category > Title */}
       <nav aria-label="Breadcrumb" className="max-w-6xl mx-auto px-4 pt-2 pb-4 flex items-center gap-1.5 text-xs text-gray-500">
         <Link to="/" className="hover:text-[#06B6D4]">Home</Link>

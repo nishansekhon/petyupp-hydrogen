@@ -5,7 +5,7 @@ function ShippingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white pt-[96px]">
+    <div className="min-h-screen bg-white">
       <div className="max-w-3xl mx-auto px-4 py-12">
         <h1 className="text-3xl font-black text-gray-900 mb-6">Shipping Information</h1>
         <div className="bg-[#06B6D4]/10 rounded-2xl p-5 border border-[#06B6D4]/20 mb-6">

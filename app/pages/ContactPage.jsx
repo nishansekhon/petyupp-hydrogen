@@ -15,7 +15,7 @@ function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white pt-[96px]">
+    <div className="min-h-screen bg-white">
       <div className="max-w-2xl mx-auto px-4 py-12">
         <div className="text-center mb-10">
           <div className="text-3xl mb-3">🐾</div>

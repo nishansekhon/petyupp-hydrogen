@@ -14,7 +14,7 @@ function CheckoutPage() {
 
   if (!items?.length) {
     return (
-      <div className="min-h-screen bg-white pt-[96px] flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-black text-gray-900 mb-3">Your cart is empty</h2>
           <Link to="/shop" className="text-[#06B6D4] font-bold hover:underline">Continue Shopping</Link>
@@ -24,7 +24,7 @@ function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] pt-[96px]">
+    <div className="min-h-screen bg-[#F9FAFB]">
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="flex items-center gap-2 mb-6">
           <Lock size={18} className="text-[#06B6D4]" />

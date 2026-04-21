@@ -6,7 +6,7 @@ function MyOrdersPage() {
     document.title = 'My Orders | PetYupp';
   }, []);
   return (
-    <div className="min-h-screen bg-white pt-[96px]">
+    <div className="min-h-screen bg-white">
       <div className="max-w-3xl mx-auto px-4 py-12">
         <h1 className="text-2xl font-black text-gray-900 mb-6">My Orders</h1>
         <div className="text-center py-12 bg-[#F9FAFB] rounded-2xl">

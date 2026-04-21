@@ -22,7 +22,7 @@ function CartPage() {
 
   if (!items || items.length === 0) {
     return (
-      <div className="min-h-screen bg-white pt-[96px]">
+      <div className="min-h-screen bg-white">
         <div className="max-w-2xl mx-auto px-4 py-16 text-center">
           <div className="text-6xl mb-4">🛒</div>
           <h2 className="text-2xl font-black text-gray-900 mb-3">Your cart is empty</h2>
@@ -36,7 +36,7 @@ function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] pt-[96px]">
+    <div className="min-h-screen bg-[#F9FAFB]">
       <div className="max-w-4xl mx-auto px-4 py-8">
         <h1 className="text-2xl font-black text-gray-900 mb-6">Your Cart ({items.length} items)</h1>
 

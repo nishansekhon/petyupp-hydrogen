@@ -61,8 +61,8 @@ function ShopPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="pt-[96px]">
-        <div className="sticky top-[96px] z-40 bg-white border-b border-gray-100 shadow-sm">
+      <div>
+        <div className="sticky top-[var(--nav-height)] z-40 bg-white border-b border-gray-100 shadow-sm">
           <div className="max-w-7xl mx-auto px-4 py-3">
             <div className="flex items-center justify-between gap-3 mb-3">
               <h1 className="text-lg font-black text-gray-900">Shop <span className="text-[#06B6D4]">PetYupp</span></h1>

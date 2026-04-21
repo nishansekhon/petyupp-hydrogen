@@ -4,7 +4,7 @@ function PrivacyPolicyPage() {
     document.title = 'Privacy Policy | PetYupp';
   }, []);
   return (
-    <div className="min-h-screen bg-white pt-[96px]">
+    <div className="min-h-screen bg-white">
       <div className="max-w-3xl mx-auto px-4 py-12">
         <h1 className="text-3xl font-black text-gray-900 mb-2">Privacy Policy</h1>
         <p className="text-sm text-gray-500 mb-8">Last updated: March 2026</p>

@@ -12,7 +12,7 @@ function AccountPage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-white pt-[96px] flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <div className="text-4xl mb-4">🐾</div>
           <h2 className="text-2xl font-black text-gray-900 mb-3">Sign in to your account</h2>
@@ -32,7 +32,7 @@ function AccountPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] pt-[96px]">
+    <div className="min-h-screen bg-[#F9FAFB]">
       <div className="max-w-3xl mx-auto px-4 py-12">
         <div className="bg-white rounded-2xl p-6 mb-6 shadow-sm border border-gray-100 flex items-center gap-4">
           <div className="w-16 h-16 bg-[#06B6D4]/10 rounded-full flex items-center justify-center text-2xl">

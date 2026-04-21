@@ -122,7 +122,7 @@ export default function HomepageHero() {
   };
 
   return (
-    <section className="homepage-hero bg-[#FDF8F4] pt-32 md:pt-12 lg:pt-16 pb-0">
+    <section className="homepage-hero bg-[#FDF8F4] pt-6 md:pt-12 lg:pt-16 pb-0">
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-[55%_45%] gap-3 sm:gap-6 md:gap-10 items-start">
         <div className="flex flex-col">
