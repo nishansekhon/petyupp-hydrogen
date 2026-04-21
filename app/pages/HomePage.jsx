@@ -41,7 +41,7 @@ function adaptShopifyProduct(product) {
   };
 }
 
-function HomePage({ products = [], collections = [] }) {
+function HomePage({ products = [], collections = [], articles = [] }) {
   const featuredProducts = products.map(adaptShopifyProduct);
 
   return (
@@ -129,7 +129,7 @@ function HomePage({ products = [], collections = [] }) {
             </Link>
           </div>
           <Suspense fallback={<SectionFallback />}>
-            <LatestBlogsSection />
+            <LatestBlogsSection articles={articles} />
           </Suspense>
         </div>
       </div>

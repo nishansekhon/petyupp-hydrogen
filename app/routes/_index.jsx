@@ -29,14 +29,18 @@ export async function loader(args) {
  * @param {Route.LoaderArgs}
  */
 async function loadCriticalData({context}) {
-  const [productsResult, collectionsResult] = await Promise.all([
+  const [productsResult, collectionsResult, articlesResult] = await Promise.all([
     context.storefront.query(HOMEPAGE_PRODUCTS_QUERY),
     context.storefront.query(HOMEPAGE_COLLECTIONS_QUERY),
+    context.storefront
+      .query(HOMEPAGE_ARTICLES_QUERY)
+      .catch(() => null),
   ]);
 
   return {
     products: productsResult?.products?.nodes ?? [],
     collections: collectionsResult?.collections?.nodes ?? [],
+    articles: articlesResult?.articles?.nodes ?? [],
   };
 }
 
@@ -55,14 +59,18 @@ const ORGANIZATION_JSON_LD = {
 
 export default function Homepage() {
   /** @type {LoaderReturnData} */
-  const {products, collections} = useLoaderData();
+  const {products, collections, articles} = useLoaderData();
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{__html: JSON.stringify(ORGANIZATION_JSON_LD)}}
       />
-      <HomePage products={products} collections={collections} />
+      <HomePage
+        products={products}
+        collections={collections}
+        articles={articles}
+      />
     </>
   );
 }
@@ -153,6 +161,30 @@ const HOMEPAGE_COLLECTIONS_QUERY = `#graphql
     collections(first: 50) {
       nodes {
         ...HomepageCollection
+      }
+    }
+  }
+`;
+
+const HOMEPAGE_ARTICLES_QUERY = `#graphql
+  query HomepageArticles($country: CountryCode, $language: LanguageCode)
+    @inContext(country: $country, language: $language) {
+    articles(first: 3, sortKey: PUBLISHED_AT, reverse: true) {
+      nodes {
+        id
+        title
+        handle
+        excerpt
+        image {
+          id
+          url
+          altText
+          width
+          height
+        }
+        blog {
+          handle
+        }
       }
     }
   }
