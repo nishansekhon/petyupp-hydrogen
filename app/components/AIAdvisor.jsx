@@ -511,7 +511,7 @@ export const AIAdvisor = forwardRef(function AIAdvisor(props, ref) {
           onKeyDown={handleKeyDown}
           disabled={pending}
           placeholder="Tell us about your dog..."
-          className="w-full border-2 border-[#06B6D4] rounded-xl shadow-lg bg-white px-5 py-4 pr-28 md:pr-32 text-sm md:text-base text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-400 disabled:opacity-60"
+          className="w-full border-2 border-[#06B6D4] rounded-xl shadow-lg bg-white px-5 py-4 pr-32 md:pr-36 text-sm md:text-base text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-400 disabled:opacity-60"
         />
         <button
           type="button"
@@ -519,12 +519,12 @@ export const AIAdvisor = forwardRef(function AIAdvisor(props, ref) {
           disabled={pending || input.trim().length === 0}
           className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#06B6D4] hover:bg-[#0891B2] text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          {pending ? 'Asking…' : 'Ask AI 🐾'}
+          {pending ? 'Asking…' : '✦ Ask AI 🐾'}
         </button>
       </div>
 
       <p className="text-xs text-gray-500 italic mt-2 text-center sm:text-left max-w-xl">
-        PetYupp AI helps you find natural products for your dog. Not a substitute for veterinary advice.
+        367+ natural products. Not vet advice.
       </p>
 
       {(turns.length > 0 || pending || error) && (

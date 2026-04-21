@@ -236,22 +236,12 @@ export default function HomepageHero() {
               />
             </span>
           </h1>
-          <div className="mb-3 sm:mb-4 max-w-xl">
-            <p className="flex items-center gap-1.5 text-base font-semibold text-[#06B6D4]">
-              <span aria-hidden="true">✦</span>
-              Meet PetYupp AI
-            </p>
-            <p className="text-sm text-gray-600 leading-snug mt-0.5">
-              Trained on 367+ natural dog products. Built for problem-first discovery.
-            </p>
-          </div>
           <AIAdvisor ref={advisorRef} />
-          <div className="flex items-center gap-2 mt-2 sm:mt-4 mb-1 ml-1">
+          <div className="flex items-center mt-2 sm:mt-4 mb-1 ml-1">
             <svg width="32" height="28" viewBox="0 0 28 24" fill="none" className="text-[#06B6D4] flex-shrink-0" style={{transform: 'rotate(15deg)'}}>
               <path d="M2 2C8 4 14 12 16 20" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" fill="none" strokeDasharray="2 3"/>
               <path d="M12 18L16 22L18 16" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
             </svg>
-            <span className="text-sm text-gray-500 font-medium tracking-wide">or just tap one</span>
           </div>
 
           {/* Mobile: 2 scrollable rows. Auto-scroll on mount + pulsing chevron
