@@ -219,7 +219,7 @@ body {
 /* Dark nav/promo surface tokens stay dark — no override needed, but keep
    text readable on the promo bar in case it ends up on a light surface. */
 [data-theme="dark"] .bg-\[\#111827\] {
-  background-color: var(--footer-bg) !important;
+  background-color: var(--bg-tertiary) !important;
 }
 
 /* Teal brand backgrounds keep their color in dark mode but slightly
