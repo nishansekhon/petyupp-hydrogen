@@ -632,7 +632,7 @@ export const AIAdvisor = forwardRef(function AIAdvisor(props, ref) {
           disabled={pending || input.trim().length === 0}
           className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#06B6D4] hover:bg-[#0891B2] text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          {pending ? 'Asking…' : '✦ Ask AI 🐾'}
+          {pending ? 'Asking…' : '✦ Ask Yupp 🐾'}
         </button>
       </div>
 
