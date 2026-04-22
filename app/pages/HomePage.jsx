@@ -53,8 +53,8 @@ function HomePage({ products = [], collections = [], articles = [] }) {
       <HomepageHero />
 
       {/* 2. Problem Showcase */}
-      <div className="max-w-7xl mx-auto px-4 md:px-6 pt-8 md:pt-12 mb-12">
-        <div className="text-center mb-6">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 pt-6 md:pt-12 mb-8 md:mb-12">
+        <div className="text-center mb-4 md:mb-6">
           <h2 className="text-2xl md:text-3xl font-black text-gray-900 mb-2">
             What does your dog need relief from?
           </h2>

@@ -159,21 +159,21 @@ function DesktopSlider() {
 
 function MobileGrid() {
   return (
-    <div className="grid grid-cols-2 gap-3 md:hidden">
+    <div className="grid grid-cols-2 gap-2 md:hidden">
       {PROBLEMS.map((p) => (
         <Link
           key={p.slug}
           to={`/collections/${p.collectionHandle}`}
-          className="group bg-white rounded-xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
+          className="group bg-white rounded-lg overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
         >
-          <div className="relative aspect-square overflow-hidden">
+          <div className="relative aspect-[4/3] overflow-hidden">
             <div
               className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
               style={{ backgroundImage: `url(${p.heroImage})` }}
             />
           </div>
-          <div className="p-3">
-            <h3 className="text-sm font-bold text-gray-900 leading-tight">
+          <div className="p-2">
+            <h3 className="text-sm font-semibold text-gray-900 leading-tight line-clamp-2">
               {p.title}
             </h3>
           </div>
