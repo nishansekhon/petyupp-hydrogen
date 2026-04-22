@@ -11,6 +11,17 @@ const PROBLEM_LABELS = {
   'hyperactivity': 'Hyperactivity',
 };
 
+const CLOUDINARY_BASE =
+  'https://res.cloudinary.com/petyupp-lifestyle/video/upload';
+
+function cloudinaryAssets(slug) {
+  return {
+    videoInline: `${CLOUDINARY_BASE}/f_auto,q_auto,vc_auto,w_600,ac_none/${slug}.mp4`,
+    videoModal: `${CLOUDINARY_BASE}/f_auto,q_auto,vc_auto,w_900/${slug}.mp4`,
+    videoPoster: `${CLOUDINARY_BASE}/so_2,f_jpg,q_auto,w_600/${slug}.jpg`,
+  };
+}
+
 const TESTIMONIALS = [
   {
     id: 1,
@@ -18,9 +29,7 @@ const TESTIMONIALS = [
     customerName: 'Sarah & Max',
     rating: 5,
     quote: 'Max hasn’t touched a shoe in weeks — he’s obsessed with these chews.',
-    videoThumbnail:
-      'https://images.unsplash.com/photo-1552053831-71594a27632d?w=600&h=800&fit=crop&crop=faces',
-    videoUrl: '',
+    ...cloudinaryAssets('ugc-aussie-power-chewer'),
     productHandle: 'coffee-wood-chew',
     productTitle: 'Coffee Wood Chew',
   },
@@ -30,9 +39,7 @@ const TESTIMONIALS = [
     customerName: 'Jordan & Luna',
     rating: 5,
     quote: 'Luna’s vet noticed cleaner teeth at her 6-month checkup. Game changer.',
-    videoThumbnail:
-      'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&h=800&fit=crop&crop=faces',
-    videoUrl: '',
+    ...cloudinaryAssets('ugc-black-lab-cheese-chew-jealousy'),
     productHandle: 'cheese-chew-mint',
     productTitle: 'Himalayan Cheese Chew — Mint',
   },
@@ -42,9 +49,7 @@ const TESTIMONIALS = [
     customerName: 'Priya & Biscuit',
     rating: 4,
     quote: 'Biscuit actually stays calm when I leave for work now. First time ever.',
-    videoThumbnail:
-      'https://images.unsplash.com/photo-1560743641-3914f2c45636?w=600&h=800&fit=crop&crop=faces',
-    videoUrl: '',
+    ...cloudinaryAssets('ugc-aussies-brand-testimonial'),
     productHandle: 'cheese-chew-pumpkin',
     productTitle: 'Himalayan Cheese Chew — Pumpkin',
   },
@@ -54,9 +59,7 @@ const TESTIMONIALS = [
     customerName: 'Marcus & Duke',
     rating: 5,
     quote: 'Duke is 11 and back to climbing stairs on his own. Absolutely worth it.',
-    videoThumbnail:
-      'https://images.unsplash.com/photo-1505628346881-b72b27e84530?w=600&h=800&fit=crop&crop=faces',
-    videoUrl: '',
+    ...cloudinaryAssets('ugc-senior-lab-woven-chew'),
     productHandle: 'water-buffalo-chips',
     productTitle: 'Water Buffalo Chips',
   },
@@ -66,9 +69,7 @@ const TESTIMONIALS = [
     customerName: 'Emily & Cooper',
     rating: 5,
     quote: 'No more upset stomach after switching. Cooper’s gut finally settled down.',
-    videoThumbnail:
-      'https://images.unsplash.com/photo-1477884213360-7e9d7dcc1e48?w=600&h=800&fit=crop&crop=faces',
-    videoUrl: '',
+    ...cloudinaryAssets('ugc-pitbull-cheese-chew-story'),
     productHandle: 'plain-bully-sticks',
     productTitle: 'Plain Bully Sticks',
   },
@@ -78,9 +79,7 @@ const TESTIMONIALS = [
     customerName: 'Alex & Ziggy',
     rating: 4,
     quote: 'Finally something that tires Ziggy out without a 5-mile run. Bliss.',
-    videoThumbnail:
-      'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=600&h=800&fit=crop&crop=faces',
-    videoUrl: '',
+    ...cloudinaryAssets('ugc-chocolate-lab-yak-cheese-bed'),
     productHandle: 'cheese-chew-strawberry',
     productTitle: 'Himalayan Cheese Chew — Strawberry',
   },
@@ -105,24 +104,78 @@ function StarRow({ rating }) {
   );
 }
 
-function UGCCard({ testimonial, onOpen, cardRef }) {
+function UGCCard({ testimonial, onOpen, cardRef, modalOpen }) {
   const label = PROBLEM_LABELS[testimonial.problemTag] ?? testimonial.problemTag;
   const collectionHref = `/collections/${testimonial.problemTag}`;
+  const videoRef = useRef(null);
+  const containerRef = useRef(null);
+  const isVisibleRef = useRef(false);
+
+  const setCardRef = (el) => {
+    containerRef.current = el;
+    if (typeof cardRef === 'function') cardRef(el);
+  };
+
+  useEffect(() => {
+    const videoEl = videoRef.current;
+    const containerEl = containerRef.current;
+    if (!videoEl || !containerEl || typeof IntersectionObserver === 'undefined') {
+      return undefined;
+    }
+
+    const playIfAllowed = () => {
+      if (!isVisibleRef.current || modalOpen) return;
+      const p = videoEl.play();
+      if (p && typeof p.catch === 'function') p.catch(() => {});
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          isVisibleRef.current = entry.isIntersecting;
+          if (entry.isIntersecting) {
+            playIfAllowed();
+          } else {
+            videoEl.pause();
+          }
+        }
+      },
+      { threshold: 0.5 },
+    );
+    observer.observe(containerEl);
+    return () => observer.disconnect();
+  }, [modalOpen]);
+
+  useEffect(() => {
+    const videoEl = videoRef.current;
+    if (!videoEl) return;
+    if (modalOpen) {
+      videoEl.pause();
+    } else if (isVisibleRef.current) {
+      const p = videoEl.play();
+      if (p && typeof p.catch === 'function') p.catch(() => {});
+    }
+  }, [modalOpen]);
 
   return (
     <button
-      ref={cardRef}
+      ref={setCardRef}
       type="button"
       onClick={() => onOpen(testimonial)}
       aria-label={`Watch ${testimonial.customerName}'s story about ${label}`}
       className="group snap-start shrink-0 w-[160px] md:w-[240px] text-left bg-white rounded-xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-[#06B6D4]"
     >
       <div className="relative w-full aspect-[9/16] overflow-hidden bg-gray-100">
-        <img
-          src={testimonial.videoThumbnail}
-          alt={`${testimonial.customerName} — ${label}`}
+        <video
+          ref={videoRef}
+          src={testimonial.videoInline}
+          poster={testimonial.videoPoster}
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-label={`${testimonial.customerName} — ${label}`}
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          loading="lazy"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
         <span className="absolute top-2 left-2 bg-[#06B6D4] text-white text-[10px] md:text-xs font-semibold rounded-full px-2 py-1 shadow-sm">
@@ -203,34 +256,16 @@ function VideoModal({ testimonial, onClose }) {
         </button>
 
         <div className="relative w-full aspect-[9/16] bg-gray-900">
-          {testimonial.videoUrl ? (
-            <video
-              src={testimonial.videoUrl}
-              controls
-              autoPlay
-              playsInline
-              className="absolute inset-0 w-full h-full object-cover bg-black"
-            >
-              <track kind="captions" />
-            </video>
-          ) : (
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-              <img
-                src={testimonial.videoThumbnail}
-                alt=""
-                aria-hidden="true"
-                className="absolute inset-0 w-full h-full object-cover opacity-40"
-              />
-              <div className="absolute inset-0 bg-black/60" />
-              <div className="relative text-white">
-                <Play size={36} className="mx-auto mb-3 opacity-80" />
-                <div className="text-base font-semibold">Video coming soon</div>
-                <div className="text-xs text-gray-300 mt-1">
-                  Real footage uploading shortly
-                </div>
-              </div>
-            </div>
-          )}
+          <video
+            src={testimonial.videoModal}
+            poster={testimonial.videoPoster}
+            controls
+            autoPlay
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover bg-black"
+          >
+            <track kind="captions" />
+          </video>
         </div>
 
         <div className="p-4 md:p-5">
@@ -297,6 +332,7 @@ export default function RealResultsRow() {
             key={t.id}
             testimonial={t}
             onOpen={handleOpen}
+            modalOpen={active !== null}
             cardRef={(el) => {
               cardRefs.current[t.id] = el;
             }}
