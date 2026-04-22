@@ -4,6 +4,7 @@ import HomepageHero from '@/components/home/HomepageHero';
 import ProductCard from '@/components/ProductCard';
 import { OrganizationSchema, WebsiteSchema } from '@/components/SEOSchema';
 import ProblemShowcase from '@/components/ProblemShowcase';
+import RealResultsRow from '@/components/RealResultsRow';
 import WhyPetYupp from '@/components/home/WhyPetYupp';
 import ShopCategories from '@/components/home/ShopCategories';
 
@@ -64,6 +65,9 @@ function HomePage({ products = [], collections = [], articles = [] }) {
         </div>
         <ProblemShowcase />
       </div>
+
+      {/* 2b. Real dogs, real relief — UGC video row */}
+      <RealResultsRow />
 
       {/* 3. Most loved this month */}
       <section id="homepage-products" className="py-10 max-w-7xl mx-auto px-4 md:px-6 scroll-mt-32">
