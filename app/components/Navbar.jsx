@@ -142,7 +142,7 @@ function Navbar() {
             </button>
 
             <div
-              className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-white shadow-xl rounded-lg border border-gray-100 p-6 z-50 origin-top transition duration-150 ease-out ${
+              className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-[var(--bg-secondary)] shadow-xl rounded-lg border border-gray-100 p-6 z-50 origin-top transition duration-150 ease-out ${
                 isShopOpen
                   ? 'opacity-100 scale-100 pointer-events-auto'
                   : 'opacity-0 scale-95 pointer-events-none'
@@ -151,7 +151,7 @@ function Navbar() {
             >
               <div className="grid grid-cols-2 gap-12">
                 <div>
-                  <h3 className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-4">Shop by Product</h3>
+                  <h3 className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-4">Shop by Product</h3>
                   <ul className="space-y-0">
                     {[
                       {to: '/collections/natural-treats-and-chews', label: 'Natural Treats and Chews'},
@@ -172,7 +172,7 @@ function Navbar() {
                           className={`block py-1.5 pl-3 text-sm font-medium border-l-[3px] transition-all ${
                             location.pathname === item.to
                               ? 'border-[#06B6D4] text-[#06B6D4]'
-                              : 'border-transparent text-gray-700 hover:border-[#06B6D4] hover:text-[#06B6D4]'
+                              : 'border-transparent text-[var(--text-primary)] hover:border-[#06B6D4] hover:text-[#06B6D4] hover:bg-[var(--bg-tertiary)]'
                           }`}
                         >
                           {item.label}
@@ -182,7 +182,7 @@ function Navbar() {
                   </ul>
                 </div>
                 <div>
-                  <h3 className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-4">Shop by Relief</h3>
+                  <h3 className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-4">Shop by Relief</h3>
                   <ul className="space-y-0">
                     {[
                       {to: '/collections/separation-anxiety', label: 'Separation Anxiety'},
@@ -200,7 +200,7 @@ function Navbar() {
                           className={`block py-1.5 pl-3 text-sm font-medium border-l-[3px] transition-all ${
                             location.pathname === item.to
                               ? 'border-[#06B6D4] text-[#06B6D4]'
-                              : 'border-transparent text-gray-700 hover:border-[#06B6D4] hover:text-[#06B6D4]'
+                              : 'border-transparent text-[var(--text-primary)] hover:border-[#06B6D4] hover:text-[#06B6D4] hover:bg-[var(--bg-tertiary)]'
                           }`}
                         >
                           {item.label}
