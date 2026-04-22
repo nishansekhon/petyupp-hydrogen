@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import HomepageHero from '@/components/home/HomepageHero';
 import ProductCard from '@/components/ProductCard';
 import { OrganizationSchema, WebsiteSchema } from '@/components/SEOSchema';
-import DogProblemSlider from '@/components/DogProblemSlider';
+import ProblemShowcase from '@/components/ProblemShowcase';
 import WhyPetYupp from '@/components/home/WhyPetYupp';
 import ShopCategories from '@/components/home/ShopCategories';
 
@@ -52,7 +52,7 @@ function HomePage({ products = [], collections = [], articles = [] }) {
       {/* 1. Hero */}
       <HomepageHero />
 
-      {/* 2. Dog Problem Slider */}
+      {/* 2. Problem Showcase */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 pt-8 md:pt-12 mb-12">
         <div className="text-center mb-6">
           <h2 className="text-2xl md:text-3xl font-black text-gray-900 mb-2">
@@ -62,7 +62,7 @@ function HomePage({ products = [], collections = [], articles = [] }) {
             Find natural relief matched to your dog&rsquo;s exact needs
           </p>
         </div>
-        <DogProblemSlider />
+        <ProblemShowcase />
       </div>
 
       {/* 3. Most loved this month */}
