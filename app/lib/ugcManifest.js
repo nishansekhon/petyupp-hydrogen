@@ -772,6 +772,24 @@ export const ugcManifest = [
 
 const CLOUDINARY_BASE = "https://res.cloudinary.com/petyupp-lifestyle/video/upload";
 
+export const problemTagOrder = [
+  "destructive-chewing",
+  "dental-health",
+  "separation-anxiety",
+  "joint-pain",
+  "digestive-issues",
+  "hyperactivity"
+];
+
+export const problemLabels = {
+  "destructive-chewing": "Destructive Chewing",
+  "dental-health": "Dental Health",
+  "separation-anxiety": "Separation Anxiety",
+  "joint-pain": "Joint Pain",
+  "digestive-issues": "Digestive Issues",
+  "hyperactivity": "Hyperactivity"
+};
+
 /**
  * Generate Cloudinary URLs for a given video slug.
  * All UGC videos live at the Cloudinary root — no folder prefix.
@@ -789,15 +807,7 @@ export function videoUrls(clip) {
  * Ordered by problem tag (canonical order).
  */
 export function getHomepageClips() {
-  const order = [
-    "destructive-chewing",
-    "dental-health",
-    "separation-anxiety",
-    "joint-pain",
-    "digestive-issues",
-    "hyperactivity"
-  ];
-  return order
+  return problemTagOrder
     .map(tag => ugcManifest.find(c => c.homepageSlot === tag))
     .filter(Boolean);
 }

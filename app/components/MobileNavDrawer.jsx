@@ -180,6 +180,7 @@ const MobileNavDrawer = ({ isOpen, onClose }) => {
         {/* Footer links */}
         <div className="px-4 pb-4 flex flex-col gap-1">
           {[
+            { label: 'Real Dogs', path: '/real-dogs' },
             { label: 'About', path: '/pages/about' },
             { label: 'Contact', path: '/pages/contact' },
             { label: 'Shipping Info', path: '/pages/shipping' },

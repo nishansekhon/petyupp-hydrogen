@@ -213,6 +213,18 @@ function Navbar() {
             </div>
           </div>
           <Link
+            to="/real-dogs"
+            prefetch="intent"
+            className={`text-sm font-medium transition-colors relative group ${
+              isActive('/real-dogs')
+                ? 'text-[#06B6D4]'
+                : 'text-gray-700 hover:text-[#06B6D4]'
+            }`}
+          >
+            Real Dogs
+            <span className={`absolute -bottom-1 left-0 h-0.5 bg-[#06B6D4] transition-all ${isActive('/real-dogs') ? 'w-full' : 'w-0 group-hover:w-full'}`} />
+          </Link>
+          <Link
             to="/pages/about"
             prefetch="intent"
             className={`text-sm font-medium transition-colors relative group ${
