@@ -6,21 +6,24 @@ import VideoModal from '~/components/ugc/VideoModal';
 export default function RealResultsRow() {
   const clips = getHomepageClips();
 
-  const [active, setActive] = useState(null);
+  const [startIndex, setStartIndex] = useState(null);
   const lastTriggerRef = useRef(null);
   const cardRefs = useRef({});
 
   const handleOpen = (clip) => {
-    lastTriggerRef.current = cardRefs.current[clip.problemTag] ?? null;
-    setActive(clip);
+    lastTriggerRef.current = cardRefs.current[clip.slug] ?? null;
+    const idx = clips.findIndex((c) => c.slug === clip.slug);
+    setStartIndex(idx >= 0 ? idx : 0);
   };
 
   const handleClose = () => {
-    setActive(null);
+    setStartIndex(null);
     requestAnimationFrame(() => {
       lastTriggerRef.current?.focus?.();
     });
   };
+
+  const modalOpen = startIndex !== null;
 
   return (
     <section className="max-w-7xl mx-auto px-4 py-8 md:py-16">
@@ -42,16 +45,22 @@ export default function RealResultsRow() {
             <VideoCard
               clip={clip}
               onOpen={handleOpen}
-              modalOpen={active !== null}
+              modalOpen={modalOpen}
               cardRef={(el) => {
-                cardRefs.current[clip.problemTag] = el;
+                cardRefs.current[clip.slug] = el;
               }}
             />
           </div>
         ))}
       </div>
 
-      {active && <VideoModal clip={active} onClose={handleClose} />}
+      {modalOpen && (
+        <VideoModal
+          clips={clips}
+          startIndex={startIndex}
+          onClose={handleClose}
+        />
+      )}
     </section>
   );
 }

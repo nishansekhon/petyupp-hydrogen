@@ -71,21 +71,24 @@ function FilterChips({activeProblem}) {
 
 export default function RealDogs() {
   const {clips, activeProblem, totalClips} = useLoaderData();
-  const [active, setActive] = useState(null);
+  const [startIndex, setStartIndex] = useState(null);
   const lastTriggerRef = useRef(null);
   const cardRefs = useRef({});
 
   const handleOpen = (clip) => {
     lastTriggerRef.current = cardRefs.current[clip.slug] ?? null;
-    setActive(clip);
+    const idx = clips.findIndex((c) => c.slug === clip.slug);
+    setStartIndex(idx >= 0 ? idx : 0);
   };
 
   const handleClose = () => {
-    setActive(null);
+    setStartIndex(null);
     requestAnimationFrame(() => {
       lastTriggerRef.current?.focus?.();
     });
   };
+
+  const modalOpen = startIndex !== null;
 
   return (
     <div className="bg-[#FDF8F4] min-h-screen">
@@ -114,7 +117,7 @@ export default function RealDogs() {
                 key={clip.slug}
                 clip={clip}
                 onOpen={handleOpen}
-                modalOpen={active !== null}
+                modalOpen={modalOpen}
                 cardRef={(el) => {
                   cardRefs.current[clip.slug] = el;
                 }}
@@ -124,7 +127,13 @@ export default function RealDogs() {
         )}
       </section>
 
-      {active && <VideoModal clip={active} onClose={handleClose} />}
+      {modalOpen && (
+        <VideoModal
+          clips={clips}
+          startIndex={startIndex}
+          onClose={handleClose}
+        />
+      )}
     </div>
   );
 }
