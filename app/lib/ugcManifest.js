@@ -28,6 +28,7 @@ export const ugcManifest = [
   {
     slug: "Cheese_Chew_Ex-Large_itsmeandrookie_1",
     productHandle: "himalayan-gourmet-cheese-chew-extra-large",
+    productName: "Himalayan Cheese Chew — XL",
     size: "xl",
     flavor: "original",
     dogName: "Rookie & Chewbacca",
@@ -42,6 +43,7 @@ export const ugcManifest = [
   {
     slug: "Cheese_Chew_Ex_large_itsmeandrookie_2",
     productHandle: "himalayan-gourmet-cheese-chew-large",
+    productName: "Himalayan Cheese Chew — Large",
     size: "large",
     flavor: "original",
     dogName: "Zina",
@@ -56,6 +58,7 @@ export const ugcManifest = [
   {
     slug: "Cheese_Chew_Ex-large_leahfgregory",
     productHandle: "himalayan-gourmet-cheese-chew-extra-large",
+    productName: "Himalayan Cheese Chew — XL",
     size: "xl",
     flavor: "original",
     dogName: "Leah's dog",
@@ -70,6 +73,7 @@ export const ugcManifest = [
   {
     slug: "Cheese_Chew_Honey_jaimeandjean",
     productHandle: "himalayan-gourmet-cheesy-chew-honey-flavor-3-5-oz",
+    productName: "Cheese Chew — Honey",
     size: "standard",
     flavor: "honey",
     dogName: "Jaime & Jean's dog",
@@ -84,6 +88,7 @@ export const ugcManifest = [
   {
     slug: "Cheese_Chew_Large_Micro__itsmeandrookie",
     productHandle: "himalayan-gourmet-cheese-chew-large",
+    productName: "Himalayan Cheese Chew — Large",
     size: "large",
     flavor: "original",
     dogName: "Rookie & Chewbacca",
@@ -98,6 +103,7 @@ export const ugcManifest = [
   {
     slug: "Cheese_Chew_Large_alliebug2382",
     productHandle: "himalayan-gourmet-cheese-chew-large",
+    productName: "Himalayan Cheese Chew — Large",
     size: "large",
     flavor: "original",
     dogName: "Luna",
@@ -112,6 +118,7 @@ export const ugcManifest = [
   {
     slug: "Cheese_Chew_Large_bitter_melon_3",
     productHandle: "himalayan-gourmet-cheese-chew-large",
+    productName: "Himalayan Cheese Chew — Large",
     size: "large",
     flavor: "original",
     dogName: null,
@@ -126,6 +133,7 @@ export const ugcManifest = [
   {
     slug: "Cheese_Chew_Medium_2girls3doods",
     productHandle: "himalayan-gourmet-cheese-chew-medium",
+    productName: "Himalayan Cheese Chew — Medium",
     size: "medium",
     flavor: "original",
     dogName: null,
@@ -140,6 +148,7 @@ export const ugcManifest = [
   {
     slug: "Cheese_Chew_Medium_crystalstill",
     productHandle: "himalayan-gourmet-cheese-chew-medium",
+    productName: "Himalayan Cheese Chew — Medium",
     size: "medium",
     flavor: "original",
     dogName: "Crystal's pups",
@@ -154,6 +163,7 @@ export const ugcManifest = [
   {
     slug: "Cheese_Chew_Small_2girls3doods",
     productHandle: "himalayan-gourmet-cheese-chew",
+    productName: "Himalayan Cheese Chew",
     size: "small",
     flavor: "original",
     dogName: "Bear & Papito",
@@ -168,6 +178,7 @@ export const ugcManifest = [
   {
     slug: "Cheese_Chew_Small_crystalstill",
     productHandle: "himalayan-gourmet-cheese-chew",
+    productName: "Himalayan Cheese Chew",
     size: "small",
     flavor: "original",
     dogName: "Crystal's dogs",
@@ -182,6 +193,7 @@ export const ugcManifest = [
   {
     slug: "Cheese_Chew_Small_momoandviv",
     productHandle: "himalayan-gourmet-cheese-chew",
+    productName: "Himalayan Cheese Chew",
     size: "small",
     flavor: "original",
     dogName: "Momo",
@@ -196,6 +208,7 @@ export const ugcManifest = [
   {
     slug: "Cheese_Chew_Small_nalajade",
     productHandle: "himalayan-gourmet-cheese-chew",
+    productName: "Himalayan Cheese Chew",
     size: "small",
     flavor: "original",
     dogName: "Nala & Jade",
@@ -210,6 +223,7 @@ export const ugcManifest = [
   {
     slug: "Cheese_Chew_Small_pettypuerto",
     productHandle: "himalayan-gourmet-cheese-chew",
+    productName: "Himalayan Cheese Chew",
     size: "small",
     flavor: "original",
     dogName: "Bailey",
@@ -224,6 +238,7 @@ export const ugcManifest = [
   {
     slug: "Cheese_Chew_Strawberry_nancyhernandez76",
     productHandle: "himalayas-gourmet-cheesy-chew-strawberry-flavor-3-5-oz",
+    productName: "Cheese Chew — Strawberry",
     size: "standard",
     flavor: "strawberry",
     dogName: "Nancy's dog",
@@ -238,6 +253,7 @@ export const ugcManifest = [
   {
     slug: "Cheese_Chew_Strawberry_sakurapaws",
     productHandle: "himalayas-gourmet-cheesy-chew-strawberry-flavor-3-5-oz",
+    productName: "Cheese Chew — Strawberry",
     size: "standard",
     flavor: "strawberry",
     dogName: "Evie",
@@ -252,6 +268,7 @@ export const ugcManifest = [
   {
     slug: "Cheese_Chew_large_Lunathelabpuppy",
     productHandle: "himalayan-gourmet-cheese-chew-large",
+    productName: "Himalayan Cheese Chew — Large",
     size: "large",
     flavor: "original",
     dogName: "Luna",
@@ -266,6 +283,7 @@ export const ugcManifest = [
   {
     slug: "Cheese_Chew_pumpkin_jaimeandjean",
     productHandle: "himalayan-gourmet-cheesy-chew-pumpkin-flavor-3-5-0z",
+    productName: "Cheese Chew — Pumpkin",
     size: "standard",
     flavor: "pumpkin",
     dogName: "Jaime & Jean's dog",
@@ -280,6 +298,7 @@ export const ugcManifest = [
   {
     slug: "Cheese_chew_Peanut_Butter_jaimeandjean",
     productHandle: "himalayan-gourmet-cheese-chew-3-5-oz-peanut-butter-flavor",
+    productName: "Cheese Chew — Peanut Butter",
     size: "standard",
     flavor: "peanut-butter",
     dogName: "Jaime & Jean's dog",
@@ -294,6 +313,7 @@ export const ugcManifest = [
   {
     slug: "Cheese_chew_large_amytaylornyc",
     productHandle: "himalayan-gourmet-cheese-chew-large",
+    productName: "Himalayan Cheese Chew — Large",
     size: "large",
     flavor: "original",
     dogName: null,
@@ -308,6 +328,7 @@ export const ugcManifest = [
   {
     slug: "Cheese_chew_large_sammy.the.rottweil",
     productHandle: "himalayan-gourmet-cheese-chew-large",
+    productName: "Himalayan Cheese Chew — Large",
     size: "large",
     flavor: "original",
     dogName: "Sammy",
@@ -322,6 +343,7 @@ export const ugcManifest = [
   {
     slug: "cheese_chew_large_ontheradiofish",
     productHandle: "himalayan-gourmet-cheese-chew-large",
+    productName: "Himalayan Cheese Chew — Large",
     size: "large",
     flavor: "original",
     dogName: null,
@@ -336,6 +358,7 @@ export const ugcManifest = [
   {
     slug: "cheese_chew_large_stumpychubs",
     productHandle: "himalayan-gourmet-cheese-chew-large",
+    productName: "Himalayan Cheese Chew — Large",
     size: "large",
     flavor: "original",
     dogName: null,
@@ -354,6 +377,7 @@ export const ugcManifest = [
   {
     slug: "Coffee_Wood_Small_buckyboy053",
     productHandle: "natural-repurposed-coffee-woods-dog-chew-small",
+    productName: "Coffee Wood Chew — Small",
     size: "small",
     flavor: null,
     dogName: "Bucky",
@@ -368,6 +392,7 @@ export const ugcManifest = [
   {
     slug: "Coffee_Wood_medium_quesothegs",
     productHandle: "natural-repurposed-coffee-woods-dog-chew-medium",
+    productName: "Coffee Wood Chew — Medium",
     size: "medium",
     flavor: null,
     dogName: "Queso & Ags",
@@ -387,6 +412,7 @@ export const ugcManifest = [
   {
     slug: "Hooves_20pcs_sakurapaws",
     productHandle: "water-buffalo-hooves-dog-chew-100-natural-dog-treats-no-artificial-color-flavor-20-pcs",
+    productName: "Buffalo Hooves (20pk)",
     size: "20pcs",
     flavor: null,
     dogName: "Sakura's guys",
@@ -406,6 +432,7 @@ export const ugcManifest = [
   {
     slug: "fur_babies_for_life",
     productHandle: "premium-free-range-grass-fed-buffalo-horns",
+    productName: "Buffalo Horns",
     size: "standard",
     flavor: null,
     dogName: "Brownie",
@@ -425,6 +452,7 @@ export const ugcManifest = [
   {
     slug: "Regular_Bowl_3quart_texas_coastal_frenchies",
     productHandle: "stainless-steel-regular-feeding-bowl",
+    productName: "Stainless Feeding Bowl",
     size: "3-quart",
     flavor: null,
     dogName: "Texas Coastal Frenchies",
@@ -444,6 +472,7 @@ export const ugcManifest = [
   {
     slug: "Rib_bone_5pcs_midnighttrainbull",
     productHandle: "water-buffalo-rib-bone-with-meat-dog-chews-pack-of-5",
+    productName: "Buffalo Rib Bone (5pk)",
     size: "5pcs",
     flavor: null,
     dogName: null,
@@ -463,6 +492,7 @@ export const ugcManifest = [
   {
     slug: "Teachea_bites_1lb__tinamtaylor",
     productHandle: "water-buffalo-trachea-bites-dog-chew-1-lb-100-natural-dog-treats",
+    productName: "Buffalo Trachea Bites",
     size: "1lb",
     flavor: null,
     dogName: "Niley & Lobo",
@@ -477,6 +507,7 @@ export const ugcManifest = [
   {
     slug: "Treachea_6inch_just_simply_karlie",
     productHandle: "100-natural-water-buffalo-trachea-dog-chew-6-inch-6-count",
+    productName: "Buffalo Trachea — 6″ (6ct)",
     size: "6-inch",
     flavor: null,
     dogName: "Karlie's dogs",
@@ -496,6 +527,7 @@ export const ugcManifest = [
   {
     slug: "Trachea_6inch__morgangurrney_2",
     productHandle: "100-natural-water-buffalo-trachea-dog-chew-6-inch-6-count",
+    productName: "Buffalo Trachea — 6″ (6ct)",
     size: "6-inch",
     flavor: null,
     dogName: null,
@@ -510,6 +542,7 @@ export const ugcManifest = [
   {
     slug: "Trachea_6inch_morgangurrney_1",
     productHandle: "100-natural-water-buffalo-trachea-dog-chew-6-inch-6-count",
+    productName: "Buffalo Trachea — 6″ (6ct)",
     size: "6-inch",
     flavor: null,
     dogName: null,
@@ -530,6 +563,7 @@ export const ugcManifest = [
   {
     slug: "Tendon_7oz__leahfgregory",
     productHandle: "water-buffalo-tendon-dog-chews-7-oz",
+    productName: "Water Buffalo Tendon",
     size: "7oz",
     flavor: null,
     dogName: "AJ",
@@ -549,6 +583,7 @@ export const ugcManifest = [
   {
     slug: "bullysticks_6inch_10Count__pettypuerto",
     productHandle: "plain-bully-sticks-pack-of-10-6-inch",
+    productName: "Bully Sticks — 6″ (10pk)",
     size: "6-inch-10ct",
     flavor: null,
     dogName: "Bailey",
@@ -568,6 +603,7 @@ export const ugcManifest = [
   {
     slug: "blueberry_amytaylornyc",
     productHandle: "himalayan-gourmet-cheese-chew-blueberry-flavor-3-5-oz",
+    productName: "Cheese Chew — Blueberry",
     size: "standard",
     flavor: "blueberry",
     dogName: null,
@@ -587,6 +623,7 @@ export const ugcManifest = [
   {
     slug: "strawberry_amytaylornyc",
     productHandle: "himalayas-gourmet-cheesy-chew-strawberry-flavor-3-5-oz",
+    productName: "Cheese Chew — Strawberry",
     size: "standard",
     flavor: "strawberry",
     dogName: null,
@@ -606,6 +643,7 @@ export const ugcManifest = [
   {
     slug: "pumpkin_midnighttrainbull",
     productHandle: "himalayan-gourmet-cheesy-chew-pumpkin-flavor-3-5-0z",
+    productName: "Cheese Chew — Pumpkin",
     size: "standard",
     flavor: "pumpkin",
     dogName: null,
@@ -626,6 +664,7 @@ export const ugcManifest = [
   {
     slug: "ugc-aussie-power-chewer",
     productHandle: "himalayan-gourmet-cheese-chew-extra-large",
+    productName: "Himalayan Cheese Chew — XL",
     size: "xl",
     flavor: "original",
     dogName: "Aussie power chewer",
@@ -640,6 +679,7 @@ export const ugcManifest = [
   {
     slug: "ugc-aussies-brand-testimonial",
     productHandle: "himalayan-gourmet-cheese-chew",
+    productName: "Himalayan Cheese Chew",
     size: "standard",
     flavor: "original",
     dogName: "Two Aussies",
@@ -654,6 +694,7 @@ export const ugcManifest = [
   {
     slug: "ugc-black-lab-cheese-chew-jealousy",
     productHandle: "himalayan-gourmet-cheese-chew",
+    productName: "Himalayan Cheese Chew",
     size: "standard",
     flavor: "original",
     dogName: "Lunar",
@@ -668,6 +709,7 @@ export const ugcManifest = [
   {
     slug: "ugc-cheese-chew-packaging-hero",
     productHandle: "himalayan-gourmet-cheese-chew",
+    productName: "Himalayan Cheese Chew",
     size: "standard",
     flavor: "original",
     dogName: null,
@@ -682,6 +724,7 @@ export const ugcManifest = [
   {
     slug: "ugc-chocolate-lab-yak-cheese-bed",
     productHandle: "himalayan-gourmet-cheese-chew",
+    productName: "Himalayan Cheese Chew",
     size: "standard",
     flavor: "original",
     dogName: "Chocolate lab",
@@ -696,6 +739,7 @@ export const ugcManifest = [
   {
     slug: "ugc-owner-dog-couch-chew-lifestyle",
     productHandle: "himalayan-gourmet-cheese-chew",
+    productName: "Himalayan Cheese Chew",
     size: "standard",
     flavor: "original",
     dogName: null,
@@ -710,6 +754,7 @@ export const ugcManifest = [
   {
     slug: "ugc-owner-dog-strawberry-chew-reveal",
     productHandle: "himalayas-gourmet-cheesy-chew-strawberry-flavor-3-5-oz",
+    productName: "Cheese Chew — Strawberry",
     size: "standard",
     flavor: "strawberry",
     dogName: null,
@@ -724,6 +769,7 @@ export const ugcManifest = [
   {
     slug: "ugc-pitbull-cheese-chew-story",
     productHandle: "himalayan-gourmet-cheese-chew",
+    productName: "Himalayan Cheese Chew",
     size: "standard",
     flavor: "original",
     dogName: null,
@@ -738,6 +784,7 @@ export const ugcManifest = [
   {
     slug: "ugc-red-aussie-popcorn-chew-bite",
     productHandle: "himalayan-gourmet-cheese-chew",
+    productName: "Himalayan Cheese Chew",
     size: "standard",
     flavor: "original",
     dogName: null,
@@ -752,6 +799,7 @@ export const ugcManifest = [
   {
     slug: "ugc-senior-lab-woven-chew",
     productHandle: "natural-water-buffalo-trachea-dog-chew-6-inch-12-count",
+    productName: "Buffalo Trachea — 6″ (12ct)",
     size: "12pack",
     flavor: null,
     dogName: "Senior Lab",

@@ -133,7 +133,7 @@ export default function VideoModal({clips, startIndex, onClose}) {
   const label = problemLabels[clip.problemTag] ?? clip.problemTag;
   const dogName = clip.dogName || 'Pet Parent';
   const productHref = `/products/${clip.productHandle}`;
-  const productName = humanizeHandle(clip.productHandle);
+  const productName = clip.productName || humanizeHandle(clip.productHandle);
   const urls = videoUrls(clip);
 
   return (
@@ -241,7 +241,7 @@ export default function VideoModal({clips, startIndex, onClose}) {
               {muted ? <VolumeX size={20} /> : <Volume2 size={20} />}
             </button>
 
-            {/* Mobile meta overlay — bottom 30%, scrim, CTA */}
+            {/* Mobile meta overlay — bottom scrim */}
             <div
               className="md:hidden absolute inset-x-0 bottom-0 pt-24 px-4 text-white pointer-events-none"
               style={{
@@ -259,17 +259,24 @@ export default function VideoModal({clips, startIndex, onClose}) {
                   <StarRow rating={clip.rating} />
                 </div>
                 {clip.quote && (
-                  <p className="mt-2 text-sm text-white/90 line-clamp-3">
-                    {clip.quote}
-                  </p>
+                  <blockquote className="mt-2 text-sm text-white/90 line-clamp-3">
+                    &ldquo;{clip.quote}&rdquo;
+                  </blockquote>
                 )}
+                <hr
+                  style={{
+                    margin: '16px 0',
+                    border: 'none',
+                    borderTop: '1px solid rgba(255,255,255,0.15)',
+                  }}
+                />
+                <p className="text-[13px] text-white/70 mb-2">{productName}</p>
                 <Link
                   to={productHref}
                   onClick={onClose}
-                  className="mt-3 w-full inline-flex items-center justify-center gap-2 bg-[#06B6D4] hover:bg-[#0891B2] text-white text-sm font-bold rounded-xl px-4 py-3 transition-colors"
+                  className="block w-full text-center bg-[#06B6D4] hover:bg-[#0891B2] text-white text-sm font-medium rounded-lg px-5 py-3 transition-colors"
                 >
-                  <span className="truncate">Shop {productName}</span>
-                  <span aria-hidden>→</span>
+                  Shop now →
                 </Link>
               </div>
             </div>
@@ -277,28 +284,39 @@ export default function VideoModal({clips, startIndex, onClose}) {
         </div>
 
         {/* Desktop meta panel */}
-        <aside className="hidden md:flex md:flex-col md:w-[360px] md:shrink-0 md:p-6 md:gap-3 md:overflow-y-auto">
+        <aside className="hidden md:flex md:flex-col md:w-[360px] md:shrink-0 md:p-6 md:overflow-y-auto">
           <span className="self-start bg-[#06B6D4]/10 text-[#06B6D4] text-xs font-semibold rounded-full px-2 py-1">
             {label}
           </span>
-          <div className="text-2xl font-bold text-gray-900">{dogName}</div>
-          <StarRow rating={clip.rating} />
+          <div className="mt-3 text-2xl font-bold text-gray-900">{dogName}</div>
+          <div className="mt-1">
+            <StarRow rating={clip.rating} />
+          </div>
           {clip.quote && (
-            <p className="text-sm text-gray-700 leading-relaxed">
-              {clip.quote}
-            </p>
+            <blockquote className="mt-3 text-sm text-gray-700 leading-relaxed">
+              &ldquo;{clip.quote}&rdquo;
+            </blockquote>
           )}
           {clip.creator && (
-            <p className="text-xs text-gray-500">{clip.creator}</p>
+            <p className="mt-3 text-xs text-gray-500">{clip.creator}</p>
           )}
-          <div className="mt-auto pt-4">
+          <div className="mt-auto">
+            <hr
+              style={{
+                margin: '16px 0',
+                border: 'none',
+                borderTop: '1px solid rgba(0,0,0,0.08)',
+              }}
+            />
+            <p className="text-[13px] text-[var(--text-secondary)] mb-2">
+              {productName}
+            </p>
             <Link
               to={productHref}
               onClick={onClose}
-              className="w-full inline-flex items-center justify-center gap-2 bg-[#06B6D4] hover:bg-[#0891B2] text-white text-sm font-bold rounded-xl px-4 py-3 transition-colors"
+              className="block w-full text-center bg-[#06B6D4] hover:bg-[#0891B2] text-white text-sm font-medium rounded-lg px-5 py-3 transition-colors"
             >
-              <span className="truncate">Shop {productName}</span>
-              <span aria-hidden>→</span>
+              Shop now →
             </Link>
           </div>
         </aside>
