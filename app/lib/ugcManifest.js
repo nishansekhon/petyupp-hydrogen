@@ -771,7 +771,6 @@ export const ugcManifest = [
 // ============================================================================
 
 const CLOUDINARY_BASE = "https://res.cloudinary.com/petyupp-lifestyle/video/upload";
-const CLOUDINARY_IMG_BASE = "https://res.cloudinary.com/petyupp-lifestyle/image/upload";
 
 /**
  * Generate Cloudinary URLs for a given video slug.
@@ -781,7 +780,7 @@ export function videoUrls(clip) {
   return {
     inline: `${CLOUDINARY_BASE}/f_auto,q_auto,vc_auto,w_600,ac_none/${clip.slug}.mp4`,
     modal: `${CLOUDINARY_BASE}/f_auto,q_auto,vc_auto,w_900/${clip.slug}.mp4`,
-    poster: `${CLOUDINARY_IMG_BASE}/so_2,f_jpg,q_auto,w_600/${clip.slug}.jpg`
+    poster: `${CLOUDINARY_BASE}/f_jpg,q_auto,w_600/${clip.slug}.jpg`
   };
 }
 
