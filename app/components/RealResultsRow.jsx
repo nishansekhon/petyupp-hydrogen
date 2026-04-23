@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { Play, Star, X } from 'lucide-react';
+import { getHomepageClips, videoUrls } from '~/lib/ugcManifest';
 
-const PROBLEM_LABELS = {
+const problemLabels = {
   'destructive-chewing': 'Destructive Chewing',
   'dental-health': 'Dental Health',
   'separation-anxiety': 'Separation Anxiety',
@@ -10,80 +11,6 @@ const PROBLEM_LABELS = {
   'digestive-issues': 'Digestive Issues',
   'hyperactivity': 'Hyperactivity',
 };
-
-const CLOUDINARY_BASE =
-  'https://res.cloudinary.com/petyupp-lifestyle/video/upload';
-
-function cloudinaryAssets(slug) {
-  return {
-    videoInline: `${CLOUDINARY_BASE}/f_auto,q_auto,vc_auto,w_600,ac_none/${slug}.mp4`,
-    videoModal: `${CLOUDINARY_BASE}/f_auto,q_auto,vc_auto,w_900/${slug}.mp4`,
-    videoPoster: `${CLOUDINARY_BASE}/so_2,f_jpg,q_auto,w_600/${slug}.jpg`,
-  };
-}
-
-const TESTIMONIALS = [
-  {
-    id: 1,
-    problemTag: 'destructive-chewing',
-    customerName: 'Rookie & Chewbacca',
-    rating: 5,
-    quote: 'Destroyed every chew I tried. These held up perfectly.',
-    ...cloudinaryAssets('ugc-aussie-power-chewer'),
-    productHandle: 'coffee-wood-chew',
-    productTitle: 'Coffee Wood Chew',
-  },
-  {
-    id: 2,
-    problemTag: 'dental-health',
-    customerName: 'Lunar',
-    rating: 5,
-    quote: 'Finally a chew that’s actually clean. Yak milk, salt, lime juice. That’s it.',
-    ...cloudinaryAssets('ugc-black-lab-cheese-chew-jealousy'),
-    productHandle: 'cheese-chew-mint',
-    productTitle: 'Himalayan Cheese Chew — Mint',
-  },
-  {
-    id: 3,
-    problemTag: 'separation-anxiety',
-    customerName: 'Zina',
-    rating: 5,
-    quote: 'Sized up for my smaller dog. She’s absolutely obsessed.',
-    ...cloudinaryAssets('ugc-aussies-brand-testimonial'),
-    productHandle: 'cheese-chew-pumpkin',
-    productTitle: 'Himalayan Cheese Chew — Pumpkin',
-  },
-  {
-    id: 4,
-    problemTag: 'joint-pain',
-    customerName: 'Pet Parent',
-    rating: 5,
-    quote: 'Beef tracheas — individually wrapped, and not stinky. Finally.',
-    ...cloudinaryAssets('ugc-senior-lab-woven-chew'),
-    productHandle: 'water-buffalo-chips',
-    productTitle: 'Water Buffalo Chips',
-  },
-  {
-    id: 5,
-    problemTag: 'digestive-issues',
-    customerName: 'Pet Parent',
-    rating: 4,
-    quote: 'Yak milk, lime juice, salt. All natural. No more tummy troubles.',
-    ...cloudinaryAssets('ugc-pitbull-cheese-chew-story'),
-    productHandle: 'plain-bully-sticks',
-    productTitle: 'Plain Bully Sticks',
-  },
-  {
-    id: 6,
-    problemTag: 'hyperactivity',
-    customerName: 'Pet Parent',
-    rating: 5,
-    quote: 'Engaged for hours. Super digestible, no choking or blockage worries.',
-    ...cloudinaryAssets('ugc-chocolate-lab-yak-cheese-bed'),
-    productHandle: 'cheese-chew-strawberry',
-    productTitle: 'Himalayan Cheese Chew — Strawberry',
-  },
-];
 
 function StarRow({ rating }) {
   return (
@@ -105,8 +32,8 @@ function StarRow({ rating }) {
 }
 
 function UGCCard({ testimonial, onOpen, cardRef, modalOpen }) {
-  const label = PROBLEM_LABELS[testimonial.problemTag] ?? testimonial.problemTag;
-  const collectionHref = `/collections/${testimonial.problemTag}`;
+  const label = testimonial.problemLabel ?? testimonial.problemSlug;
+  const productHref = `/products/${testimonial.productHandle}`;
   const videoRef = useRef(null);
   const containerRef = useRef(null);
   const isVisibleRef = useRef(false);
@@ -162,7 +89,7 @@ function UGCCard({ testimonial, onOpen, cardRef, modalOpen }) {
       ref={setCardRef}
       type="button"
       onClick={() => onOpen(testimonial)}
-      aria-label={`Watch ${testimonial.customerName}'s story about ${label}`}
+      aria-label={`Watch ${testimonial.dogName}'s story about ${label}`}
       className="group snap-start shrink-0 w-[160px] md:w-[240px] text-left bg-white rounded-xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-[#06B6D4]"
     >
       <div className="relative w-full aspect-[9/16] overflow-hidden bg-gray-100">
@@ -174,7 +101,7 @@ function UGCCard({ testimonial, onOpen, cardRef, modalOpen }) {
           loop
           playsInline
           preload="metadata"
-          aria-label={`${testimonial.customerName} — ${label}`}
+          aria-label={`${testimonial.dogName} — ${label}`}
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
@@ -190,7 +117,7 @@ function UGCCard({ testimonial, onOpen, cardRef, modalOpen }) {
 
       <div className="p-2 md:p-3">
         <div className="text-sm font-semibold text-gray-900 leading-tight">
-          {testimonial.customerName}
+          {testimonial.dogName}
         </div>
         <div className="mt-1">
           <StarRow rating={testimonial.rating} />
@@ -199,11 +126,11 @@ function UGCCard({ testimonial, onOpen, cardRef, modalOpen }) {
           {testimonial.quote}
         </p>
         <Link
-          to={collectionHref}
+          to={productHref}
           onClick={(e) => e.stopPropagation()}
           className="mt-2 inline-flex items-center gap-1 text-xs text-[#06B6D4] font-medium hover:text-[#0891B2]"
         >
-          <span className="truncate">Shop {testimonial.productTitle}</span>
+          <span className="truncate">Shop this product</span>
           <span aria-hidden>→</span>
         </Link>
       </div>
@@ -213,8 +140,8 @@ function UGCCard({ testimonial, onOpen, cardRef, modalOpen }) {
 
 function VideoModal({ testimonial, onClose }) {
   const closeBtnRef = useRef(null);
-  const label = PROBLEM_LABELS[testimonial.problemTag] ?? testimonial.problemTag;
-  const collectionHref = `/collections/${testimonial.problemTag}`;
+  const label = testimonial.problemLabel ?? testimonial.problemSlug;
+  const productHref = `/products/${testimonial.productHandle}`;
 
   useEffect(() => {
     const onKey = (e) => {
@@ -234,7 +161,7 @@ function VideoModal({ testimonial, onClose }) {
     <div
       role="dialog"
       aria-modal="true"
-      aria-label={`${testimonial.customerName} video testimonial`}
+      aria-label={`${testimonial.dogName} video testimonial`}
       className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
     >
       <button
@@ -272,7 +199,7 @@ function VideoModal({ testimonial, onClose }) {
           <div className="flex items-center justify-between gap-3">
             <div>
               <div className="text-sm font-semibold text-gray-900">
-                {testimonial.customerName}
+                {testimonial.dogName}
               </div>
               <div className="mt-1">
                 <StarRow rating={testimonial.rating} />
@@ -286,11 +213,11 @@ function VideoModal({ testimonial, onClose }) {
             {testimonial.quote}
           </p>
           <Link
-            to={collectionHref}
+            to={productHref}
             onClick={onClose}
             className="mt-4 w-full inline-flex items-center justify-center gap-2 bg-[#06B6D4] hover:bg-[#0891B2] text-white text-sm font-bold rounded-xl px-4 py-3 transition-colors"
           >
-            Shop {testimonial.productTitle} →
+            Shop this product →
           </Link>
         </div>
       </div>
@@ -299,12 +226,28 @@ function VideoModal({ testimonial, onClose }) {
 }
 
 export default function RealResultsRow() {
+  const testimonials = getHomepageClips().map((clip) => {
+    const urls = videoUrls(clip);
+    return {
+      problemSlug: clip.problemTag,
+      problemLabel: problemLabels[clip.problemTag],
+      dogName: clip.dogName || 'Pet Parent',
+      quote: clip.quote,
+      rating: clip.rating,
+      creator: clip.creator,
+      productHandle: clip.productHandle,
+      videoInline: urls.inline,
+      videoModal: urls.modal,
+      videoPoster: urls.poster,
+    };
+  });
+
   const [active, setActive] = useState(null);
   const lastTriggerRef = useRef(null);
   const cardRefs = useRef({});
 
   const handleOpen = (testimonial) => {
-    lastTriggerRef.current = cardRefs.current[testimonial.id] ?? null;
+    lastTriggerRef.current = cardRefs.current[testimonial.problemSlug] ?? null;
     setActive(testimonial);
   };
 
@@ -327,14 +270,14 @@ export default function RealResultsRow() {
       </div>
 
       <div className="flex gap-3 md:gap-4 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide -mx-4 px-4">
-        {TESTIMONIALS.map((t) => (
+        {testimonials.map((t) => (
           <UGCCard
-            key={t.id}
+            key={t.problemSlug}
             testimonial={t}
             onOpen={handleOpen}
             modalOpen={active !== null}
             cardRef={(el) => {
-              cardRefs.current[t.id] = el;
+              cardRefs.current[t.problemSlug] = el;
             }}
           />
         ))}
