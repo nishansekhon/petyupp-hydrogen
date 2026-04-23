@@ -26,7 +26,7 @@ export const ugcManifest = [
   // ========================================================================
 
   {
-    slug: "Cheese_Chew__Ex-Large_itsmeandrookie_1",
+    slug: "Cheese_Chew_Ex-Large_itsmeandrookie_1",
     productHandle: "himalayan-gourmet-cheese-chew-extra-large",
     size: "xl",
     flavor: "original",
@@ -82,7 +82,7 @@ export const ugcManifest = [
     useCase: ["pdp", "gallery"]
   },
   {
-    slug: "Cheese_Chew_Large_Micro_itsmeandrookie",
+    slug: "Cheese_Chew_Large_Micro__itsmeandrookie",
     productHandle: "himalayan-gourmet-cheese-chew-large",
     size: "large",
     flavor: "original",
@@ -306,7 +306,7 @@ export const ugcManifest = [
     useCase: ["pdp", "gallery"]
   },
   {
-    slug: "Cheese_chew_large_sammy_the_rottweil",
+    slug: "Cheese_chew_large_sammy.the.rottweil",
     productHandle: "himalayan-gourmet-cheese-chew-large",
     size: "large",
     flavor: "original",
@@ -476,7 +476,7 @@ export const ugcManifest = [
   // ========================================================================
 
   {
-    slug: "Teachea_bites_1lb_tinamtaylor",
+    slug: "Teachea_bites_1lb__tinamtaylor",
     productHandle: "water-buffalo-trachea-bites-dog-chew-1-lb-100-natural-dog-treats",
     size: "1lb",
     flavor: null,
@@ -543,7 +543,7 @@ export const ugcManifest = [
   // ========================================================================
 
   {
-    slug: "Tendon_7oz_leahfgregory",
+    slug: "Tendon_7oz__leahfgregory",
     productHandle: "water-buffalo-tendon-dog-chews-7-oz",
     size: "7oz",
     flavor: null,
@@ -562,7 +562,7 @@ export const ugcManifest = [
   // ========================================================================
 
   {
-    slug: "bullysticks_6inch_10Count_pettypuerto",
+    slug: "bullysticks_6inch_10Count__pettypuerto",
     productHandle: "plain-bully-sticks-pack-of-10-6-inch",
     size: "6-inch-10ct",
     flavor: null,
@@ -790,16 +790,13 @@ const CLOUDINARY_IMG_BASE = "https://res.cloudinary.com/petyupp-lifestyle/image/
 
 /**
  * Generate Cloudinary URLs for a given video slug.
- * Note: new uploads live at root (no folder prefix), old 10 are in ugc/ folder.
+ * All UGC videos live at the Cloudinary root — no folder prefix.
  */
 export function videoUrls(clip) {
-  const isOld = clip.slug.startsWith("ugc-");
-  const pathPrefix = isOld ? "ugc/" : "";
-
   return {
-    inline: `${CLOUDINARY_BASE}/f_auto,q_auto,vc_auto,w_600,ac_none/${pathPrefix}${clip.slug}.mp4`,
-    modal: `${CLOUDINARY_BASE}/f_auto,q_auto,vc_auto,w_900/${pathPrefix}${clip.slug}.mp4`,
-    poster: `${CLOUDINARY_IMG_BASE}/so_2,f_jpg,q_auto,w_600/${pathPrefix}${clip.slug}.jpg`
+    inline: `${CLOUDINARY_BASE}/f_auto,q_auto,vc_auto,w_600,ac_none/${clip.slug}.mp4`,
+    modal: `${CLOUDINARY_BASE}/f_auto,q_auto,vc_auto,w_900/${clip.slug}.mp4`,
+    poster: `${CLOUDINARY_IMG_BASE}/so_2,f_jpg,q_auto,w_600/${clip.slug}.jpg`
   };
 }
 
