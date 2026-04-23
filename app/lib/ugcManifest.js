@@ -347,21 +347,6 @@ export const ugcManifest = [
     audioQuality: "music-only",
     useCase: ["pdp", "gallery"]
   },
-  {
-    slug: "Cheese_Chew_large_amytaylornyc",
-    productHandle: "himalayan-gourmet-cheese-chew-large",
-    size: "large",
-    flavor: "original",
-    dogName: null,
-    creator: "@amytaylornyc",
-    problemTag: "hyperactivity",
-    quote: null, // music-only
-    rating: 5,
-    homepageSlot: null,
-    audioQuality: "music-only",
-    useCase: ["pdp", "gallery"]
-  },
-
   // ========================================================================
   // COFFEE WOOD CHEW — 2 clips (SGS certified Vietnam supplier)
   // ========================================================================
