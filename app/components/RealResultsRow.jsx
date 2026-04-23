@@ -28,7 +28,7 @@ const TESTIMONIALS = [
     problemTag: 'destructive-chewing',
     customerName: 'Rookie & Chewbacca',
     rating: 5,
-    quote: 'My power chewers destroyed every chew I tried. These held up perfectly.',
+    quote: 'Destroyed every chew I tried. These held up perfectly.',
     ...cloudinaryAssets('ugc-aussie-power-chewer'),
     productHandle: 'coffee-wood-chew',
     productTitle: 'Coffee Wood Chew',
@@ -38,7 +38,7 @@ const TESTIMONIALS = [
     problemTag: 'dental-health',
     customerName: 'Lunar',
     rating: 5,
-    quote: 'Harder and harder to find safe chews. This one’s clean — yak milk, salt, lime juice. That’s it.',
+    quote: 'Finally a chew that’s actually clean. Yak milk, salt, lime juice. That’s it.',
     ...cloudinaryAssets('ugc-black-lab-cheese-chew-jealousy'),
     productHandle: 'cheese-chew-mint',
     productTitle: 'Himalayan Cheese Chew — Mint',
@@ -48,7 +48,7 @@ const TESTIMONIALS = [
     problemTag: 'separation-anxiety',
     customerName: 'Zina',
     rating: 5,
-    quote: 'Zina’s on the smaller side, so I sized up. She’s absolutely obsessed.',
+    quote: 'Sized up for my smaller dog. She’s absolutely obsessed.',
     ...cloudinaryAssets('ugc-aussies-brand-testimonial'),
     productHandle: 'cheese-chew-pumpkin',
     productTitle: 'Himalayan Cheese Chew — Pumpkin',
@@ -58,7 +58,7 @@ const TESTIMONIALS = [
     problemTag: 'joint-pain',
     customerName: 'Pet Parent',
     rating: 5,
-    quote: 'Anyone else feel guilty leaving their dogs when they travel? Beef tracheas — individually wrapped, not stinky.',
+    quote: 'Beef tracheas — individually wrapped, and not stinky. Finally.',
     ...cloudinaryAssets('ugc-senior-lab-woven-chew'),
     productHandle: 'water-buffalo-chips',
     productTitle: 'Water Buffalo Chips',
@@ -68,7 +68,7 @@ const TESTIMONIALS = [
     problemTag: 'digestive-issues',
     customerName: 'Pet Parent',
     rating: 4,
-    quote: 'Yak milk, lime juice, salt — all natural. No more tummy troubles.',
+    quote: 'Yak milk, lime juice, salt. All natural. No more tummy troubles.',
     ...cloudinaryAssets('ugc-pitbull-cheese-chew-story'),
     productHandle: 'plain-bully-sticks',
     productTitle: 'Plain Bully Sticks',
@@ -78,7 +78,7 @@ const TESTIMONIALS = [
     problemTag: 'hyperactivity',
     customerName: 'Pet Parent',
     rating: 5,
-    quote: 'My fur baby was engaged for hours. Super digestible, no worries about choking or blockages.',
+    quote: 'Engaged for hours. Super digestible, no choking or blockage worries.',
     ...cloudinaryAssets('ugc-chocolate-lab-yak-cheese-bed'),
     productHandle: 'cheese-chew-strawberry',
     productTitle: 'Himalayan Cheese Chew — Strawberry',
@@ -195,7 +195,7 @@ function UGCCard({ testimonial, onOpen, cardRef, modalOpen }) {
         <div className="mt-1">
           <StarRow rating={testimonial.rating} />
         </div>
-        <p className="text-xs text-gray-600 line-clamp-2 mt-1">
+        <p className="text-xs text-gray-600 mt-1">
           {testimonial.quote}
         </p>
         <Link
