@@ -1,0 +1,109 @@
+{
+  "stage": 3,
+  "description": "Create 301 URL redirects from 14 old product handles to the consolidated parent /products/himalayan-gourmet-cheese-chew via Shopify Admin urlRedirectCreate.",
+  "executed_at": "2026-04-25",
+  "target": "/products/himalayan-gourmet-cheese-chew",
+  "created_count": 14,
+  "failed_count": 0,
+  "redirects": [
+    {
+      "source_handle": "himalayan-gourmet-cheese-chew-medium",
+      "from_path": "/products/himalayan-gourmet-cheese-chew-medium",
+      "to_target": "/products/himalayan-gourmet-cheese-chew",
+      "redirect_gid": "gid://shopify/UrlRedirect/292836966533",
+      "userErrors": []
+    },
+    {
+      "source_handle": "himalayan-gourmet-cheese-chew-large",
+      "from_path": "/products/himalayan-gourmet-cheese-chew-large",
+      "to_target": "/products/himalayan-gourmet-cheese-chew",
+      "redirect_gid": "gid://shopify/UrlRedirect/292836999301",
+      "userErrors": []
+    },
+    {
+      "source_handle": "himalayan-gourmet-cheese-chew-extra-large",
+      "from_path": "/products/himalayan-gourmet-cheese-chew-extra-large",
+      "to_target": "/products/himalayan-gourmet-cheese-chew",
+      "redirect_gid": "gid://shopify/UrlRedirect/292837032069",
+      "userErrors": []
+    },
+    {
+      "source_handle": "himalayan-gourmet-cheesy-chew-nuggets-3-5-0z",
+      "from_path": "/products/himalayan-gourmet-cheesy-chew-nuggets-3-5-0z",
+      "to_target": "/products/himalayan-gourmet-cheese-chew",
+      "redirect_gid": "gid://shopify/UrlRedirect/292837064837",
+      "userErrors": []
+    },
+    {
+      "source_handle": "himalayan-gourmet-cheese-chew-nuggets-pack-of-0-5-pound",
+      "from_path": "/products/himalayan-gourmet-cheese-chew-nuggets-pack-of-0-5-pound",
+      "to_target": "/products/himalayan-gourmet-cheese-chew",
+      "redirect_gid": "gid://shopify/UrlRedirect/292837097605",
+      "userErrors": []
+    },
+    {
+      "source_handle": "himalayas-gourmet-cheesy-chew-1-lb",
+      "from_path": "/products/himalayas-gourmet-cheesy-chew-1-lb",
+      "to_target": "/products/himalayan-gourmet-cheese-chew",
+      "redirect_gid": "gid://shopify/UrlRedirect/292837130373",
+      "userErrors": []
+    },
+    {
+      "source_handle": "himalayan-gourmet-cheese-chew-blueberry-flavor-3-5-oz",
+      "from_path": "/products/himalayan-gourmet-cheese-chew-blueberry-flavor-3-5-oz",
+      "to_target": "/products/himalayan-gourmet-cheese-chew",
+      "redirect_gid": "gid://shopify/UrlRedirect/292837163141",
+      "userErrors": []
+    },
+    {
+      "source_handle": "himalayan-gourmet-cheesy-chew-honey-flavor-3-5-oz",
+      "from_path": "/products/himalayan-gourmet-cheesy-chew-honey-flavor-3-5-oz",
+      "to_target": "/products/himalayan-gourmet-cheese-chew",
+      "redirect_gid": "gid://shopify/UrlRedirect/292837195909",
+      "userErrors": []
+    },
+    {
+      "source_handle": "himalayan-gourmet-cheese-chew-mint-flavor-3-5-oz",
+      "from_path": "/products/himalayan-gourmet-cheese-chew-mint-flavor-3-5-oz",
+      "to_target": "/products/himalayan-gourmet-cheese-chew",
+      "redirect_gid": "gid://shopify/UrlRedirect/292837228677",
+      "userErrors": []
+    },
+    {
+      "source_handle": "himalayan-gourmet-cheese-chew-3-5-oz-peanut-butter-flavor",
+      "from_path": "/products/himalayan-gourmet-cheese-chew-3-5-oz-peanut-butter-flavor",
+      "to_target": "/products/himalayan-gourmet-cheese-chew",
+      "redirect_gid": "gid://shopify/UrlRedirect/292837261445",
+      "userErrors": []
+    },
+    {
+      "source_handle": "himalayan-gourmet-cheesy-chew-pumpkin-flavor-3-5-0z",
+      "from_path": "/products/himalayan-gourmet-cheesy-chew-pumpkin-flavor-3-5-0z",
+      "to_target": "/products/himalayan-gourmet-cheese-chew",
+      "redirect_gid": "gid://shopify/UrlRedirect/292837294213",
+      "userErrors": []
+    },
+    {
+      "source_handle": "himalayas-gourmet-cheesy-chew-strawberry-flavor-3-5-oz",
+      "from_path": "/products/himalayas-gourmet-cheesy-chew-strawberry-flavor-3-5-oz",
+      "to_target": "/products/himalayan-gourmet-cheese-chew",
+      "redirect_gid": "gid://shopify/UrlRedirect/292837326981",
+      "userErrors": []
+    },
+    {
+      "source_handle": "himalayan-gourmet-cheesy-chew-flax-seed-flavor-3-5-oz",
+      "from_path": "/products/himalayan-gourmet-cheesy-chew-flax-seed-flavor-3-5-oz",
+      "to_target": "/products/himalayan-gourmet-cheese-chew",
+      "redirect_gid": "gid://shopify/UrlRedirect/292837359749",
+      "userErrors": []
+    },
+    {
+      "source_handle": "himalayan-gourmet-cheesy-chew-turmeric-ashwagandha-flavor-3-5-oz",
+      "from_path": "/products/himalayan-gourmet-cheesy-chew-turmeric-ashwagandha-flavor-3-5-oz",
+      "to_target": "/products/himalayan-gourmet-cheese-chew",
+      "redirect_gid": "gid://shopify/UrlRedirect/292837392517",
+      "userErrors": []
+    }
+  ],
+  "rollback": "urlRedirectDelete for each gid listed in redirects[].redirect_gid."
+}
