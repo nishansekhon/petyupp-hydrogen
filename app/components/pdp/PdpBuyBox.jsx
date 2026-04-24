@@ -17,6 +17,29 @@ function formatMoney(money) {
   }
 }
 
+// Extract a unit count from a variant/option name like "Pack of 10", "5-pack",
+// "10pk", "12 count". Returns null when the name doesn't encode a count — the
+// caller then falls back to total price instead of per-unit.
+function parseUnitCount(name) {
+  if (!name) return null;
+  const patterns = [
+    /pack\s*of\s*(\d+)/i,
+    /(\d+)\s*[-\s]?\s*pack/i,
+    /(\d+)\s*pk\b/i,
+    /(\d+)\s*(?:count|ct)\b/i,
+    /\bx\s*(\d+)\b/i,
+    /^\s*(\d+)\s*$/,
+  ];
+  for (const p of patterns) {
+    const m = name.match(p);
+    if (m) {
+      const n = parseInt(m[1], 10);
+      if (n > 1) return n;
+    }
+  }
+  return null;
+}
+
 function AddToCartInner({fetcher, disabled, outOfStock, onAfterAdd, priceLabel}) {
   const [justAdded, setJustAdded] = useState(false);
   const wasSubmitting = useRef(false);
@@ -212,6 +235,21 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
               {option.optionValues.map((value) => {
                 const {name, selected, available, exists, variantUriQuery} =
                   value;
+                const valuePrice = value.firstSelectableVariant?.price;
+                const unitCount = parseUnitCount(name);
+                let perUnitLabel = null;
+                if (valuePrice?.amount) {
+                  if (unitCount) {
+                    const perUnit =
+                      parseFloat(valuePrice.amount) / unitCount;
+                    perUnitLabel = `${formatMoney({
+                      amount: perUnit.toFixed(2),
+                      currencyCode: valuePrice.currencyCode,
+                    })} each`;
+                  } else {
+                    perUnitLabel = formatMoney(valuePrice);
+                  }
+                }
                 const commonClass = `relative p-3 rounded-lg border-2 transition-colors text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#06B6D4] ${
                   selected
                     ? 'border-[#06B6D4] bg-[#06B6D4]/5'
@@ -238,6 +276,11 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
                     <div className="text-sm font-medium text-gray-900">
                       {name}
                     </div>
+                    {perUnitLabel && (
+                      <div className="text-[11px] text-gray-500 mt-0.5 tabular-nums">
+                        {perUnitLabel}
+                      </div>
+                    )}
                     {!available && (
                       <div className="text-[11px] text-red-600 mt-1">
                         Out of stock
