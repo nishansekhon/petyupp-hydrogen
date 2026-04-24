@@ -158,6 +158,25 @@ export default function QuickAddBlock({
 
   const productHref = `/products/${clip.productHandle}`;
 
+  // DIAGNOSTIC: remove once empty-aside root cause is identified.
+  if (typeof console !== 'undefined') {
+    // eslint-disable-next-line no-console
+    console.log('[QuickAddBlock] render', {
+      dark,
+      mounted,
+      loading,
+      error,
+      hasProduct: !!product,
+      productHandle: product?.handle,
+      clipHandle: clip?.productHandle,
+      branch: !mounted
+        ? 'skeleton'
+        : error || (!loading && !product)
+        ? 'fallback'
+        : 'main',
+    });
+  }
+
   // Post-hooks gate: first render returns a skeleton so SSR/hydration
   // never touches CartForm + fetchers. All hooks above run on every
   // render regardless, keeping rules-of-hooks satisfied.

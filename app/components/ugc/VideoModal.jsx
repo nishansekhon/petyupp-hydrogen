@@ -183,6 +183,20 @@ export default function VideoModal({clips, startIndex, onClose}) {
 
   if (typeof document === 'undefined') return null;
 
+  // DIAGNOSTIC: remove once empty-aside root cause is identified.
+  if (typeof console !== 'undefined') {
+    // eslint-disable-next-line no-console
+    console.log('[VideoModal] render', {
+      clipHandle: clip.productHandle,
+      fetcherState: productFetcher.state,
+      hasFetcherData: !!rawData,
+      fetchedHandle: rawData?.product?.handle,
+      fetchErrorMsg: rawData?.error,
+      derivedLoading: productLoading,
+      derivedError: fetchError,
+    });
+  }
+
   const modalTree = (
     <div
       ref={dialogRef}
@@ -355,6 +369,25 @@ export default function VideoModal({clips, startIndex, onClose}) {
 
         {/* Desktop meta panel */}
         <aside className="hidden md:flex md:flex-col md:w-[360px] md:h-full md:shrink-0 md:p-8 md:overflow-y-auto">
+          {/* DIAGNOSTIC MARKER — remove once empty-aside root cause is found.
+              If this red block is NOT visible in the aside, the aside's
+              children are being dropped at render time. If it IS visible
+              but the chip/name/etc. below aren't, the issue is with
+              those specific children. */}
+          <div
+            style={{
+              background: '#ff0044',
+              color: '#fff',
+              padding: '6px 10px',
+              fontSize: '11px',
+              fontWeight: 700,
+              letterSpacing: '0.5px',
+              borderRadius: '4px',
+              marginBottom: '8px',
+            }}
+          >
+            ASIDE SANITY · {label}
+          </div>
           <span className="self-start bg-[#06B6D4]/10 text-[#06B6D4] text-xs font-semibold rounded-full px-2 py-1">
             {label}
           </span>
