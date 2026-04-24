@@ -80,6 +80,14 @@ After migrating inventory onto 14 new variants on a parent, `product.totalInvent
 
 **Rule:** when a Phase 5–style migration's integrity check needs "does the sum match pre-migration?", sum `variant.inventoryQuantity` yourself — don't trust `product.totalInventory` in the minutes right after an `inventoryActivate` + `inventorySetQuantities` cycle. The storefront and checkout APIs use the variant-level numbers, so this is a metric/display lag only, not an actual oversell risk.
 
+### 7. Phase 5 lesson — Size option normalization is lossy across price segments
+
+When consolidating sibling products into one parent with a Size option, a single token in the source handle (e.g. "3.5oz") can mask the fact that **two different segments at two different prices share that token**. The migration collapses both into one Size value, and the resulting matrix has odd shape.
+
+**Concrete: Himalayan Cheese.** Plain "Small 3.5oz" lives at $24.99 and is the smallest of the Plain-only ladder (Small / Medium / Large / XL / Nuggets / 1lb). The flavored variants are also "3.5oz" but at $18.99, and they exist *only* at that one size — they aren't part of the size ladder at all. Phase 5 collapsed both into Size="Small 3.5oz" because they shared the substring. The result is accurate to the source data, but produces visually surprising PDP behavior: every flavor chip is enabled at one Size value (Small 3.5oz) and disabled at every other Size — because that's literally the only size where a flavored variant exists. A reviewer who sees only the matrix in their head can misread the chip behavior as "inverted" when it's actually correct.
+
+**Rule for future family consolidations:** before merging two source-handle tokens into one Size value, audit whether they represent the same segment at the same price tier. If they don't, model them as **separate Size values** (e.g. "Small 3.5oz — $24.99" and "Flavored 3.5oz — $18.99") even if the substring is identical, OR use a separate option axis to disambiguate (e.g. add a "Tier" or "Pack" option). The Phase 5 Himalayan parent ships as-is for now (Phase 5.5 backlog has a "fix pricing inversion" item that may also revisit this naming).
+
 ## Patterns
 
 ### Metafield CRUD → use the helper script

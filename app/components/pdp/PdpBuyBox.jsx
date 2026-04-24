@@ -116,51 +116,18 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
     (selectedVariant?.selectedOptions ?? []).map((o) => [o.name, o.value]),
   );
 
-  // TEMP DEBUG (Fix-A verification, remove once combo logic is confirmed on
-  // Oxygen): dump the live validCombos set + currentSelection + per-chip
-  // computed keys and .has() results to the console on first render.
-  // Runs once per mount, client-only.
-  const didDebugRef = useRef(false);
+  // Hydration safety: the chip-validity styling derives from selectedVariant,
+  // which Hydrogen's useOptimisticVariant can resolve to a slightly different
+  // variant on first client render than the loader resolved on the server
+  // (URL search-param parsing, normalization, optimistic in-flight nav state).
+  // Different `comboValid` between SSR and CSR → different `aria-disabled` +
+  // className → React hydration mismatch (#418/#423). Gate the validity-driven
+  // UI on a post-mount flag so SSR HTML + the first client render produce
+  // byte-identical markup, then upgrade to the real validity state after mount.
+  const [mounted, setMounted] = useState(false);
   useEffect(() => {
-    if (didDebugRef.current) return;
-    didDebugRef.current = true;
-    if (typeof console === 'undefined') return;
-    console.groupCollapsed(
-      '%c[PdpBuyBox combo-debug]',
-      'color:#06B6D4;font-weight:bold',
-      product?.handle,
-    );
-    console.log('variant count:', allVariants.length);
-    console.log('validCombos (size=' + validCombos.size + '):');
-    console.table(
-      Array.from(validCombos).map((k) => ({key: k})),
-    );
-    console.log('currentSelection:', currentSelection);
-    const rows = [];
-    (productOptions ?? []).forEach((opt) => {
-      (opt.optionValues ?? []).forEach((val) => {
-        const hyp = {...currentSelection, [opt.name]: val.name};
-        const k = comboKey(
-          Object.entries(hyp).map(([n, v]) => ({name: n, value: v})),
-        );
-        rows.push({
-          axis: opt.name,
-          chipValue: val.name,
-          computedKey: k,
-          inSet: validCombos.has(k),
-          rendersAs: validCombos.has(k) ? 'ENABLED' : 'DISABLED',
-        });
-      });
-    });
-    console.table(rows);
-    console.groupEnd();
-  }, [
-    allVariants.length,
-    validCombos,
-    currentSelection,
-    productOptions,
-    product?.handle,
-  ]);
+    setMounted(true);
+  }, []);
   const sellingPlanAllocation =
     variantWithSub?.sellingPlanAllocations?.nodes?.[0] ?? null;
   const sellingPlan = sellingPlanAllocation?.sellingPlan ?? null;
@@ -311,7 +278,7 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
                   ...currentSelection,
                   [option.name]: name,
                 };
-                const comboValid = validCombos.has(
+                const realComboValid = validCombos.has(
                   comboKey(
                     Object.entries(hypothetical).map(([n, v]) => ({
                       name: n,
@@ -319,6 +286,11 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
                     })),
                   ),
                 );
+                // Pre-hydration: render every chip as valid so SSR HTML and
+                // the first CSR pass match. Post-mount: switch to the real
+                // validity state — React applies this as a normal update, not
+                // a hydration check, so no #418/#423.
+                const comboValid = mounted ? realComboValid : true;
                 const valuePrice = value.firstSelectableVariant?.price;
                 const unitCount = parseUnitCount(name);
                 let perUnitLabel = null;
