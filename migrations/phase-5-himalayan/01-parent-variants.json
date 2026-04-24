@@ -1,0 +1,131 @@
+{
+  "stage": 1,
+  "description": "Add Size + Flavor options to existing parent product himalayan-gourmet-cheese-chew, then bulk-create 14 new variants (one per non-existing Size×Flavor cell in the target matrix).",
+  "executed_at": "2026-04-25",
+  "parent_product": {
+    "gid": "gid://shopify/Product/7046338150533",
+    "handle": "himalayan-gourmet-cheese-chew",
+    "title": "Himalayan Gourmet Cheese Chew"
+  },
+  "options_created": [
+    {
+      "name": "Size",
+      "position": 1,
+      "values": ["Small 3.5oz", "Medium", "Large", "Extra Large", "Nuggets 3.5oz", "Nuggets 0.5lb", "1lb"]
+    },
+    {
+      "name": "Flavor",
+      "position": 2,
+      "values": ["Plain", "Blueberry", "Honey", "Mint", "Peanut Butter", "Pumpkin", "Strawberry", "Flax Seed", "Turmeric & Ashwagandha"]
+    }
+  ],
+  "variants": [
+    {
+      "new_variant_gid": "gid://shopify/ProductVariant/40839553745029",
+      "size": "Small 3.5oz", "flavor": "Plain",
+      "sku": "4734", "price": "24.99",
+      "source_product_gid": "gid://shopify/Product/7046338150533",
+      "source_variant_gid": "gid://shopify/ProductVariant/40839553745029",
+      "note": "existing variant — mapped by option add, not newly created"
+    },
+    {
+      "new_variant_gid": "gid://shopify/ProductVariant/41603732930693",
+      "size": "Medium", "flavor": "Plain", "sku": "4735", "price": "29.99",
+      "source_product_gid": "gid://shopify/Product/7057636589701",
+      "source_product_handle": "himalayan-gourmet-cheese-chew-medium",
+      "source_variant_gid": "gid://shopify/ProductVariant/40883676283013"
+    },
+    {
+      "new_variant_gid": "gid://shopify/ProductVariant/41603732963461",
+      "size": "Large", "flavor": "Plain", "sku": "4736", "price": "34.99",
+      "source_product_gid": "gid://shopify/Product/7046340149381",
+      "source_product_handle": "himalayan-gourmet-cheese-chew-large",
+      "source_variant_gid": "gid://shopify/ProductVariant/40839557677189"
+    },
+    {
+      "new_variant_gid": "gid://shopify/ProductVariant/41603732996229",
+      "size": "Extra Large", "flavor": "Plain", "sku": "4737", "price": "24.99",
+      "source_product_gid": "gid://shopify/Product/7046338936965",
+      "source_product_handle": "himalayan-gourmet-cheese-chew-extra-large",
+      "source_variant_gid": "gid://shopify/ProductVariant/40839555940485"
+    },
+    {
+      "new_variant_gid": "gid://shopify/ProductVariant/41603733028997",
+      "size": "Nuggets 3.5oz", "flavor": "Plain", "sku": "7021", "price": "18.99",
+      "source_product_gid": "gid://shopify/Product/7049321218181",
+      "source_product_handle": "himalayan-gourmet-cheesy-chew-nuggets-3-5-0z",
+      "source_variant_gid": "gid://shopify/ProductVariant/40846645723269"
+    },
+    {
+      "new_variant_gid": "gid://shopify/ProductVariant/41603733061765",
+      "size": "Nuggets 0.5lb", "flavor": "Plain", "sku": "6401", "price": "27.99",
+      "source_product_gid": "gid://shopify/Product/7107472031877",
+      "source_product_handle": "himalayan-gourmet-cheese-chew-nuggets-pack-of-0-5-pound",
+      "source_variant_gid": "gid://shopify/ProductVariant/41082312163461"
+    },
+    {
+      "new_variant_gid": "gid://shopify/ProductVariant/41603733094533",
+      "size": "1lb", "flavor": "Plain", "sku": "7015", "price": "39.99",
+      "source_product_gid": "gid://shopify/Product/7049319645317",
+      "source_product_handle": "himalayas-gourmet-cheesy-chew-1-lb",
+      "source_variant_gid": "gid://shopify/ProductVariant/40846635663493"
+    },
+    {
+      "new_variant_gid": "gid://shopify/ProductVariant/41603733127301",
+      "size": "Small 3.5oz", "flavor": "Blueberry", "sku": "4796", "price": "18.99",
+      "source_product_gid": "gid://shopify/Product/7049321742469",
+      "source_product_handle": "himalayan-gourmet-cheese-chew-blueberry-flavor-3-5-oz",
+      "source_variant_gid": "gid://shopify/ProductVariant/40846649819269"
+    },
+    {
+      "new_variant_gid": "gid://shopify/ProductVariant/41603733160069",
+      "size": "Small 3.5oz", "flavor": "Honey", "sku": "4798", "price": "18.99",
+      "source_product_gid": "gid://shopify/Product/7049321939077",
+      "source_product_handle": "himalayan-gourmet-cheesy-chew-honey-flavor-3-5-oz",
+      "source_variant_gid": "gid://shopify/ProductVariant/40846650376325"
+    },
+    {
+      "new_variant_gid": "gid://shopify/ProductVariant/41603733192837",
+      "size": "Small 3.5oz", "flavor": "Mint", "sku": "4792", "price": "18.99",
+      "source_product_gid": "gid://shopify/Product/7049321414789",
+      "source_product_handle": "himalayan-gourmet-cheese-chew-mint-flavor-3-5-oz",
+      "source_variant_gid": "gid://shopify/ProductVariant/40846646935685"
+    },
+    {
+      "new_variant_gid": "gid://shopify/ProductVariant/41603733225605",
+      "size": "Small 3.5oz", "flavor": "Peanut Butter", "sku": "6400", "price": "18.99",
+      "source_product_gid": "gid://shopify/Product/7107451748485",
+      "source_product_handle": "himalayan-gourmet-cheese-chew-3-5-oz-peanut-butter-flavor",
+      "source_variant_gid": "gid://shopify/ProductVariant/41082099826821"
+    },
+    {
+      "new_variant_gid": "gid://shopify/ProductVariant/41603733258373",
+      "size": "Small 3.5oz", "flavor": "Pumpkin", "sku": "4793", "price": "18.99",
+      "source_product_gid": "gid://shopify/Product/7049320628357",
+      "source_product_handle": "himalayan-gourmet-cheesy-chew-pumpkin-flavor-3-5-0z",
+      "source_variant_gid": "gid://shopify/ProductVariant/40846640021637"
+    },
+    {
+      "new_variant_gid": "gid://shopify/ProductVariant/41603733291141",
+      "size": "Small 3.5oz", "flavor": "Strawberry", "sku": "4795", "price": "18.99",
+      "source_product_gid": "gid://shopify/Product/7049320431749",
+      "source_product_handle": "himalayas-gourmet-cheesy-chew-strawberry-flavor-3-5-oz",
+      "source_variant_gid": "gid://shopify/ProductVariant/40846638645381"
+    },
+    {
+      "new_variant_gid": "gid://shopify/ProductVariant/41603733323909",
+      "size": "Small 3.5oz", "flavor": "Flax Seed", "sku": "4797", "price": "18.99",
+      "source_product_gid": "gid://shopify/Product/7049322168453",
+      "source_product_handle": "himalayan-gourmet-cheesy-chew-flax-seed-flavor-3-5-oz",
+      "source_variant_gid": "gid://shopify/ProductVariant/40846651129989"
+    },
+    {
+      "new_variant_gid": "gid://shopify/ProductVariant/41603733356677",
+      "size": "Small 3.5oz", "flavor": "Turmeric & Ashwagandha", "sku": "4794", "price": "18.99",
+      "source_product_gid": "gid://shopify/Product/7049322758277",
+      "source_product_handle": "himalayan-gourmet-cheesy-chew-turmeric-ashwagandha-flavor-3-5-oz",
+      "source_variant_gid": "gid://shopify/ProductVariant/40846653784197"
+    }
+  ],
+  "rollback": "delete new variants 41603732930693..41603733356677 via productVariantsBulkDelete, then productOptionsDelete for Size + Flavor. Existing variant 40839553745029 returns to Default Title."
+}
