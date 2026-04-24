@@ -74,10 +74,10 @@ const PRODUCT_METADATA = {
       'Single ingredient',
       'Vet approved',
       'Long-lasting',
-      'Multi-size available',
+      'Plain — 7 sizes',
     ],
     shortDescription:
-      'Traditional Himalayan yak milk, hard-pressed into a long-lasting chew. Keeps big chewers busy for days — single ingredient, no hide, no artificial additives.',
+      'Traditional Himalayan yak milk, hard-pressed into a long-lasting plain chew. Keeps big chewers busy for days — single ingredient, no hide, no artificial additives. Seven sizes from 3.5oz pack to 1lb.',
     faqs: [
       {
         question: 'How long does a cheese chew last?',
@@ -98,6 +98,37 @@ const PRODUCT_METADATA = {
         question: 'What do I do with the small end piece?',
         answer:
           'Microwave it for 30–45 seconds until it puffs up into a cheese puff. Safer than letting your dog gulp a hard piece, and it’s the best part.',
+      },
+    ],
+  },
+  'himalayan-flavored-variety': {
+    badges: ['Yak milk', '8 natural flavors', '3.5oz pack'],
+    shortDescription:
+      '8 natural flavors of single-ingredient yak milk chews — Blueberry, Honey, Mint, Peanut Butter, Pumpkin, Strawberry, Flax Seed, and Turmeric & Ashwagandha. Same traditional Himalayan recipe, with subtle plant-based infusions for picky pups and rotation feeding.',
+    problemPillars: ['Destructive Chewing', 'Hyperactivity'],
+    seoTitle: 'Himalayan Cheese Chew — Flavored Variety | PetYupp',
+    seoDescription:
+      '8 natural flavors of single-ingredient yak milk chews — Blueberry, Honey, Mint, Peanut Butter, Pumpkin, Strawberry, Flax Seed, and Turmeric & Ashwagandha. Premium Himalayan recipe.',
+    faqs: [
+      {
+        question: 'Are the flavors natural or artificial?',
+        answer:
+          'Natural infusions only — real fruit (blueberry, strawberry, pumpkin), real plant matter (mint, flax seed, turmeric, ashwagandha), or real foods (honey, peanut butter). No artificial flavorings, colors, or preservatives.',
+      },
+      {
+        question: 'Which flavor should I start with for a picky dog?',
+        answer:
+          'Honey or Peanut Butter tend to be the most universally accepted. Pumpkin is gentle on sensitive stomachs. Try a 2–3 flavor rotation to find what your dog reaches for first.',
+      },
+      {
+        question: 'Same hardness and chew time as the plain version?',
+        answer:
+          'Yes — same yak-milk base, same hard-pressed and air-dried process. The flavor infusion doesn’t soften the chew. Most moderate chewers stretch one across several days.',
+      },
+      {
+        question: 'My dog has a peanut allergy / pollen sensitivity — which to avoid?',
+        answer:
+          'Skip Peanut Butter for nut allergies; skip Honey for bee-product sensitivities; skip Turmeric & Ashwagandha if you’re avoiding herbal blends. Plain (single ingredient) is on the original product page.',
       },
     ],
   },

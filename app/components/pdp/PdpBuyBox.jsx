@@ -2,6 +2,8 @@ import {forwardRef, useEffect, useRef, useState} from 'react';
 import {useNavigate} from 'react-router';
 import {CartForm, Money} from '@shopify/hydrogen';
 import {FEATURES} from '~/lib/featureFlags';
+import {PAIRED_PRODUCTS} from '~/lib/pairedProducts';
+import PdpPairedProductCard from './PdpPairedProductCard';
 
 const SUBSCRIPTION_DISCOUNT = 0.15;
 
@@ -437,6 +439,10 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
       <p className="text-xs text-gray-500 text-center">
         Ships in 1–2 business days
       </p>
+
+      {PAIRED_PRODUCTS[product?.handle] && (
+        <PdpPairedProductCard {...PAIRED_PRODUCTS[product.handle]} />
+      )}
     </div>
   );
 });
