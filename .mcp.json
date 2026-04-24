@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "shopify": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "shopify-mcp",
+        "--clientId",
+        "${SHOPIFY_CLIENT_ID}",
+        "--clientSecret",
+        "${SHOPIFY_CLIENT_SECRET}",
+        "--domain",
+        "shopyupp.myshopify.com"
+      ]
+    }
+  }
+}
