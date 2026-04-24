@@ -1,9 +1,10 @@
 import {useEffect, useId, useRef, useState} from 'react';
 import {createPortal} from 'react-dom';
-import {Link} from 'react-router';
+import {useFetcher} from 'react-router';
 import {ChevronLeft, ChevronRight, Volume2, VolumeX, X} from 'lucide-react';
 import {problemLabels, videoUrls} from '~/lib/ugcManifest';
 import {StarRow} from './VideoCard';
+import QuickAddBlock from './QuickAddBlock';
 
 function humanizeHandle(handle) {
   return handle
@@ -151,12 +152,34 @@ export default function VideoModal({clips, startIndex, onClose}) {
 
   const label = problemLabels[clip.problemTag] ?? clip.problemTag;
   const dogName = clip.dogName || 'Pet Parent';
-  const productHref = `/products/${clip.productHandle}`;
-  const productName = clip.productName || humanizeHandle(clip.productHandle);
   const urls = videoUrls(clip);
   const nextUrls = videoUrls(nextClip);
   const nextDogName = nextClip.dogName || 'Pet Parent';
   const showUpNext = timeLeft !== null && timeLeft < 3;
+
+  // Normalized clip for QuickAddBlock (ensures productName fallback).
+  const quickAddClip = {
+    ...clip,
+    productName: clip.productName || humanizeHandle(clip.productHandle),
+  };
+
+  // Product fetcher — one per modal, reloaded on clip change.
+  const productFetcher = useFetcher();
+  useEffect(() => {
+    productFetcher.load(
+      `/api/product-for-modal?handle=${encodeURIComponent(clip.productHandle)}`,
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clip.productHandle]);
+
+  const rawData = productFetcher.data;
+  const stale =
+    rawData?.product && rawData.product.handle !== clip.productHandle;
+  const fetchedProduct = stale ? null : rawData?.product || null;
+  const fetchError = stale ? false : Boolean(rawData?.error);
+  const productLoading =
+    productFetcher.state !== 'idle' ||
+    (!fetchedProduct && !fetchError);
 
   if (typeof document === 'undefined') return null;
 
@@ -317,14 +340,15 @@ export default function VideoModal({clips, startIndex, onClose}) {
                   borderTop: '1px solid rgba(255,255,255,0.15)',
                 }}
               />
-              <p className="text-[13px] text-white/70 mb-2">{productName}</p>
-              <Link
-                to={productHref}
-                onClick={onClose}
-                className="block w-full text-center bg-[#06B6D4] hover:bg-[#0891B2] text-white text-sm font-medium rounded-lg px-5 py-3 transition-colors"
-              >
-                Shop now →
-              </Link>
+              <QuickAddBlock
+                clip={quickAddClip}
+                product={fetchedProduct}
+                loading={productLoading}
+                error={fetchError}
+                dark
+                onClose={onClose}
+                showTrustLine={false}
+              />
             </div>
           </div>
         </div>
@@ -354,16 +378,14 @@ export default function VideoModal({clips, startIndex, onClose}) {
                 borderTop: '1px solid rgba(0,0,0,0.08)',
               }}
             />
-            <p className="text-[13px] text-[var(--text-secondary)] mb-2">
-              {productName}
-            </p>
-            <Link
-              to={productHref}
-              onClick={onClose}
-              className="block w-full text-center bg-[#06B6D4] hover:bg-[#0891B2] text-white text-sm font-medium rounded-lg px-5 py-3 transition-colors"
-            >
-              Shop now →
-            </Link>
+            <QuickAddBlock
+              clip={quickAddClip}
+              product={fetchedProduct}
+              loading={productLoading}
+              error={fetchError}
+              dark={false}
+              onClose={onClose}
+            />
           </div>
         </aside>
       </div>
