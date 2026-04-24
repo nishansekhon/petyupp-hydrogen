@@ -1,5 +1,5 @@
 import {Suspense, useEffect, useRef, useState} from 'react';
-import {Await, Link, useLoaderData} from 'react-router';
+import {Await, Link, redirect, useLoaderData} from 'react-router';
 import {
   getSelectedProductOptions,
   Analytics,
@@ -80,6 +80,20 @@ async function loadCriticalData({context, params, request}) {
   ]);
 
   if (!product?.id) {
+    // Phase 5 catalog consolidation: archived/merged handles often have a
+    // 301 stored in Shopify's URL redirects. Hydrogen doesn't consume those
+    // automatically, so check here before falling through to 404.
+    const pathname = new URL(request.url).pathname;
+    const redirectResult = await storefront
+      .query(URL_REDIRECT_QUERY, {
+        variables: {path: `path:${pathname}`},
+        cache: storefront.CacheNone(),
+      })
+      .catch(() => null);
+    const match = redirectResult?.urlRedirects?.nodes?.[0];
+    if (match?.target) {
+      throw redirect(match.target, 301);
+    }
     throw new Response(null, {status: 404});
   }
 
@@ -449,6 +463,14 @@ const PRODUCT_QUERY = `#graphql
     }
   }
   ${PRODUCT_FRAGMENT}
+`;
+
+const URL_REDIRECT_QUERY = `#graphql
+  query UrlRedirectLookup($path: String!) {
+    urlRedirects(first: 1, query: $path) {
+      nodes { id path target }
+    }
+  }
 `;
 
 const PRODUCT_RECOMMENDATIONS_QUERY = `#graphql
