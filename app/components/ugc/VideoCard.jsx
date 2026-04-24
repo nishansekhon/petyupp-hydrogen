@@ -41,7 +41,7 @@ export default function VideoCard({
     ? {
         chip: 'text-[11px] px-2 py-1',
         playBtn: 'w-10 h-10',
-        name: 'text-[15px]',
+        name: 'text-sm',
         quote: 'text-[13px] line-clamp-2',
         link: 'text-[13px]',
       }
