@@ -1,22 +1,28 @@
-import {Suspense, useEffect, useState} from 'react';
+import {Suspense, useEffect, useRef, useState} from 'react';
 import {Await, Link, useLoaderData} from 'react-router';
 import {
   getSelectedProductOptions,
   Analytics,
-  Money,
   useOptimisticVariant,
   getProductOptions,
   getAdjacentAndFirstAvailableVariants,
   useSelectedOptionInUrlParam,
 } from '@shopify/hydrogen';
 import {Breadcrumbs} from '~/components/Breadcrumbs';
-import {ProductPrice} from '~/components/ProductPrice';
-import {ProductImageGallery} from '~/components/ProductImageGallery';
-import {ProductForm} from '~/components/ProductForm';
 import {ProductItem} from '~/components/ProductItem';
 import {ProductSkeletonGrid} from '~/components/ProductSkeleton';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {createSeoMeta, excerpt, SITE_URL} from '~/lib/seo';
+import {getProductMetadata} from '~/lib/productMetadata';
+import PdpGallery from '~/components/pdp/PdpGallery';
+import PdpBuyBox from '~/components/pdp/PdpBuyBox';
+import PdpAttributeBadges from '~/components/pdp/PdpAttributeBadges';
+import PdpDescription from '~/components/pdp/PdpDescription';
+import PdpTrustStrip from '~/components/pdp/PdpTrustStrip';
+import PdpReviewsSection from '~/components/pdp/PdpReviewsSection';
+import PdpUgcSection from '~/components/pdp/PdpUgcSection';
+import PdpFaq from '~/components/pdp/PdpFaq';
+import StickyAddToCart from '~/components/pdp/StickyAddToCart';
 
 /**
  * @type {Route.MetaFunction}
@@ -106,10 +112,32 @@ function loadDeferredData({context, params}) {
   return {recommendations};
 }
 
+function TitleStarsBlock({title, level = 'h1'}) {
+  const Heading = level;
+  return (
+    <div>
+      <p className="text-[10px] font-semibold text-[#06B6D4] tracking-widest uppercase mb-1">
+        PetYupp
+      </p>
+      <Heading className="text-2xl lg:text-[28px] font-medium text-gray-900 leading-tight mb-2">
+        {title}
+      </Heading>
+      <div className="flex items-center gap-2 text-sm">
+        <span aria-label="4.8 out of 5 stars" className="text-yellow-400">
+          ★★★★★
+        </span>
+        <span className="font-medium text-gray-900">4.8</span>
+        <span className="text-gray-500">· 234 reviews</span>
+      </div>
+    </div>
+  );
+}
+
 export default function Product() {
   /** @type {LoaderReturnData} */
   const {product, recommendations} = useLoaderData();
   const [quantity, setQuantity] = useState(1);
+  const mobileAddToCartRef = useRef(null);
 
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -129,6 +157,7 @@ export default function Product() {
 
   const {title, descriptionHtml} = product;
   const productImages = product.images?.nodes ?? [];
+  const metadata = getProductMetadata(product.handle);
 
   const productJsonLd = {
     '@context': 'https://schema.org/',
@@ -151,8 +180,16 @@ export default function Product() {
       : undefined,
   };
 
+  const buyBoxProps = {
+    product,
+    selectedVariant,
+    productOptions,
+    quantity,
+    onQuantityChange: setQuantity,
+  };
+
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="max-w-[1200px] mx-auto px-4 md:px-6 pt-6 pb-24 md:pb-8">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{__html: JSON.stringify(productJsonLd)}}
@@ -165,130 +202,66 @@ export default function Product() {
           {label: title},
         ]}
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="md:sticky md:top-4 md:self-start">
-          <ProductImageGallery
-            variantImage={selectedVariant?.image}
-            images={productImages}
-          />
-        </div>
-        <div>
-          <p className="text-[10px] font-semibold text-[#06B6D4] tracking-widest uppercase mb-1">
-            PetYupp
-          </p>
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 leading-tight mb-2">
-            {title}
-          </h1>
-          <div className="flex items-center gap-2 text-sm mb-4">
-            <span
-              aria-label="4.8 out of 5 stars"
-              className="text-yellow-400"
-            >
-              ★★★★★
-            </span>
-            <span className="font-semibold text-gray-900">4.8</span>
-            <span className="text-gray-400">(234 reviews)</span>
-            <span className="ml-1 inline-flex items-center gap-1 bg-green-50 text-green-700 text-[10px] font-semibold px-2 py-0.5 rounded">
-              ✓ Verified
-            </span>
-          </div>
-          <div className="flex items-baseline gap-2 mt-2">
-            {selectedVariant?.price ? (
-              <span className="text-3xl font-extrabold text-gray-900">
-                <Money data={selectedVariant.price} />
-              </span>
-            ) : null}
-            {selectedVariant?.compareAtPrice &&
-            Number(selectedVariant.compareAtPrice.amount) >
-              Number(selectedVariant.price?.amount ?? 0) ? (
-              <span className="text-lg text-gray-400 line-through">
-                <Money data={selectedVariant.compareAtPrice} />
-              </span>
-            ) : null}
-          </div>
-          <p className="text-sm text-green-600 mt-1 font-medium">
-            Free shipping on orders $49+
-          </p>
-          <div className="flex flex-wrap gap-2 mt-4">
-            {['✓ Dental Health', '✓ Vet Approved', '✓ Natural'].map((tag) => (
-              <span
-                key={tag}
-                className="bg-green-50 text-green-800 text-xs font-medium px-3 py-1.5 rounded-md"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-          <div className="border-t border-gray-100 my-4" />
-          <div
-            aria-live="polite"
-            className="inline-flex items-center gap-2 text-sm font-medium mb-4"
-          >
-            <span
-              aria-hidden="true"
-              className={`w-2 h-2 rounded-full ${
-                selectedVariant?.availableForSale
-                  ? 'bg-[#10B981]'
-                  : 'bg-red-500'
-              }`}
+
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_440px] gap-8 lg:gap-12 mt-4">
+        {/* LEFT column */}
+        <div className="flex flex-col gap-8 min-w-0">
+          <PdpGallery images={productImages} title={title} />
+
+          {/* Mobile/tablet in-flow buy area (below gallery, before UGC/reviews) */}
+          <div className="lg:hidden flex flex-col gap-5">
+            <TitleStarsBlock title={title} level="h1" />
+            <PdpAttributeBadges badges={metadata.badges} />
+            <PdpDescription
+              shortDescription={metadata.shortDescription}
+              fullDescriptionHtml={descriptionHtml}
             />
-            <span
-              className={
-                selectedVariant?.availableForSale
-                  ? 'text-[#10B981]'
-                  : 'text-red-600'
-              }
-            >
-              {selectedVariant?.availableForSale ? 'In Stock' : 'Out of Stock'}
-            </span>
+            <PdpBuyBox {...buyBoxProps} ref={mobileAddToCartRef} />
+            <PdpTrustStrip />
           </div>
-          <ProductForm
-            productOptions={productOptions}
-            selectedVariant={selectedVariant}
-            quantity={quantity}
-            onQuantityChange={setQuantity}
-            priceLabel={
-              selectedVariant?.price
-                ? `$${Number(selectedVariant.price.amount).toFixed(2)}`
-                : null
-            }
+
+          {/* Desktop: description below the gallery */}
+          <div className="hidden lg:block">
+            <h2 className="text-xl font-medium text-gray-900 mb-3">
+              About this product
+            </h2>
+            <PdpDescription
+              shortDescription={metadata.shortDescription}
+              fullDescriptionHtml={descriptionHtml}
+            />
+          </div>
+
+          <PdpUgcSection
+            productHandle={product.handle}
+            productTitle={title}
           />
-          <div className="grid grid-cols-4 gap-2 py-3 mt-3 border-t border-b border-gray-100 text-center">
-            {[
-              {icon: '🛡', label: 'Vet Approved'},
-              {icon: '🚚', label: 'Free Ship $49+'},
-              {icon: '↩', label: '30-Day Returns'},
-              {icon: '🇺🇸', label: 'US Warehouse'},
-            ].map((item) => (
-              <div key={item.label} className="flex flex-col items-center">
-                <span className="text-base mb-0.5" aria-hidden="true">
-                  {item.icon}
-                </span>
-                <span className="text-[10px] text-gray-500 leading-tight">
-                  {item.label}
-                </span>
-              </div>
-            ))}
-          </div>
-          <div className="mt-8">
-            <p className="font-semibold text-gray-900 mb-3 uppercase text-xs tracking-wider">
-              Details
+          <PdpReviewsSection productTitle={title} />
+          <PdpFaq faqs={metadata.faqs} />
+        </div>
+
+        {/* RIGHT column — desktop sticky aside */}
+        <aside className="hidden lg:block">
+          <div className="lg:sticky lg:top-4 flex flex-col gap-5">
+            <TitleStarsBlock title={title} level="h1" />
+            <PdpAttributeBadges badges={metadata.badges} />
+            <p className="text-sm text-gray-700 leading-relaxed">
+              {metadata.shortDescription}
             </p>
-            <div
-              className="text-gray-700 prose prose-sm max-w-none"
-              dangerouslySetInnerHTML={{__html: descriptionHtml}}
-            />
+            <PdpBuyBox {...buyBoxProps} />
+            <PdpTrustStrip />
           </div>
-        </div>
+        </aside>
       </div>
+
       <RelatedProducts recommendations={recommendations} />
+
       <Analytics.ProductView
         data={{
           products: [
             {
               id: product.id,
               title: product.title,
-              price: selectedVariant?.price.amount || '0',
+              price: selectedVariant?.price?.amount || '0',
               vendor: product.vendor,
               variantId: selectedVariant?.id || '',
               variantTitle: selectedVariant?.title || '',
@@ -296,6 +269,13 @@ export default function Product() {
             },
           ],
         }}
+      />
+
+      <StickyAddToCart
+        targetRef={mobileAddToCartRef}
+        product={product}
+        selectedVariant={selectedVariant}
+        quantity={quantity}
       />
     </div>
   );
@@ -399,13 +379,30 @@ const PRODUCT_FRAGMENT = `#graphql
     description
     encodedVariantExistence
     encodedVariantAvailability
-    images(first: 6) {
+    images(first: 10) {
       nodes {
         id
         url
         altText
         width
         height
+      }
+    }
+    variants(first: 10) {
+      nodes {
+        id
+        title
+        availableForSale
+        price { amount currencyCode }
+        compareAtPrice { amount currencyCode }
+        sellingPlanAllocations(first: 1) {
+          nodes {
+            sellingPlan { id name }
+            priceAdjustments {
+              price { amount currencyCode }
+            }
+          }
+        }
       }
     }
     options {
