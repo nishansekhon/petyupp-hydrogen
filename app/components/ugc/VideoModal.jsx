@@ -183,11 +183,7 @@ export default function VideoModal({clips, startIndex, onClose}) {
         onClick={(e) => e.stopPropagation()}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
-        className="relative h-full w-full md:h-auto md:w-auto md:max-w-[960px] md:bg-white md:rounded-2xl md:overflow-hidden md:shadow-2xl md:flex md:flex-row"
-        style={{
-          // On desktop, cap card height. On mobile, full viewport via h-full.
-          maxHeight: 'min(85vh, 720px)',
-        }}
+        className="relative h-full w-full md:h-[min(85vh,720px)] md:w-auto md:max-w-[960px] md:bg-white md:rounded-2xl md:overflow-hidden md:shadow-2xl md:flex md:flex-row"
       >
         {/* Counter */}
         <span className="absolute top-3 left-3 z-10 text-[12px] font-medium text-white md:text-gray-700 bg-black/40 md:bg-gray-100 px-2 py-1 rounded-full">
@@ -205,9 +201,9 @@ export default function VideoModal({clips, startIndex, onClose}) {
           <X size={20} />
         </button>
 
-        {/* Video region — desktop: 9:16 derived from card height. Mobile: fullscreen. */}
+        {/* Video region — desktop: 9:16 width derived from card height. Mobile: fullscreen. */}
         <div
-          className="relative w-full h-full md:w-auto md:h-auto md:shrink-0 md:aspect-[9/16] bg-black"
+          className="relative w-full h-full md:w-[calc(min(85vh,720px)*9/16)] md:shrink-0 bg-black"
           style={{
             paddingTop: 'env(safe-area-inset-top)',
             paddingBottom: 'env(safe-area-inset-bottom)',
@@ -224,7 +220,7 @@ export default function VideoModal({clips, startIndex, onClose}) {
             muted={muted}
             playsInline
             loop
-            className="absolute inset-0 w-full h-full object-cover md:object-contain bg-black"
+            className="absolute inset-0 w-full h-full object-cover bg-black"
             aria-label={`${dogName} — ${label}`}
           >
             <track kind="captions" />
@@ -285,7 +281,7 @@ export default function VideoModal({clips, startIndex, onClose}) {
         </div>
 
         {/* Desktop meta panel */}
-        <aside className="hidden md:flex md:flex-col md:w-[360px] md:shrink-0 md:p-8 md:overflow-y-auto">
+        <aside className="hidden md:flex md:flex-col md:w-[360px] md:h-full md:shrink-0 md:p-8 md:overflow-y-auto">
           <span className="self-start bg-[#06B6D4]/10 text-[#06B6D4] text-xs font-semibold rounded-full px-2 py-1">
             {label}
           </span>
