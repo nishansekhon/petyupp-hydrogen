@@ -16,14 +16,23 @@ function humanizeHandle(handle) {
 const FOCUSABLE_SELECTOR =
   'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
+/**
+ * Unified layout at all viewports:
+ *   - Card is portrait-oriented; mobile = fullscreen, desktop = centered
+ *     480px × up to 720px tall (85-90vh).
+ *   - Video fills the card with object-cover.
+ *   - Bottom gradient scrim sits over the video and contains chip, dog
+ *     name, stars, quote, and QuickAddBlock (product + quick-add).
+ *
+ * This is the deliberate TikTok-Shop pattern; the previous side-by-side
+ * desktop aside was removed because QuickAddBlock wouldn't render
+ * reliably in that subtree.
+ */
 export default function VideoModal({clips, startIndex, onClose}) {
   const [currentIndex, setCurrentIndex] = useState(startIndex);
   const [muted, setMuted] = useState(true);
-  const [timeLeft, setTimeLeft] = useState(null);
 
   const clip = clips[currentIndex];
-  const nextIndex = (currentIndex + 1) % clips.length;
-  const nextClip = clips[nextIndex];
   const atStart = currentIndex === 0;
   const atEnd = currentIndex === clips.length - 1;
   const titleId = useId();
@@ -32,12 +41,6 @@ export default function VideoModal({clips, startIndex, onClose}) {
   const closeBtnRef = useRef(null);
   const videoRef = useRef(null);
   const touchStartRef = useRef(null);
-
-  // Reset the time-remaining tracker when we swap clips. The new clip
-  // will fire its own onTimeUpdate once playback begins.
-  useEffect(() => {
-    setTimeLeft(null);
-  }, [currentIndex]);
 
   // Body scroll lock + scrollbar-width compensation
   useEffect(() => {
@@ -75,11 +78,9 @@ export default function VideoModal({clips, startIndex, onClose}) {
     closeBtnRef.current?.focus();
   }, []);
 
-  // Manual navigation clamps at the ends (chevrons hide there).
-  const goPrev = () =>
-    setCurrentIndex((i) => (i > 0 ? i - 1 : i));
-  const goNext = () =>
-    setCurrentIndex((i) => (i < clips.length - 1 ? i + 1 : i));
+  // Manual nav clamps at the ends (chevrons hide there).
+  const goPrev = () => setCurrentIndex((i) => (i > 0 ? i - 1 : i));
+  const goNext = () => setCurrentIndex((i) => (i < clips.length - 1 ? i + 1 : i));
   // Autoplay advance loops back to first at the end of the list.
   const advanceLooping = () =>
     setCurrentIndex((i) => (i + 1) % clips.length);
@@ -143,21 +144,10 @@ export default function VideoModal({clips, startIndex, onClose}) {
     }
   };
 
-  const onVideoTimeUpdate = (e) => {
-    const v = e.currentTarget;
-    if (isFinite(v.duration) && v.duration > 0) {
-      setTimeLeft(v.duration - v.currentTime);
-    }
-  };
-
   const label = problemLabels[clip.problemTag] ?? clip.problemTag;
   const dogName = clip.dogName || 'Pet Parent';
   const urls = videoUrls(clip);
-  const nextUrls = videoUrls(nextClip);
-  const nextDogName = nextClip.dogName || 'Pet Parent';
-  const showUpNext = timeLeft !== null && timeLeft < 3;
 
-  // Normalized clip for QuickAddBlock (ensures productName fallback).
   const quickAddClip = {
     ...clip,
     productName: clip.productName || humanizeHandle(clip.productHandle),
@@ -183,20 +173,6 @@ export default function VideoModal({clips, startIndex, onClose}) {
 
   if (typeof document === 'undefined') return null;
 
-  // DIAGNOSTIC: remove once empty-aside root cause is identified.
-  if (typeof console !== 'undefined') {
-    // eslint-disable-next-line no-console
-    console.log('[VideoModal] render', {
-      clipHandle: clip.productHandle,
-      fetcherState: productFetcher.state,
-      hasFetcherData: !!rawData,
-      fetchedHandle: rawData?.product?.handle,
-      fetchErrorMsg: rawData?.error,
-      derivedLoading: productLoading,
-      derivedError: fetchError,
-    });
-  }
-
   const modalTree = (
     <div
       ref={dialogRef}
@@ -210,205 +186,116 @@ export default function VideoModal({clips, startIndex, onClose}) {
         {dogName} — {label}
       </h2>
 
-      {/* Card — desktop centered row; mobile fullscreen */}
+      {/* Card — mobile fullscreen; desktop centered 480px × up to 720px. */}
       <div
         onClick={(e) => e.stopPropagation()}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
-        className="relative h-full w-full md:h-[min(85vh,720px)] md:w-auto md:max-w-[960px] md:bg-white md:rounded-2xl md:overflow-hidden md:shadow-2xl md:flex md:flex-row"
+        className="relative h-full w-full md:h-[min(90vh,720px)] md:w-full md:max-w-[480px] md:rounded-2xl md:overflow-hidden md:shadow-2xl bg-black"
+        style={{
+          paddingTop: 'env(safe-area-inset-top)',
+          paddingBottom: 'env(safe-area-inset-bottom)',
+          paddingLeft: 'env(safe-area-inset-left)',
+          paddingRight: 'env(safe-area-inset-right)',
+        }}
       >
-        {/* Close X — top-right of card (stays outside video) */}
+        <video
+          ref={videoRef}
+          key={clip.slug}
+          src={urls.modal}
+          poster={urls.poster}
+          autoPlay
+          muted={muted}
+          playsInline
+          onEnded={advanceLooping}
+          className="absolute inset-0 w-full h-full object-cover bg-black"
+          aria-label={`${dogName} — ${label}`}
+        >
+          <track kind="captions" />
+        </video>
+
+        {/* Close X — top-right */}
         <button
           ref={closeBtnRef}
           type="button"
           onClick={onClose}
           aria-label="Close video"
-          className="absolute top-3 right-3 z-30 w-11 h-11 md:w-8 md:h-8 rounded-full bg-black/40 hover:bg-black/60 md:bg-gray-100 md:hover:bg-gray-200 text-white md:text-gray-700 flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+          className="absolute top-3 right-3 z-30 w-11 h-11 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
         >
           <X size={20} />
         </button>
 
-        {/* Video region — desktop: 9:16 width derived from card height. Mobile: fullscreen. */}
-        <div
-          className="relative w-full h-full md:w-[calc(min(85vh,720px)*9/16)] md:shrink-0 bg-black"
-          style={{
-            paddingTop: 'env(safe-area-inset-top)',
-            paddingBottom: 'env(safe-area-inset-bottom)',
-            paddingLeft: 'env(safe-area-inset-left)',
-            paddingRight: 'env(safe-area-inset-right)',
-          }}
-        >
-          <video
-            ref={videoRef}
-            key={clip.slug}
-            src={urls.modal}
-            poster={urls.poster}
-            autoPlay
-            muted={muted}
-            playsInline
-            onEnded={advanceLooping}
-            onTimeUpdate={onVideoTimeUpdate}
-            className="absolute inset-0 w-full h-full object-cover bg-black"
-            aria-label={`${dogName} — ${label}`}
-          >
-            <track kind="captions" />
-          </video>
+        {/* Counter — top-center */}
+        <span className="absolute top-3 left-1/2 -translate-x-1/2 z-20 text-white text-[12px] font-medium bg-black/60 rounded-full px-[10px] py-1 tabular-nums">
+          {currentIndex + 1} of {clips.length}
+        </span>
 
-          {/* Counter — top-center of video */}
-          <span className="absolute top-3 left-1/2 -translate-x-1/2 z-20 text-white text-[12px] font-medium bg-black/60 rounded-full px-[10px] py-1 tabular-nums">
-            {currentIndex + 1} of {clips.length}
-          </span>
-
-          {/* Desktop prev/next chevrons — inside video, hide at bounds */}
-          {!atStart && (
-            <button
-              type="button"
-              aria-label="Previous clip"
-              onClick={(e) => {
-                e.stopPropagation();
-                goPrev();
-              }}
-              className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm text-white items-center justify-center opacity-70 hover:opacity-100 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
-            >
-              <ChevronLeft size={22} />
-            </button>
-          )}
-          {!atEnd && (
-            <button
-              type="button"
-              aria-label="Next clip"
-              onClick={(e) => {
-                e.stopPropagation();
-                goNext();
-              }}
-              className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm text-white items-center justify-center opacity-70 hover:opacity-100 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
-            >
-              <ChevronRight size={22} />
-            </button>
-          )}
-
-          {/* Speaker toggle — bottom-LEFT of video (moved from right to make room for up-next) */}
+        {/* Desktop prev/next chevrons (mobile uses swipe) */}
+        {!atStart && (
           <button
             type="button"
-            onClick={() => setMuted((m) => !m)}
-            aria-label={muted ? 'Unmute video' : 'Mute video'}
-            className="absolute z-20 left-3 w-11 h-11 md:w-9 md:h-9 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
-            style={{bottom: 'max(1rem, env(safe-area-inset-bottom))'}}
+            aria-label="Previous clip"
+            onClick={(e) => {
+              e.stopPropagation();
+              goPrev();
+            }}
+            className="hidden md:flex absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm text-white items-center justify-center opacity-70 hover:opacity-100 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
           >
-            {muted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+            <ChevronLeft size={22} />
           </button>
-
-          {/* Up-next preview — desktop only, last 3 seconds */}
-          {showUpNext && (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                advanceLooping();
-              }}
-              aria-label={`Skip to next clip: ${nextDogName}`}
-              className="hidden md:flex absolute bottom-3 right-3 z-20 items-center gap-2 bg-black/60 backdrop-blur-sm text-white rounded-lg p-2 hover:bg-black/80 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
-            >
-              <img
-                src={nextUrls.poster}
-                alt=""
-                className="w-9 aspect-[9/16] object-cover rounded"
-              />
-              <div className="text-left pr-1">
-                <div className="text-[10px] text-white/70 uppercase tracking-wide">
-                  Up next
-                </div>
-                <div className="text-sm font-semibold leading-tight max-w-[120px] truncate">
-                  {nextDogName}
-                </div>
-              </div>
-            </button>
-          )}
-
-          {/* Mobile meta overlay — bottom scrim */}
-          <div
-            className="md:hidden absolute inset-x-0 bottom-0 pt-24 px-4 text-white pointer-events-none"
-            style={{
-              paddingBottom: 'max(1rem, env(safe-area-inset-bottom))',
-              background:
-                'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0) 100%)',
+        )}
+        {!atEnd && (
+          <button
+            type="button"
+            aria-label="Next clip"
+            onClick={(e) => {
+              e.stopPropagation();
+              goNext();
             }}
+            className="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm text-white items-center justify-center opacity-70 hover:opacity-100 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
           >
-            <div className="pointer-events-auto">
-              <span className="inline-block bg-[#06B6D4] text-white text-xs font-semibold rounded-full px-2 py-1">
-                {label}
-              </span>
-              <div className="mt-2 text-xl font-bold">{dogName}</div>
-              <div className="mt-1">
-                <StarRow rating={clip.rating} />
-              </div>
-              {clip.quote && (
-                <blockquote className="mt-2 text-sm text-white/90 line-clamp-3">
-                  &ldquo;{clip.quote}&rdquo;
-                </blockquote>
-              )}
-              <hr
-                style={{
-                  margin: '16px 0',
-                  border: 'none',
-                  borderTop: '1px solid rgba(255,255,255,0.15)',
-                }}
-              />
-              <QuickAddBlock
-                clip={quickAddClip}
-                product={fetchedProduct}
-                loading={productLoading}
-                error={fetchError}
-                dark
-                onClose={onClose}
-                showTrustLine={false}
-              />
+            <ChevronRight size={22} />
+          </button>
+        )}
+
+        {/* Speaker — bottom-left (over scrim, above its content by z-index) */}
+        <button
+          type="button"
+          onClick={() => setMuted((m) => !m)}
+          aria-label={muted ? 'Unmute video' : 'Mute video'}
+          className="absolute z-30 left-3 w-11 h-11 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+          style={{bottom: 'max(1rem, env(safe-area-inset-bottom))'}}
+        >
+          {muted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+        </button>
+
+        {/* Bottom scrim — meta + QuickAddBlock. Always visible. */}
+        <div
+          className="absolute inset-x-0 bottom-0 pt-24 px-4 text-white pointer-events-none z-20"
+          style={{
+            paddingBottom: 'max(1rem, env(safe-area-inset-bottom))',
+            background:
+              'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0) 100%)',
+          }}
+        >
+          <div className="pointer-events-auto">
+            <span className="inline-block bg-[#06B6D4] text-white text-xs font-semibold rounded-full px-2 py-1">
+              {label}
+            </span>
+            <div className="mt-2 text-xl font-bold">{dogName}</div>
+            <div className="mt-1">
+              <StarRow rating={clip.rating} />
             </div>
-          </div>
-        </div>
-
-        {/* Desktop meta panel */}
-        <aside className="hidden md:flex md:flex-col md:w-[360px] md:h-full md:shrink-0 md:p-8 md:overflow-y-auto">
-          {/* DIAGNOSTIC MARKER — remove once empty-aside root cause is found.
-              If this red block is NOT visible in the aside, the aside's
-              children are being dropped at render time. If it IS visible
-              but the chip/name/etc. below aren't, the issue is with
-              those specific children. */}
-          <div
-            style={{
-              background: '#ff0044',
-              color: '#fff',
-              padding: '6px 10px',
-              fontSize: '11px',
-              fontWeight: 700,
-              letterSpacing: '0.5px',
-              borderRadius: '4px',
-              marginBottom: '8px',
-            }}
-          >
-            ASIDE SANITY · {label}
-          </div>
-          <span className="self-start bg-[#06B6D4]/10 text-[#06B6D4] text-xs font-semibold rounded-full px-2 py-1">
-            {label}
-          </span>
-          <div className="mt-3 text-2xl font-bold text-gray-900">{dogName}</div>
-          <div className="mt-1">
-            <StarRow rating={clip.rating} />
-          </div>
-          {clip.quote && (
-            <blockquote className="mt-3 text-sm text-gray-700 leading-relaxed">
-              &ldquo;{clip.quote}&rdquo;
-            </blockquote>
-          )}
-          {clip.creator && (
-            <p className="mt-3 text-xs text-gray-500">{clip.creator}</p>
-          )}
-          <div className="mt-auto">
+            {clip.quote && (
+              <blockquote className="mt-2 text-sm text-white/90 line-clamp-3">
+                &ldquo;{clip.quote}&rdquo;
+              </blockquote>
+            )}
             <hr
               style={{
                 margin: '16px 0',
                 border: 'none',
-                borderTop: '1px solid rgba(0,0,0,0.08)',
+                borderTop: '1px solid rgba(255,255,255,0.15)',
               }}
             />
             <QuickAddBlock
@@ -416,11 +303,12 @@ export default function VideoModal({clips, startIndex, onClose}) {
               product={fetchedProduct}
               loading={productLoading}
               error={fetchError}
-              dark={false}
+              dark
               onClose={onClose}
+              showTrustLine={false}
             />
           </div>
-        </aside>
+        </div>
       </div>
     </div>
   );
