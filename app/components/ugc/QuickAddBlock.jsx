@@ -69,6 +69,20 @@ function AddButton({fetcher, disabled, outOfStock, label, dark}) {
   );
 }
 
+function QuickAddSkeleton({dark}) {
+  const bg = dark ? 'bg-white/10' : 'bg-gray-200';
+  return (
+    <div className="flex flex-col gap-2.5">
+      <div className={`h-5 w-3/4 rounded animate-pulse ${bg}`} />
+      <div className="grid grid-cols-2 gap-2">
+        <div className={`h-[72px] rounded-lg animate-pulse ${bg}`} />
+        <div className={`h-[72px] rounded-lg animate-pulse ${bg}`} />
+      </div>
+      <div className={`h-12 rounded-lg animate-pulse ${bg}`} />
+    </div>
+  );
+}
+
 function FallbackShopNow({href, productName, onClose, dark}) {
   const nameClass = dark
     ? 'text-white'
@@ -115,8 +129,19 @@ export default function QuickAddBlock({
   onClose,
   showTrustLine = true,
 }) {
+  // Defer the real render to after client mount. QuickAddBlock lives
+  // inside a portaled modal and interacts with a CartForm fetcher + the
+  // root cart Suspense boundary; rendering this subtree during
+  // hydration has caused React error #421 ("Suspense boundary received
+  // an update before it finished hydrating"). Gating on a post-mount
+  // flag sidesteps the entire hydration path.
+  const [mounted, setMounted] = useState(false);
   const [selectedVariantId, setSelectedVariantId] = useState(null);
   const [purchaseMode, setPurchaseMode] = useState('onetime'); // 'onetime' | 'subscription'
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (product?.variants?.nodes?.length) {
@@ -132,6 +157,13 @@ export default function QuickAddBlock({
   }, [product?.id]);
 
   const productHref = `/products/${clip.productHandle}`;
+
+  // Post-hooks gate: first render returns a skeleton so SSR/hydration
+  // never touches CartForm + fetchers. All hooks above run on every
+  // render regardless, keeping rules-of-hooks satisfied.
+  if (!mounted) {
+    return <QuickAddSkeleton dark={dark} />;
+  }
 
   // Error or confirmed missing → degrade to plain Shop now link.
   if (error || (!loading && !product)) {
