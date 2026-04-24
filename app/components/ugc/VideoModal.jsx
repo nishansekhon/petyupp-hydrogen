@@ -18,8 +18,13 @@ const FOCUSABLE_SELECTOR =
 export default function VideoModal({clips, startIndex, onClose}) {
   const [currentIndex, setCurrentIndex] = useState(startIndex);
   const [muted, setMuted] = useState(true);
+  const [timeLeft, setTimeLeft] = useState(null);
 
   const clip = clips[currentIndex];
+  const nextIndex = (currentIndex + 1) % clips.length;
+  const nextClip = clips[nextIndex];
+  const atStart = currentIndex === 0;
+  const atEnd = currentIndex === clips.length - 1;
   const titleId = useId();
 
   const dialogRef = useRef(null);
@@ -27,9 +32,10 @@ export default function VideoModal({clips, startIndex, onClose}) {
   const videoRef = useRef(null);
   const touchStartRef = useRef(null);
 
-  // Reset mute each clip swap so autoplay can resume
+  // Reset the time-remaining tracker when we swap clips. The new clip
+  // will fire its own onTimeUpdate once playback begins.
   useEffect(() => {
-    setMuted(true);
+    setTimeLeft(null);
   }, [currentIndex]);
 
   // Body scroll lock + scrollbar-width compensation
@@ -68,9 +74,14 @@ export default function VideoModal({clips, startIndex, onClose}) {
     closeBtnRef.current?.focus();
   }, []);
 
-  const prev = () =>
-    setCurrentIndex((i) => (i - 1 + clips.length) % clips.length);
-  const next = () => setCurrentIndex((i) => (i + 1) % clips.length);
+  // Manual navigation clamps at the ends (chevrons hide there).
+  const goPrev = () =>
+    setCurrentIndex((i) => (i > 0 ? i - 1 : i));
+  const goNext = () =>
+    setCurrentIndex((i) => (i < clips.length - 1 ? i + 1 : i));
+  // Autoplay advance loops back to first at the end of the list.
+  const advanceLooping = () =>
+    setCurrentIndex((i) => (i + 1) % clips.length);
 
   // Keyboard: Esc / arrows / focus trap
   useEffect(() => {
@@ -81,12 +92,12 @@ export default function VideoModal({clips, startIndex, onClose}) {
       }
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
-        prev();
+        goPrev();
         return;
       }
       if (e.key === 'ArrowRight') {
         e.preventDefault();
-        next();
+        goNext();
         return;
       }
       if (e.key === 'Tab') {
@@ -109,7 +120,7 @@ export default function VideoModal({clips, startIndex, onClose}) {
     return () => window.removeEventListener('keydown', onKey);
   }, [onClose, clips.length]);
 
-  // Touch: swipe horizontal = nav, swipe down = close (80px threshold)
+  // Touch: swipe horizontal = nav (50px), swipe down = close (80px)
   const onTouchStart = (e) => {
     if (e.touches.length !== 1) return;
     touchStartRef.current = {
@@ -123,11 +134,18 @@ export default function VideoModal({clips, startIndex, onClose}) {
     touchStartRef.current = null;
     const dx = e.changedTouches[0].clientX - start.x;
     const dy = e.changedTouches[0].clientY - start.y;
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 80) {
-      if (dx > 0) prev();
-      else next();
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+      if (dx > 0) goPrev();
+      else goNext();
     } else if (dy > 80 && Math.abs(dy) > Math.abs(dx)) {
       onClose();
+    }
+  };
+
+  const onVideoTimeUpdate = (e) => {
+    const v = e.currentTarget;
+    if (isFinite(v.duration) && v.duration > 0) {
+      setTimeLeft(v.duration - v.currentTime);
     }
   };
 
@@ -136,8 +154,10 @@ export default function VideoModal({clips, startIndex, onClose}) {
   const productHref = `/products/${clip.productHandle}`;
   const productName = clip.productName || humanizeHandle(clip.productHandle);
   const urls = videoUrls(clip);
+  const nextUrls = videoUrls(nextClip);
+  const nextDogName = nextClip.dogName || 'Pet Parent';
+  const showUpNext = timeLeft !== null && timeLeft < 3;
 
-  // SSR guard — no DOM, no portal
   if (typeof document === 'undefined') return null;
 
   const modalTree = (
@@ -149,34 +169,9 @@ export default function VideoModal({clips, startIndex, onClose}) {
       onClick={onClose}
       className="fixed inset-0 z-[9999] bg-black md:bg-black/75 md:flex md:items-center md:justify-center"
     >
-      {/* SR-only title — aria-labelledby target */}
       <h2 id={titleId} className="sr-only">
         {dogName} — {label}
       </h2>
-
-      {/* Desktop prev/next chevrons (mobile uses swipe) */}
-      <button
-        type="button"
-        aria-label="Previous clip"
-        onClick={(e) => {
-          e.stopPropagation();
-          prev();
-        }}
-        className="hidden md:flex absolute left-3 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/60 hover:bg-black/80 text-white items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white z-20"
-      >
-        <ChevronLeft size={24} />
-      </button>
-      <button
-        type="button"
-        aria-label="Next clip"
-        onClick={(e) => {
-          e.stopPropagation();
-          next();
-        }}
-        className="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/60 hover:bg-black/80 text-white items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white z-20"
-      >
-        <ChevronRight size={24} />
-      </button>
 
       {/* Card — desktop centered row; mobile fullscreen */}
       <div
@@ -185,18 +180,13 @@ export default function VideoModal({clips, startIndex, onClose}) {
         onTouchEnd={onTouchEnd}
         className="relative h-full w-full md:h-[min(85vh,720px)] md:w-auto md:max-w-[960px] md:bg-white md:rounded-2xl md:overflow-hidden md:shadow-2xl md:flex md:flex-row"
       >
-        {/* Counter */}
-        <span className="absolute top-3 left-3 z-10 text-[12px] font-medium text-white md:text-gray-700 bg-black/40 md:bg-gray-100 px-2 py-1 rounded-full">
-          {currentIndex + 1} / {clips.length}
-        </span>
-
-        {/* Close X */}
+        {/* Close X — top-right of card (stays outside video) */}
         <button
           ref={closeBtnRef}
           type="button"
           onClick={onClose}
           aria-label="Close video"
-          className="absolute top-3 right-3 z-10 w-11 h-11 md:w-8 md:h-8 rounded-full bg-black/40 hover:bg-black/60 md:bg-gray-100 md:hover:bg-gray-200 text-white md:text-gray-700 flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+          className="absolute top-3 right-3 z-30 w-11 h-11 md:w-8 md:h-8 rounded-full bg-black/40 hover:bg-black/60 md:bg-gray-100 md:hover:bg-gray-200 text-white md:text-gray-700 flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
         >
           <X size={20} />
         </button>
@@ -219,25 +209,84 @@ export default function VideoModal({clips, startIndex, onClose}) {
             autoPlay
             muted={muted}
             playsInline
-            loop
+            onEnded={advanceLooping}
+            onTimeUpdate={onVideoTimeUpdate}
             className="absolute inset-0 w-full h-full object-cover bg-black"
             aria-label={`${dogName} — ${label}`}
           >
             <track kind="captions" />
           </video>
 
-          {/* Speaker toggle */}
+          {/* Counter — top-center of video */}
+          <span className="absolute top-3 left-1/2 -translate-x-1/2 z-20 text-white text-[12px] font-medium bg-black/60 rounded-full px-[10px] py-1 tabular-nums">
+            {currentIndex + 1} of {clips.length}
+          </span>
+
+          {/* Desktop prev/next chevrons — inside video, hide at bounds */}
+          {!atStart && (
+            <button
+              type="button"
+              aria-label="Previous clip"
+              onClick={(e) => {
+                e.stopPropagation();
+                goPrev();
+              }}
+              className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm text-white items-center justify-center opacity-70 hover:opacity-100 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            >
+              <ChevronLeft size={22} />
+            </button>
+          )}
+          {!atEnd && (
+            <button
+              type="button"
+              aria-label="Next clip"
+              onClick={(e) => {
+                e.stopPropagation();
+                goNext();
+              }}
+              className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm text-white items-center justify-center opacity-70 hover:opacity-100 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            >
+              <ChevronRight size={22} />
+            </button>
+          )}
+
+          {/* Speaker toggle — bottom-LEFT of video (moved from right to make room for up-next) */}
           <button
             type="button"
             onClick={() => setMuted((m) => !m)}
             aria-label={muted ? 'Unmute video' : 'Mute video'}
-            className="absolute z-20 right-3 w-11 h-11 md:w-9 md:h-9 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
-            style={{
-              bottom: 'max(1rem, env(safe-area-inset-bottom))',
-            }}
+            className="absolute z-20 left-3 w-11 h-11 md:w-9 md:h-9 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            style={{bottom: 'max(1rem, env(safe-area-inset-bottom))'}}
           >
             {muted ? <VolumeX size={20} /> : <Volume2 size={20} />}
           </button>
+
+          {/* Up-next preview — desktop only, last 3 seconds */}
+          {showUpNext && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                advanceLooping();
+              }}
+              aria-label={`Skip to next clip: ${nextDogName}`}
+              className="hidden md:flex absolute bottom-3 right-3 z-20 items-center gap-2 bg-black/60 backdrop-blur-sm text-white rounded-lg p-2 hover:bg-black/80 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            >
+              <img
+                src={nextUrls.poster}
+                alt=""
+                className="w-9 aspect-[9/16] object-cover rounded"
+              />
+              <div className="text-left pr-1">
+                <div className="text-[10px] text-white/70 uppercase tracking-wide">
+                  Up next
+                </div>
+                <div className="text-sm font-semibold leading-tight max-w-[120px] truncate">
+                  {nextDogName}
+                </div>
+              </div>
+            </button>
+          )}
 
           {/* Mobile meta overlay — bottom scrim */}
           <div
