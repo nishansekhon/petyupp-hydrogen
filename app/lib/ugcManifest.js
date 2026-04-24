@@ -27,7 +27,7 @@ export const ugcManifest = [
 
   {
     slug: "Cheese_Chew_Ex-Large_itsmeandrookie_1",
-    productHandle: "himalayan-gourmet-cheese-chew-extra-large",
+    productHandle: "himalayan-gourmet-cheese-chew",
     productName: "Himalayan Cheese Chew — XL",
     size: "xl",
     flavor: "original",
@@ -42,7 +42,7 @@ export const ugcManifest = [
   },
   {
     slug: "Cheese_Chew_Ex_large_itsmeandrookie_2",
-    productHandle: "himalayan-gourmet-cheese-chew-large",
+    productHandle: "himalayan-gourmet-cheese-chew",
     productName: "Himalayan Cheese Chew — Large",
     size: "large",
     flavor: "original",
@@ -57,7 +57,7 @@ export const ugcManifest = [
   },
   {
     slug: "Cheese_Chew_Ex-large_leahfgregory",
-    productHandle: "himalayan-gourmet-cheese-chew-extra-large",
+    productHandle: "himalayan-gourmet-cheese-chew",
     productName: "Himalayan Cheese Chew — XL",
     size: "xl",
     flavor: "original",
@@ -72,7 +72,7 @@ export const ugcManifest = [
   },
   {
     slug: "Cheese_Chew_Honey_jaimeandjean",
-    productHandle: "himalayan-gourmet-cheesy-chew-honey-flavor-3-5-oz",
+    productHandle: "himalayan-gourmet-cheese-chew",
     productName: "Cheese Chew — Honey",
     size: "standard",
     flavor: "honey",
@@ -87,7 +87,7 @@ export const ugcManifest = [
   },
   {
     slug: "Cheese_Chew_Large_Micro__itsmeandrookie",
-    productHandle: "himalayan-gourmet-cheese-chew-large",
+    productHandle: "himalayan-gourmet-cheese-chew",
     productName: "Himalayan Cheese Chew — Large",
     size: "large",
     flavor: "original",
@@ -102,7 +102,7 @@ export const ugcManifest = [
   },
   {
     slug: "Cheese_Chew_Large_alliebug2382",
-    productHandle: "himalayan-gourmet-cheese-chew-large",
+    productHandle: "himalayan-gourmet-cheese-chew",
     productName: "Himalayan Cheese Chew — Large",
     size: "large",
     flavor: "original",
@@ -117,7 +117,7 @@ export const ugcManifest = [
   },
   {
     slug: "Cheese_Chew_Large_bitter_melon_3",
-    productHandle: "himalayan-gourmet-cheese-chew-large",
+    productHandle: "himalayan-gourmet-cheese-chew",
     productName: "Himalayan Cheese Chew — Large",
     size: "large",
     flavor: "original",
@@ -132,7 +132,7 @@ export const ugcManifest = [
   },
   {
     slug: "Cheese_Chew_Medium_2girls3doods",
-    productHandle: "himalayan-gourmet-cheese-chew-medium",
+    productHandle: "himalayan-gourmet-cheese-chew",
     productName: "Himalayan Cheese Chew — Medium",
     size: "medium",
     flavor: "original",
@@ -147,7 +147,7 @@ export const ugcManifest = [
   },
   {
     slug: "Cheese_Chew_Medium_crystalstill",
-    productHandle: "himalayan-gourmet-cheese-chew-medium",
+    productHandle: "himalayan-gourmet-cheese-chew",
     productName: "Himalayan Cheese Chew — Medium",
     size: "medium",
     flavor: "original",
@@ -237,7 +237,7 @@ export const ugcManifest = [
   },
   {
     slug: "Cheese_Chew_Strawberry_nancyhernandez76",
-    productHandle: "himalayas-gourmet-cheesy-chew-strawberry-flavor-3-5-oz",
+    productHandle: "himalayan-gourmet-cheese-chew",
     productName: "Cheese Chew — Strawberry",
     size: "standard",
     flavor: "strawberry",
@@ -252,7 +252,7 @@ export const ugcManifest = [
   },
   {
     slug: "Cheese_Chew_Strawberry_sakurapaws",
-    productHandle: "himalayas-gourmet-cheesy-chew-strawberry-flavor-3-5-oz",
+    productHandle: "himalayan-gourmet-cheese-chew",
     productName: "Cheese Chew — Strawberry",
     size: "standard",
     flavor: "strawberry",
@@ -267,7 +267,7 @@ export const ugcManifest = [
   },
   {
     slug: "Cheese_Chew_large_Lunathelabpuppy",
-    productHandle: "himalayan-gourmet-cheese-chew-large",
+    productHandle: "himalayan-gourmet-cheese-chew",
     productName: "Himalayan Cheese Chew — Large",
     size: "large",
     flavor: "original",
@@ -282,7 +282,7 @@ export const ugcManifest = [
   },
   {
     slug: "Cheese_Chew_pumpkin_jaimeandjean",
-    productHandle: "himalayan-gourmet-cheesy-chew-pumpkin-flavor-3-5-0z",
+    productHandle: "himalayan-gourmet-cheese-chew",
     productName: "Cheese Chew — Pumpkin",
     size: "standard",
     flavor: "pumpkin",
@@ -297,7 +297,7 @@ export const ugcManifest = [
   },
   {
     slug: "Cheese_chew_Peanut_Butter_jaimeandjean",
-    productHandle: "himalayan-gourmet-cheese-chew-3-5-oz-peanut-butter-flavor",
+    productHandle: "himalayan-gourmet-cheese-chew",
     productName: "Cheese Chew — Peanut Butter",
     size: "standard",
     flavor: "peanut-butter",
@@ -312,7 +312,7 @@ export const ugcManifest = [
   },
   {
     slug: "Cheese_chew_large_amytaylornyc",
-    productHandle: "himalayan-gourmet-cheese-chew-large",
+    productHandle: "himalayan-gourmet-cheese-chew",
     productName: "Himalayan Cheese Chew — Large",
     size: "large",
     flavor: "original",
@@ -327,7 +327,7 @@ export const ugcManifest = [
   },
   {
     slug: "Cheese_chew_large_sammy.the.rottweil",
-    productHandle: "himalayan-gourmet-cheese-chew-large",
+    productHandle: "himalayan-gourmet-cheese-chew",
     productName: "Himalayan Cheese Chew — Large",
     size: "large",
     flavor: "original",
@@ -342,7 +342,7 @@ export const ugcManifest = [
   },
   {
     slug: "cheese_chew_large_ontheradiofish",
-    productHandle: "himalayan-gourmet-cheese-chew-large",
+    productHandle: "himalayan-gourmet-cheese-chew",
     productName: "Himalayan Cheese Chew — Large",
     size: "large",
     flavor: "original",
@@ -357,7 +357,7 @@ export const ugcManifest = [
   },
   {
     slug: "cheese_chew_large_stumpychubs",
-    productHandle: "himalayan-gourmet-cheese-chew-large",
+    productHandle: "himalayan-gourmet-cheese-chew",
     productName: "Himalayan Cheese Chew — Large",
     size: "large",
     flavor: "original",
@@ -602,7 +602,7 @@ export const ugcManifest = [
 
   {
     slug: "blueberry_amytaylornyc",
-    productHandle: "himalayan-gourmet-cheese-chew-blueberry-flavor-3-5-oz",
+    productHandle: "himalayan-gourmet-cheese-chew",
     productName: "Cheese Chew — Blueberry",
     size: "standard",
     flavor: "blueberry",
@@ -622,7 +622,7 @@ export const ugcManifest = [
 
   {
     slug: "strawberry_amytaylornyc",
-    productHandle: "himalayas-gourmet-cheesy-chew-strawberry-flavor-3-5-oz",
+    productHandle: "himalayan-gourmet-cheese-chew",
     productName: "Cheese Chew — Strawberry",
     size: "standard",
     flavor: "strawberry",
@@ -642,7 +642,7 @@ export const ugcManifest = [
 
   {
     slug: "pumpkin_midnighttrainbull",
-    productHandle: "himalayan-gourmet-cheesy-chew-pumpkin-flavor-3-5-0z",
+    productHandle: "himalayan-gourmet-cheese-chew",
     productName: "Cheese Chew — Pumpkin",
     size: "standard",
     flavor: "pumpkin",
@@ -663,7 +663,7 @@ export const ugcManifest = [
 
   {
     slug: "ugc-aussie-power-chewer",
-    productHandle: "himalayan-gourmet-cheese-chew-extra-large",
+    productHandle: "himalayan-gourmet-cheese-chew",
     productName: "Himalayan Cheese Chew — XL",
     size: "xl",
     flavor: "original",
@@ -753,7 +753,7 @@ export const ugcManifest = [
   },
   {
     slug: "ugc-owner-dog-strawberry-chew-reveal",
-    productHandle: "himalayas-gourmet-cheesy-chew-strawberry-flavor-3-5-oz",
+    productHandle: "himalayan-gourmet-cheese-chew",
     productName: "Cheese Chew — Strawberry",
     size: "standard",
     flavor: "strawberry",
