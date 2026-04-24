@@ -34,6 +34,24 @@ const PRODUCT_FOR_MODAL_QUERY = `#graphql
             amount
             currencyCode
           }
+          sellingPlanAllocations(first: 1) {
+            nodes {
+              sellingPlan {
+                id
+                name
+              }
+              priceAdjustments {
+                price {
+                  amount
+                  currencyCode
+                }
+                compareAtPrice {
+                  amount
+                  currencyCode
+                }
+              }
+            }
+          }
         }
       }
     }

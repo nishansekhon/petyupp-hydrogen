@@ -1,6 +1,17 @@
+// SUBSCRIPTION GATING:
+// UI renders always. Behavior gated by FEATURES.SUBSCRIPTIONS_ENABLED.
+// To activate:
+// 1. Install Shopify Subscriptions app in Shopify admin
+// 2. Create a Selling Plan Group for eligible products
+// 3. Flip FEATURES.SUBSCRIPTIONS_ENABLED = true
+// 4. Verify sellingPlanAllocations returns data in Storefront API
+
 import {useEffect, useRef, useState} from 'react';
 import {Link} from 'react-router';
 import {CartForm} from '@shopify/hydrogen';
+import {FEATURES} from '~/lib/featureFlags';
+
+const SUBSCRIPTION_DISCOUNT = 0.15; // 15% — hardcoded until sellingPlan priceAdjustments drive it
 
 function formatMoney(money) {
   if (!money?.amount) return null;
@@ -105,6 +116,7 @@ export default function QuickAddBlock({
   showTrustLine = true,
 }) {
   const [selectedVariantId, setSelectedVariantId] = useState(null);
+  const [purchaseMode, setPurchaseMode] = useState('onetime'); // 'onetime' | 'subscription'
 
   useEffect(() => {
     if (product?.variants?.nodes?.length) {
@@ -115,6 +127,8 @@ export default function QuickAddBlock({
     } else {
       setSelectedVariantId(null);
     }
+    // Reset to one-time whenever the product changes — safest default.
+    setPurchaseMode('onetime');
   }, [product?.id]);
 
   const productHref = `/products/${clip.productHandle}`;
@@ -136,41 +150,134 @@ export default function QuickAddBlock({
   const selectedVariant = variants.find((v) => v.id === selectedVariantId);
   const outOfStock = selectedVariant ? !selectedVariant.availableForSale : false;
   const displayName = product?.title ?? clip.productName;
-  const priceText = selectedVariant
-    ? formatMoney(selectedVariant.price)
-    : formatMoney(product?.priceRange?.minVariantPrice);
+
+  const onetimePriceObj =
+    selectedVariant?.price ?? product?.priceRange?.minVariantPrice ?? null;
+  const onetimePriceText = formatMoney(onetimePriceObj);
+
+  // Subscription price: read from sellingPlan's priceAdjustments when the
+  // app is installed; otherwise fall back to the flat 15%-off preview.
+  const sellingPlanAllocation =
+    selectedVariant?.sellingPlanAllocations?.nodes?.[0] ?? null;
+  const sellingPlan = sellingPlanAllocation?.sellingPlan ?? null;
+
+  let subscriptionPriceObj = null;
+  if (FEATURES.SUBSCRIPTIONS_ENABLED && sellingPlanAllocation?.priceAdjustments?.length) {
+    subscriptionPriceObj = sellingPlanAllocation.priceAdjustments[0].price ?? null;
+  } else if (onetimePriceObj?.amount) {
+    subscriptionPriceObj = {
+      amount: (parseFloat(onetimePriceObj.amount) * (1 - SUBSCRIPTION_DISCOUNT)).toFixed(2),
+      currencyCode: onetimePriceObj.currencyCode,
+    };
+  }
+  const subscriptionPriceText = formatMoney(subscriptionPriceObj);
+
+  const isSubscription =
+    purchaseMode === 'subscription' && FEATURES.SUBSCRIPTIONS_ENABLED;
 
   const theme = dark
     ? {
         name: 'text-white',
-        price: 'text-white',
         pricePlaceholder: 'bg-white/10',
         select:
           'bg-white/10 text-white border-white/25 focus:ring-white/40',
         details: 'text-white/70',
         trust: 'text-white/60',
+        optBorder: 'border-white/25',
+        optHover: 'hover:border-white/50',
+        optSelected: 'border-[#06B6D4] ring-1 ring-[#06B6D4] ring-inset bg-[#06B6D4]/15',
+        optLabel: 'text-white',
+        optPrice: 'text-white',
+        comingSoon: 'text-white/55',
+        delivery: 'text-white/70',
       }
     : {
         name: 'text-[var(--text-primary)]',
-        price: 'text-[var(--text-primary)]',
         pricePlaceholder: 'bg-gray-200',
         select:
           'bg-white text-gray-900 border-gray-300 focus:ring-[#06B6D4]',
         details: 'text-[var(--text-secondary)]',
         trust: 'text-[var(--text-muted)]',
+        optBorder: 'border-gray-300',
+        optHover: 'hover:border-[#06B6D4]',
+        optSelected: 'border-[#06B6D4] ring-1 ring-[#06B6D4] ring-inset bg-[#06B6D4]/5',
+        optLabel: 'text-[var(--text-primary)]',
+        optPrice: 'text-[var(--text-primary)]',
+        comingSoon: 'text-[var(--text-muted)]',
+        delivery: 'text-[var(--text-secondary)]',
       };
+
+  const handleSubscriptionClick = () => {
+    if (!FEATURES.SUBSCRIPTIONS_ENABLED) return;
+    setPurchaseMode('subscription');
+  };
+
+  const onetimeSelected = purchaseMode === 'onetime';
+  const subscriptionSelected = purchaseMode === 'subscription';
+  const optBase = `text-left rounded-lg p-3 transition-colors border focus:outline-none focus-visible:ring-2 focus-visible:ring-[#06B6D4]`;
 
   return (
     <div className="flex flex-col gap-2.5">
-      <div className="space-y-1">
-        <p className={`text-[15px] font-medium leading-tight ${theme.name}`}>
-          {displayName}
-        </p>
-        {loading && !priceText ? (
-          <div className={`h-5 w-16 rounded ${theme.pricePlaceholder} animate-pulse`} />
-        ) : priceText ? (
-          <p className={`text-[18px] font-medium ${theme.price}`}>{priceText}</p>
-        ) : null}
+      <p className={`text-[15px] font-medium leading-tight ${theme.name}`}>
+        {displayName}
+      </p>
+
+      {/* Purchase-mode toggle — one-time vs subscription */}
+      <div className="grid grid-cols-2 gap-2">
+        <button
+          type="button"
+          onClick={() => setPurchaseMode('onetime')}
+          aria-pressed={onetimeSelected}
+          className={`${optBase} ${
+            onetimeSelected ? theme.optSelected : `${theme.optBorder} ${theme.optHover}`
+          }`}
+        >
+          <div className={`text-[13px] font-medium ${theme.optLabel}`}>
+            One-time purchase
+          </div>
+          {loading ? (
+            <div className={`mt-1 h-4 w-14 rounded ${theme.pricePlaceholder} animate-pulse`} />
+          ) : onetimePriceText ? (
+            <div className={`mt-1 text-[15px] font-medium ${theme.optPrice}`}>
+              {onetimePriceText}
+            </div>
+          ) : null}
+        </button>
+
+        <button
+          type="button"
+          onClick={handleSubscriptionClick}
+          disabled={!FEATURES.SUBSCRIPTIONS_ENABLED}
+          aria-pressed={subscriptionSelected}
+          title={
+            !FEATURES.SUBSCRIPTIONS_ENABLED
+              ? 'Subscription delivery launching soon'
+              : undefined
+          }
+          className={`${optBase} ${
+            subscriptionSelected
+              ? theme.optSelected
+              : `${theme.optBorder} ${FEATURES.SUBSCRIPTIONS_ENABLED ? theme.optHover : ''}`
+          } ${!FEATURES.SUBSCRIPTIONS_ENABLED ? 'opacity-60 cursor-not-allowed' : ''}`}
+        >
+          <div className={`text-[13px] font-medium ${theme.optLabel}`}>
+            Subscribe &amp; save 15%
+          </div>
+          {loading ? (
+            <div className={`mt-1 h-4 w-14 rounded ${theme.pricePlaceholder} animate-pulse`} />
+          ) : subscriptionPriceText ? (
+            <div className={`mt-1 text-[15px] font-medium ${theme.optPrice}`}>
+              {subscriptionPriceText}
+            </div>
+          ) : null}
+          {!FEATURES.SUBSCRIPTIONS_ENABLED && (
+            <div
+              className={`mt-1 text-[10px] uppercase tracking-[0.5px] ${theme.comingSoon}`}
+            >
+              Coming soon
+            </div>
+          )}
+        </button>
       </div>
 
       {hasMultipleVariants && (
@@ -198,18 +305,34 @@ export default function QuickAddBlock({
         </select>
       )}
 
+      {isSubscription && (
+        <p className={`text-[12px] ${theme.delivery}`}>
+          Delivery every 4 weeks — skip or cancel anytime
+        </p>
+      )}
+
       {loading ? (
         <div
           className={`h-12 rounded-lg animate-pulse ${theme.pricePlaceholder}`}
         />
       ) : (
         <CartForm
-          key={`${clip.slug}-${selectedVariantId ?? 'none'}`}
+          key={`${clip.slug}-${selectedVariantId ?? 'none'}-${
+            isSubscription && sellingPlan ? sellingPlan.id : 'otp'
+          }`}
           route="/cart"
           action={CartForm.ACTIONS.LinesAdd}
           inputs={{
             lines: selectedVariantId
-              ? [{merchandiseId: selectedVariantId, quantity: 1}]
+              ? [
+                  {
+                    merchandiseId: selectedVariantId,
+                    quantity: 1,
+                    ...(isSubscription && sellingPlan
+                      ? {sellingPlanId: sellingPlan.id}
+                      : {}),
+                  },
+                ]
               : [],
           }}
         >
