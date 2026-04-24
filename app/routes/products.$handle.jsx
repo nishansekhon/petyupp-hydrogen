@@ -259,7 +259,7 @@ export default function Product() {
             whose height matches the (much taller) left column. That keeps
             the buy box anchored from gallery through UGC, reviews, and FAQ
             instead of releasing at the aside's own content bottom. */}
-        <aside className="hidden lg:block lg:sticky lg:top-4 lg:self-start">
+        <aside className="hidden lg:block lg:sticky lg:top-4 lg:self-start lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto">
           <div className="flex flex-col gap-5">
             <TitleStarsBlock title={title} level="h1" />
             <PdpAttributeBadges badges={metadata.badges} />
