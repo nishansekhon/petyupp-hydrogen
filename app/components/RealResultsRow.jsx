@@ -40,7 +40,7 @@ export default function RealResultsRow() {
         {clips.map((clip) => (
           <div
             key={clip.slug}
-            className="shrink-0 snap-start w-[160px] md:w-[240px]"
+            className="shrink-0 snap-start w-[160px] md:w-[180px] lg:w-[200px]"
           >
             <VideoCard
               clip={clip}
@@ -49,6 +49,7 @@ export default function RealResultsRow() {
               cardRef={(el) => {
                 cardRefs.current[clip.slug] = el;
               }}
+              compact
             />
           </div>
         ))}

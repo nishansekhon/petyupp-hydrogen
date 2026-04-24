@@ -25,11 +25,33 @@ export function StarRow({rating}) {
   );
 }
 
-export default function VideoCard({clip, onOpen, modalOpen = false, cardRef}) {
+export default function VideoCard({
+  clip,
+  onOpen,
+  modalOpen = false,
+  cardRef,
+  compact = false,
+}) {
   const label = problemLabels[clip.problemTag] ?? clip.problemTag;
   const productHref = `/products/${clip.productHandle}`;
   const dogName = clip.dogName || 'Pet Parent';
   const urls = videoUrls(clip);
+
+  const sizes = compact
+    ? {
+        chip: 'text-[11px] px-2 py-1',
+        playBtn: 'w-10 h-10',
+        name: 'text-[15px]',
+        quote: 'text-[13px] line-clamp-2',
+        link: 'text-[13px]',
+      }
+    : {
+        chip: 'text-[10px] md:text-xs px-2 py-1',
+        playBtn: 'w-10 h-10 md:w-12 md:h-12',
+        name: 'text-sm',
+        quote: 'text-xs line-clamp-3',
+        link: 'text-xs',
+      };
 
   const videoRef = useRef(null);
   const containerRef = useRef(null);
@@ -103,32 +125,36 @@ export default function VideoCard({clip, onOpen, modalOpen = false, cardRef}) {
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-        <span className="absolute top-2 left-2 bg-[#06B6D4] text-white text-[10px] md:text-xs font-semibold rounded-full px-2 py-1 shadow-sm">
+        <span
+          className={`absolute top-2 left-2 bg-[#06B6D4] text-white font-semibold rounded-full shadow-sm ${sizes.chip}`}
+        >
           {label}
         </span>
         <span className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <span className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/90 flex items-center justify-center shadow-md group-hover:bg-white transition-colors">
+          <span
+            className={`rounded-full bg-white/90 flex items-center justify-center shadow-md group-hover:bg-white transition-colors ${sizes.playBtn}`}
+          >
             <Play size={18} className="text-gray-900 ml-0.5" fill="currentColor" />
           </span>
         </span>
       </div>
 
       <div className="p-2 md:p-3">
-        <div className="text-sm font-semibold text-gray-900 leading-tight">
+        <div className={`${sizes.name} font-semibold text-gray-900 leading-tight`}>
           {dogName}
         </div>
         <div className="mt-1">
           <StarRow rating={clip.rating} />
         </div>
         {clip.quote && (
-          <p className="text-xs text-gray-600 mt-1 line-clamp-3">
+          <p className={`text-gray-600 mt-1 ${sizes.quote}`}>
             {clip.quote}
           </p>
         )}
         <Link
           to={productHref}
           onClick={(e) => e.stopPropagation()}
-          className="mt-2 inline-flex items-center gap-1 text-xs text-[#06B6D4] font-medium hover:text-[#0891B2]"
+          className={`mt-2 inline-flex items-center gap-1 text-[#06B6D4] font-medium hover:text-[#0891B2] ${sizes.link}`}
         >
           <span className="truncate">Shop this product</span>
           <span aria-hidden>→</span>
