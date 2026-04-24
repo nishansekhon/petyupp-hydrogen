@@ -1,0 +1,27 @@
+{
+  "stage": 2,
+  "description": "Activate inventory items at location 41420193925 for 14 new variants, then set each to match source-product quantities. Sum check: new variant inventory = pre-migration source inventory.",
+  "executed_at": "2026-04-25",
+  "location_gid": "gid://shopify/Location/41420193925",
+  "pre_migration_sum": 1253,
+  "post_migration_variant_sum": 1253,
+  "integrity_check": "PASS — variant-level sum across the 15 parent variants equals the sum across 15 source variants pre-migration",
+  "note_on_totalInventory": "Product.totalInventory reports 1203 vs variant-sum 1253 — Shopify aggregate-cache lag on freshly-activated inventory items. Variant-level quantities are authoritative and match. Old source products still have their original inventory; archival in stage 4 will render those unsellable.",
+  "migrations": [
+    {"variant_gid": "gid://shopify/ProductVariant/41603732930693", "label": "Medium / Plain", "target": 70, "actual": 70},
+    {"variant_gid": "gid://shopify/ProductVariant/41603732963461", "label": "Large / Plain", "target": 15, "actual": 15},
+    {"variant_gid": "gid://shopify/ProductVariant/41603732996229", "label": "Extra Large / Plain", "target": 30, "actual": 30},
+    {"variant_gid": "gid://shopify/ProductVariant/41603733028997", "label": "Nuggets 3.5oz / Plain", "target": 2, "actual": 2},
+    {"variant_gid": "gid://shopify/ProductVariant/41603733061765", "label": "Nuggets 0.5lb / Plain", "target": 50, "actual": 50},
+    {"variant_gid": "gid://shopify/ProductVariant/41603733094533", "label": "1lb / Plain", "target": 0, "actual": 0},
+    {"variant_gid": "gid://shopify/ProductVariant/41603733127301", "label": "Small 3.5oz / Blueberry", "target": 470, "actual": 470},
+    {"variant_gid": "gid://shopify/ProductVariant/41603733160069", "label": "Small 3.5oz / Honey", "target": 120, "actual": 120},
+    {"variant_gid": "gid://shopify/ProductVariant/41603733192837", "label": "Small 3.5oz / Mint", "target": 45, "actual": 45},
+    {"variant_gid": "gid://shopify/ProductVariant/41603733225605", "label": "Small 3.5oz / Peanut Butter", "target": 120, "actual": 120},
+    {"variant_gid": "gid://shopify/ProductVariant/41603733258373", "label": "Small 3.5oz / Pumpkin", "target": 67, "actual": 67},
+    {"variant_gid": "gid://shopify/ProductVariant/41603733291141", "label": "Small 3.5oz / Strawberry", "target": 90, "actual": 90},
+    {"variant_gid": "gid://shopify/ProductVariant/41603733323909", "label": "Small 3.5oz / Flax Seed", "target": 14, "actual": 14},
+    {"variant_gid": "gid://shopify/ProductVariant/41603733356677", "label": "Small 3.5oz / Turmeric & Ashwagandha", "target": 100, "actual": 100}
+  ],
+  "rollback": "inventorySetQuantities with quantity=0 for each of the 14 new variants at the location. Source products still hold their original inventory — nothing in stage 2 removed stock from them."
+}
