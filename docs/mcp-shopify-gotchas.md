@@ -6,7 +6,7 @@
 - **Auth:** client_credentials OAuth. Reads `SHOPIFY_CLIENT_ID` / `SHOPIFY_CLIENT_SECRET` from env (interpolated into `.mcp.json` args as `${VAR}`).
 - **Token lifetime:** ~24h (`expires_in ≈ 86400s`). The MCP server auto-refreshes 5 minutes before expiry — no manual token management.
 - **Shop:** `shopyupp.myshopify.com`.
-- **Granted Admin API scopes:** `read_products`, `write_products`, `read_inventory`, `write_inventory`, `read_files`, `write_files`, `read_content`, `write_content`. (Query `currentAppInstallation { accessScopes { handle } }` to verify.)
+- **Granted Admin API scopes:** `read_products`, `write_products`, `read_inventory`, `write_inventory`, `read_files`, `write_files`, `read_content`, `write_content`, `read_online_store_navigation`, `write_online_store_navigation`. (Query `currentAppInstallation { accessScopes { handle } }` to verify.) Notably NOT granted: `read_locations` — needed only for location *names*; the id is accessible via inventory relationships.
 
 ### The 14 MCP tools
 
@@ -51,11 +51,15 @@ GeLi2001's MCP (as of `1.0.8`) does **not** expose `get-metafields`, `set-metafi
 
 The MCP does not expose any `urlRedirect*` tool. `update-product` has a `redirectNewHandle` flag, but that only auto-creates a redirect when a product's own handle changes — it cannot create free-form many→one redirects needed for catalog consolidation (old deleted handles → new parent handles). Use `scripts/shopify-redirect.sh`.
 
-**⚠️ Scope anomaly (unresolved as of 2026-04-24):** The `write_content` scope IS granted to this custom app (verified via `currentAppInstallation.accessScopes`), yet the `urlRedirects` query field and `urlRedirectCreate` mutation return `ACCESS_DENIED` across API versions 2024-10 → 2026-01. This blocks both the MCP's `redirectNewHandle` flag and the helper script. Likely resolution paths (not yet attempted): re-install the custom app in Shopify admin to re-apply scopes, or contact Shopify support about client_credentials OAuth apps and Online Store content objects. Until resolved, redirects for Phase 5 consolidation must be created manually in Shopify admin → Online Store → Navigation → URL Redirects.
+**Scope gotcha — `urlRedirects` needs its own scope:** Despite the Shopify admin UI grouping URL redirects under "Online Store pages" (which suggests `read_content`/`write_content`), the GraphQL API gates `urlRedirects` / `urlRedirectCreate` / `urlRedirectDelete` behind **`read_online_store_navigation` / `write_online_store_navigation`**. Granting only `write_content` yields `ACCESS_DENIED` with no hint at the mutation layer. See the Shopify access-scope reference: https://shopify.dev/docs/api/usage/access-scopes. First discovered 2026-04-24 when the helper was initially blocked; resolved by adding `read_online_store_navigation` + `write_online_store_navigation` to the custom app's manifest and re-releasing in the Dev Dashboard.
+
+**Scope expansion — Update prompt vs reinstall:** When you add a new scope to a custom app that's already installed, Shopify presents an "Update" approval prompt to the shop owner (Apps → the app → accept new permissions). You do NOT need to uninstall and reinstall — accepting the Update prompt re-grants the scope set. A fresh OAuth token must be fetched afterwards (old client_credentials tokens cache the old scope set; on the MCP side the server auto-refreshes within ~5 min of expiry, or restart the MCP if you need it sooner).
 
 ### 5. No inventory-quantity mutation path in MCP
 
-Verified by schema inspection 2026-04-24: neither `update-product` (no inventory field) nor `manage-product-variants` (only `tracked`/`sku`/`barcode`/`price` — no `inventoryQuantity`) can adjust stock levels. The `read_inventory`/`write_inventory` scopes are granted, so a direct Admin GraphQL helper (`inventoryAdjustQuantities` / `inventorySetQuantities`) would work — it just isn't surfaced through MCP. A `scripts/shopify-inventory.sh` helper is needed if Phase 5 requires stock manipulation; none exists yet.
+Verified by schema inspection 2026-04-24: neither `update-product` (no inventory field) nor `manage-product-variants` (only `tracked`/`sku`/`barcode`/`price` — no `inventoryQuantity`) can adjust stock levels. The `read_inventory`/`write_inventory` scopes are granted, so a direct Admin GraphQL helper works. Use `scripts/shopify-inventory.sh` — commands: `locations`, `get`, `set`, `adjust`. Smoke-tested 2026-04-25 end-to-end (read → set → read-back → adjust → restore) on `cotton-jute-toss-tug-dog-toy-with-genuine-leather-moose`.
+
+**Scope gotcha — `locations` top-level field needs `read_locations`:** The scopes currently granted let you read location GIDs *through* inventory relationships (e.g. `productVariant.inventoryItem.inventoryLevels.edges.node.location.id`) but NOT through the top-level `locations(first: N)` query for anything beyond `id`. Location `name`, `isActive`, `address`, etc. all require `read_locations`. The helper's `locations` command is therefore id-only. To get a readable location list, either expand scopes or call `shopify-inventory.sh get <variant-gid>` on any variant to see the location GIDs it stocks at.
 
 ## Patterns
 
@@ -95,8 +99,11 @@ For product creation/updates (non-metafield fields), variant/option management, 
 | **Any metafield read** | `scripts/shopify-metafield.sh` |
 | **Any metafield write** (even if via update-product) | `scripts/shopify-metafield.sh` (write via MCP is invisible; script round-trips) |
 | **Any metafield delete** | `scripts/shopify-metafield.sh` (MCP has no delete tool) |
-| **URL redirect create/list/delete/get** | `scripts/shopify-redirect.sh` (MCP has no urlRedirect tool — see scope anomaly in §4) |
-| **Inventory quantity adjustments** | ⚠️ no helper yet — MCP doesn't expose it; write a `scripts/shopify-inventory.sh` using `inventoryAdjustQuantities` when needed |
+| **URL redirect create/list/delete/get** | `scripts/shopify-redirect.sh` (MCP has no urlRedirect tool) |
+| **Inventory quantity read** | `scripts/shopify-inventory.sh get <variant-gid>` |
+| **Inventory quantity set (absolute)** | `scripts/shopify-inventory.sh set <variant-gid> <location-gid> <qty>` |
+| **Inventory quantity adjust (delta)** | `scripts/shopify-inventory.sh adjust <variant-gid> <location-gid> <delta>` |
+| **List location GIDs** | `scripts/shopify-inventory.sh locations` (id-only; `read_locations` needed for names) |
 
 ## Verifying a metafield write after the fact
 
