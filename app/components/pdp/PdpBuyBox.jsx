@@ -115,6 +115,52 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
   const currentSelection = Object.fromEntries(
     (selectedVariant?.selectedOptions ?? []).map((o) => [o.name, o.value]),
   );
+
+  // TEMP DEBUG (Fix-A verification, remove once combo logic is confirmed on
+  // Oxygen): dump the live validCombos set + currentSelection + per-chip
+  // computed keys and .has() results to the console on first render.
+  // Runs once per mount, client-only.
+  const didDebugRef = useRef(false);
+  useEffect(() => {
+    if (didDebugRef.current) return;
+    didDebugRef.current = true;
+    if (typeof console === 'undefined') return;
+    console.groupCollapsed(
+      '%c[PdpBuyBox combo-debug]',
+      'color:#06B6D4;font-weight:bold',
+      product?.handle,
+    );
+    console.log('variant count:', allVariants.length);
+    console.log('validCombos (size=' + validCombos.size + '):');
+    console.table(
+      Array.from(validCombos).map((k) => ({key: k})),
+    );
+    console.log('currentSelection:', currentSelection);
+    const rows = [];
+    (productOptions ?? []).forEach((opt) => {
+      (opt.optionValues ?? []).forEach((val) => {
+        const hyp = {...currentSelection, [opt.name]: val.name};
+        const k = comboKey(
+          Object.entries(hyp).map(([n, v]) => ({name: n, value: v})),
+        );
+        rows.push({
+          axis: opt.name,
+          chipValue: val.name,
+          computedKey: k,
+          inSet: validCombos.has(k),
+          rendersAs: validCombos.has(k) ? 'ENABLED' : 'DISABLED',
+        });
+      });
+    });
+    console.table(rows);
+    console.groupEnd();
+  }, [
+    allVariants.length,
+    validCombos,
+    currentSelection,
+    productOptions,
+    product?.handle,
+  ]);
   const sellingPlanAllocation =
     variantWithSub?.sellingPlanAllocations?.nodes?.[0] ?? null;
   const sellingPlan = sellingPlanAllocation?.sellingPlan ?? null;
