@@ -68,6 +68,105 @@ const PRODUCT_METADATA = {
       },
     ],
   },
+  'himalayan-gourmet-cheese-chew': {
+    badges: [
+      'Yak milk',
+      'Single ingredient',
+      'Vet approved',
+      'Long-lasting',
+      'Multi-size available',
+    ],
+    shortDescription:
+      'Traditional Himalayan yak milk, hard-pressed into a long-lasting chew. Keeps big chewers busy for days — single ingredient, no hide, no artificial additives.',
+    faqs: [
+      {
+        question: 'How long does a cheese chew last?',
+        answer:
+          'Most moderate chewers stretch one chew across several days; heavy chewers get a few hours. Freezing it first extends chew time even further.',
+      },
+      {
+        question: 'Is it safe for senior or small dogs?',
+        answer:
+          'Softer than bone but still firm — best for adult dogs with healthy teeth. For seniors or small dogs, size down or soak briefly in warm water before giving.',
+      },
+      {
+        question: 'How is it made?',
+        answer:
+          'Traditional Himalayan recipe: yak milk, lime juice, a pinch of salt. Hard-pressed and air-dried — nothing else. No preservatives, no flavorings, no hide.',
+      },
+      {
+        question: 'What do I do with the small end piece?',
+        answer:
+          'Microwave it for 30–45 seconds until it puffs up into a cheese puff. Safer than letting your dog gulp a hard piece, and it’s the best part.',
+      },
+    ],
+  },
+  'water-buffalo-trachea-dog-chews-bite-size-8-oz': {
+    badges: [
+      'Single ingredient',
+      'Natural joint support',
+      'Dental chew',
+      'Grain free',
+      'Vet approved',
+    ],
+    shortDescription:
+      'Bite-size trachea pieces — naturally rich in glucosamine and chondroitin from the cartilage. A dental chew that doubles as easy joint support for everyday dogs.',
+    faqs: [
+      {
+        question: 'How long do they last?',
+        answer:
+          'Bite-size pieces are meant as a daily treat, not an all-day chew. One or two give a quick dental-scraping session and a small joint-support boost.',
+      },
+      {
+        question: 'Are they safe for senior or small dogs?',
+        answer:
+          'Yes — trachea is soft, flexible cartilage that small mouths and older teeth handle well. Supervise and match portion size to your dog’s weight.',
+      },
+      {
+        question: 'Where does the joint support come from?',
+        answer:
+          'Trachea is cartilage, naturally rich in glucosamine and chondroitin. It’s food, not a supplement — a gentle everyday source, not a medical dose.',
+      },
+      {
+        question: 'Any chicken, beef, or grain added?',
+        answer:
+          'Single ingredient: water buffalo trachea. No common allergens like chicken, beef, or grain, and no artificial preservatives, colors, or flavors.',
+      },
+    ],
+  },
+  'water-buffalo-trachea-bites-dog-chew-1-lb-100-natural-dog-treats': {
+    badges: [
+      'Grass-fed',
+      'Made without hormones',
+      'Single ingredient',
+      'Natural joint support',
+      'Bulk pack',
+    ],
+    shortDescription:
+      'A one-pound stash of grass-fed water buffalo trachea bites. Soft dental chew and natural cartilage-sourced joint support — single ingredient, nothing added.',
+    faqs: [
+      {
+        question: 'How long does a 1 lb bag last?',
+        answer:
+          'Depends how often you treat. As a daily dental bite, most medium dogs stretch a 1 lb bag across 4–6 weeks. It stores well in a cool, dry cupboard.',
+      },
+      {
+        question: 'Safe for senior or small dogs?',
+        answer:
+          'Yes — trachea cartilage is soft and flexible, so older teeth and small jaws manage it well. Break larger pieces into smaller bites for toy breeds.',
+      },
+      {
+        question: 'Where is it sourced?',
+        answer:
+          'Grass-fed, free-range water buffalo. No added hormones, no artificial preservatives, no fillers — just the trachea, cleaned and gently dried.',
+      },
+      {
+        question: 'Do they smell?',
+        answer:
+          'Mild, meaty scent — not fishy or offensive. Air-dried low and slow, so the bag stays fairly odor-free between uses.',
+      },
+    ],
+  },
 };
 
 export function getProductMetadata(handle) {
