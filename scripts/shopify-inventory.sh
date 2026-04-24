@@ -44,6 +44,20 @@
 #   - Variant GID → inventoryItem GID is resolved internally before the
 #     mutation, so callers only deal with variant + location GIDs.
 #
+# ⚠️ Prereq: freshly-created inventory items must be activated at the target
+# location before `set` or `adjust` will work. `productVariantsBulkCreate`
+# creates the inventory item but does NOT stock it anywhere — set/adjust
+# appear to succeed (no userErrors) but the level never materializes and
+# subsequent reads show no inventory at that location. Activate first:
+#
+#   curl -fsS -X POST "https://$SHOP/admin/api/2026-01/graphql.json" \
+#     -H "X-Shopify-Access-Token: $TOKEN" -H "Content-Type: application/json" \
+#     -d '{"query":"mutation($i:ID!,$l:ID!){inventoryActivate(inventoryItemId:$i,locationId:$l){inventoryLevel{id} userErrors{field message}}}","variables":{"i":"gid://shopify/InventoryItem/...","l":"gid://shopify/Location/..."}}'
+#
+# Discovered during Phase 5 Himalayan consolidation (2026-04-25). Variants
+# that already have inventoryLevels at the location (i.e. have ever been
+# stocked there) don't need reactivation.
+#
 # Required scope: write_inventory (+ read_inventory + read_products to resolve
 #   variant.inventoryItem.id).
 

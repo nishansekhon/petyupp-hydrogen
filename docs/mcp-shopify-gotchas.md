@@ -61,6 +61,25 @@ Verified by schema inspection 2026-04-24: neither `update-product` (no inventory
 
 **Scope gotcha — `locations` top-level field needs `read_locations`:** The scopes currently granted let you read location GIDs *through* inventory relationships (e.g. `productVariant.inventoryItem.inventoryLevels.edges.node.location.id`) but NOT through the top-level `locations(first: N)` query for anything beyond `id`. Location `name`, `isActive`, `address`, etc. all require `read_locations`. The helper's `locations` command is therefore id-only. To get a readable location list, either expand scopes or call `shopify-inventory.sh get <variant-gid>` on any variant to see the location GIDs it stocks at.
 
+**⚠️ Prereq gotcha — freshly-created inventory items must be activated at a location before `set`/`adjust` works.** `productVariantsBulkCreate` creates the inventory item but doesn't stock it anywhere. `inventorySetQuantities` / `inventoryAdjustQuantities` then return *no userErrors* (which looks like success) but the inventoryLevel never materializes and subsequent reads show no stock at that location. Call `inventoryActivate(inventoryItemId, locationId)` first:
+
+```graphql
+mutation($i:ID!,$l:ID!){
+  inventoryActivate(inventoryItemId:$i, locationId:$l){
+    inventoryLevel{ id }
+    userErrors{ field message }
+  }
+}
+```
+
+Variants that already have inventoryLevels at the location (i.e. have ever been stocked there) don't need reactivation. Discovered during the Phase 5 Himalayan consolidation when 14 freshly-bulk-created variants showed empty reads after an apparently-successful `set` cycle.
+
+### 6. `Product.totalInventory` aggregate lags the variant-level sum
+
+After migrating inventory onto 14 new variants on a parent, `product.totalInventory` reported 1203 units while summing `variant.inventoryQuantity` across all 15 variants returned 1253. The 50-unit gap wasn't real lost inventory — it was Shopify's cached aggregate being stale on freshly-activated inventory items. The variant-level sum is authoritative; `totalInventory` backfills within ~15 minutes (in practice, well under an hour).
+
+**Rule:** when a Phase 5–style migration's integrity check needs "does the sum match pre-migration?", sum `variant.inventoryQuantity` yourself — don't trust `product.totalInventory` in the minutes right after an `inventoryActivate` + `inventorySetQuantities` cycle. The storefront and checkout APIs use the variant-level numbers, so this is a metric/display lag only, not an actual oversell risk.
+
 ## Patterns
 
 ### Metafield CRUD → use the helper script
