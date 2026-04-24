@@ -26,7 +26,7 @@ export default function RealResultsRow() {
   const modalOpen = startIndex !== null;
 
   return (
-    <section className="max-w-7xl mx-auto px-4 py-8 md:py-16">
+    <section className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-16">
       <div className="text-center mb-6 md:mb-10">
         <h2 className="text-2xl md:text-4xl font-bold text-gray-900">
           Real dogs, real relief
@@ -36,7 +36,7 @@ export default function RealResultsRow() {
         </p>
       </div>
 
-      <div className="flex gap-3 md:gap-4 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide -mx-4 px-4">
+      <div className="flex gap-3 md:gap-4 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0 md:[justify-content:safe_center]">
         {clips.map((clip) => (
           <div
             key={clip.slug}
