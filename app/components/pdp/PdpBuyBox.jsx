@@ -98,6 +98,23 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
   // Pull the selected variant's sellingPlan (for subscriptions preview).
   const allVariants = product?.variants?.nodes ?? [];
   const variantWithSub = allVariants.find((v) => v.id === selectedVariant?.id);
+
+  // Build a Set of valid option-combo keys so we can disable fake
+  // combinations like (Size=Extra Large, Flavor=Strawberry) that don't
+  // correspond to a real variant. `exists` on optionValue only means "this
+  // value appears on some variant", not "this value × current other
+  // selection is a real variant" — which is what matters for chip UX.
+  const comboKey = (opts) =>
+    (opts ?? [])
+      .map((o) => `${o.name}=${o.value}`)
+      .sort()
+      .join('|');
+  const validCombos = new Set(
+    allVariants.map((v) => comboKey(v.selectedOptions)),
+  );
+  const currentSelection = Object.fromEntries(
+    (selectedVariant?.selectedOptions ?? []).map((o) => [o.name, o.value]),
+  );
   const sellingPlanAllocation =
     variantWithSub?.sellingPlanAllocations?.nodes?.[0] ?? null;
   const sellingPlan = sellingPlanAllocation?.sellingPlan ?? null;
@@ -235,10 +252,31 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
               {option.optionValues.map((value) => {
                 const {name, selected, available, exists, variantUriQuery} =
                   value;
+                // Combo-valid: does picking THIS value in THIS option axis,
+                // combined with the current selection on the other axes,
+                // point at a real variant? If not (e.g. Size=Extra Large +
+                // Flavor=Strawberry), the chip is greyed out — but still
+                // clickable. Clicking it navigates via variantUriQuery,
+                // which Hydrogen pre-computes from firstSelectableVariant
+                // and therefore auto-switches the OTHER axis to a valid
+                // pairing (e.g. clicking Strawberry from XL+Plain lands on
+                // Small 3.5oz+Strawberry).
+                const hypothetical = {
+                  ...currentSelection,
+                  [option.name]: name,
+                };
+                const comboValid = validCombos.has(
+                  comboKey(
+                    Object.entries(hypothetical).map(([n, v]) => ({
+                      name: n,
+                      value: v,
+                    })),
+                  ),
+                );
                 const valuePrice = value.firstSelectableVariant?.price;
                 const unitCount = parseUnitCount(name);
                 let perUnitLabel = null;
-                if (valuePrice?.amount) {
+                if (comboValid && valuePrice?.amount) {
                   if (unitCount) {
                     const perUnit =
                       parseFloat(valuePrice.amount) / unitCount;
@@ -250,11 +288,18 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
                     perUnitLabel = formatMoney(valuePrice);
                   }
                 }
-                const commonClass = `relative p-3 rounded-lg border-2 transition-colors text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#06B6D4] ${
-                  selected
-                    ? 'border-[#06B6D4] bg-[#06B6D4]/5'
-                    : 'border-gray-200 hover:border-gray-300'
-                } ${!available ? 'opacity-60' : ''}`;
+                let stateClass;
+                if (!comboValid) {
+                  stateClass =
+                    'border-gray-200 opacity-40 cursor-not-allowed';
+                } else if (selected) {
+                  stateClass = 'border-[#06B6D4] bg-[#06B6D4]/5';
+                } else {
+                  stateClass = 'border-gray-200 hover:border-gray-300';
+                }
+                const commonClass = `relative p-3 rounded-lg border-2 transition-colors text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#06B6D4] ${stateClass} ${
+                  comboValid && !available ? 'opacity-60' : ''
+                }`;
 
                 return (
                   <button
@@ -262,14 +307,14 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
                     type="button"
                     role="radio"
                     aria-checked={selected}
+                    aria-disabled={!comboValid}
                     disabled={!exists}
                     onClick={() => {
-                      if (!selected && exists) {
-                        void navigate(`?${variantUriQuery}`, {
-                          replace: true,
-                          preventScrollReset: true,
-                        });
-                      }
+                      if (!exists || selected) return;
+                      void navigate(`?${variantUriQuery}`, {
+                        replace: true,
+                        preventScrollReset: true,
+                      });
                     }}
                     className={commonClass}
                   >
@@ -281,7 +326,7 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
                         {perUnitLabel}
                       </div>
                     )}
-                    {!available && (
+                    {comboValid && !available && (
                       <div className="text-[11px] text-red-600 mt-1">
                         Out of stock
                       </div>

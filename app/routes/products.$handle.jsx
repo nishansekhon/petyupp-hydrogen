@@ -388,11 +388,12 @@ const PRODUCT_FRAGMENT = `#graphql
         height
       }
     }
-    variants(first: 10) {
+    variants(first: 100) {
       nodes {
         id
         title
         availableForSale
+        selectedOptions { name value }
         price { amount currencyCode }
         compareAtPrice { amount currencyCode }
         sellingPlanAllocations(first: 1) {
