@@ -253,9 +253,14 @@ export default function Product() {
           <PdpFaq faqs={metadata.faqs} />
         </div>
 
-        {/* RIGHT column — desktop sticky aside */}
-        <aside className="hidden lg:block">
-          <div className="lg:sticky lg:top-4 flex flex-col gap-5">
+        {/* RIGHT column — desktop sticky aside.
+            Sticky lives on the aside itself with self-start so the aside is
+            content-sized; its containing block is then the grid parent,
+            whose height matches the (much taller) left column. That keeps
+            the buy box anchored from gallery through UGC, reviews, and FAQ
+            instead of releasing at the aside's own content bottom. */}
+        <aside className="hidden lg:block lg:sticky lg:top-4 lg:self-start">
+          <div className="flex flex-col gap-5">
             <TitleStarsBlock title={title} level="h1" />
             <PdpAttributeBadges badges={metadata.badges} />
             <p className="text-sm text-gray-700 leading-relaxed">
