@@ -1,4 +1,5 @@
 import {useEffect, useId, useRef, useState} from 'react';
+import {createPortal} from 'react-dom';
 import {Link} from 'react-router';
 import {ChevronLeft, ChevronRight, Volume2, VolumeX, X} from 'lucide-react';
 import {problemLabels, videoUrls} from '~/lib/ugcManifest';
@@ -62,7 +63,7 @@ export default function VideoModal({clips, startIndex, onClose}) {
     };
   }, []);
 
-  // Initial focus on close
+  // Initial focus on close button
   useEffect(() => {
     closeBtnRef.current?.focus();
   }, []);
@@ -136,14 +137,17 @@ export default function VideoModal({clips, startIndex, onClose}) {
   const productName = clip.productName || humanizeHandle(clip.productHandle);
   const urls = videoUrls(clip);
 
-  return (
+  // SSR guard — no DOM, no portal
+  if (typeof document === 'undefined') return null;
+
+  const modalTree = (
     <div
       ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}
       onClick={onClose}
-      className="fixed inset-0 z-50 bg-black md:bg-black/80"
+      className="fixed inset-0 z-[9999] bg-black md:bg-black/75 md:flex md:items-center md:justify-center"
     >
       {/* SR-only title — aria-labelledby target */}
       <h2 id={titleId} className="sr-only">
@@ -179,7 +183,11 @@ export default function VideoModal({clips, startIndex, onClose}) {
         onClick={(e) => e.stopPropagation()}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
-        className="relative h-full w-full md:h-auto md:max-w-5xl md:mx-auto md:my-[7.5vh] md:bg-white md:rounded-2xl md:overflow-hidden md:shadow-2xl md:flex md:flex-row"
+        className="relative h-full w-full md:h-auto md:w-auto md:max-w-[960px] md:bg-white md:rounded-2xl md:overflow-hidden md:shadow-2xl md:flex md:flex-row"
+        style={{
+          // On desktop, cap card height. On mobile, full viewport via h-full.
+          maxHeight: 'min(85vh, 720px)',
+        }}
       >
         {/* Counter */}
         <span className="absolute top-3 left-3 z-10 text-[12px] font-medium text-white md:text-gray-700 bg-black/40 md:bg-gray-100 px-2 py-1 rounded-full">
@@ -197,9 +205,9 @@ export default function VideoModal({clips, startIndex, onClose}) {
           <X size={20} />
         </button>
 
-        {/* Video region */}
+        {/* Video region — desktop: 9:16 derived from card height. Mobile: fullscreen. */}
         <div
-          className="relative w-full h-full md:w-auto md:h-auto md:shrink-0 bg-black"
+          className="relative w-full h-full md:w-auto md:h-auto md:shrink-0 md:aspect-[9/16] bg-black"
           style={{
             paddingTop: 'env(safe-area-inset-top)',
             paddingBottom: 'env(safe-area-inset-bottom)',
@@ -207,84 +215,77 @@ export default function VideoModal({clips, startIndex, onClose}) {
             paddingRight: 'env(safe-area-inset-right)',
           }}
         >
-          <div
-            className="relative w-full h-full md:aspect-[9/16]"
+          <video
+            ref={videoRef}
+            key={clip.slug}
+            src={urls.modal}
+            poster={urls.poster}
+            autoPlay
+            muted={muted}
+            playsInline
+            loop
+            className="absolute inset-0 w-full h-full object-cover md:object-contain bg-black"
+            aria-label={`${dogName} — ${label}`}
+          >
+            <track kind="captions" />
+          </video>
+
+          {/* Speaker toggle */}
+          <button
+            type="button"
+            onClick={() => setMuted((m) => !m)}
+            aria-label={muted ? 'Unmute video' : 'Mute video'}
+            className="absolute z-20 right-3 w-11 h-11 md:w-9 md:h-9 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
             style={{
-              maxHeight: 'min(85vh, 720px)',
+              bottom: 'max(1rem, env(safe-area-inset-bottom))',
             }}
           >
-            <video
-              ref={videoRef}
-              key={clip.slug}
-              src={urls.modal}
-              poster={urls.poster}
-              autoPlay
-              muted={muted}
-              playsInline
-              loop
-              className="absolute inset-0 w-full h-full object-cover md:object-contain bg-black"
-              aria-label={`${dogName} — ${label}`}
-            >
-              <track kind="captions" />
-            </video>
+            {muted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+          </button>
 
-            {/* Speaker toggle */}
-            <button
-              type="button"
-              onClick={() => setMuted((m) => !m)}
-              aria-label={muted ? 'Unmute video' : 'Mute video'}
-              className="absolute z-20 right-3 w-11 h-11 md:w-9 md:h-9 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
-              style={{
-                bottom: 'max(1rem, env(safe-area-inset-bottom))',
-              }}
-            >
-              {muted ? <VolumeX size={20} /> : <Volume2 size={20} />}
-            </button>
-
-            {/* Mobile meta overlay — bottom scrim */}
-            <div
-              className="md:hidden absolute inset-x-0 bottom-0 pt-24 px-4 text-white pointer-events-none"
-              style={{
-                paddingBottom: 'max(1rem, env(safe-area-inset-bottom))',
-                background:
-                  'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0) 100%)',
-              }}
-            >
-              <div className="pointer-events-auto">
-                <span className="inline-block bg-[#06B6D4] text-white text-xs font-semibold rounded-full px-2 py-1">
-                  {label}
-                </span>
-                <div className="mt-2 text-xl font-bold">{dogName}</div>
-                <div className="mt-1">
-                  <StarRow rating={clip.rating} />
-                </div>
-                {clip.quote && (
-                  <blockquote className="mt-2 text-sm text-white/90 line-clamp-3">
-                    &ldquo;{clip.quote}&rdquo;
-                  </blockquote>
-                )}
-                <hr
-                  style={{
-                    margin: '16px 0',
-                    border: 'none',
-                    borderTop: '1px solid rgba(255,255,255,0.15)',
-                  }}
-                />
-                <p className="text-[13px] text-white/70 mb-2">{productName}</p>
-                <Link
-                  to={productHref}
-                  onClick={onClose}
-                  className="block w-full text-center bg-[#06B6D4] hover:bg-[#0891B2] text-white text-sm font-medium rounded-lg px-5 py-3 transition-colors"
-                >
-                  Shop now →
-                </Link>
+          {/* Mobile meta overlay — bottom scrim */}
+          <div
+            className="md:hidden absolute inset-x-0 bottom-0 pt-24 px-4 text-white pointer-events-none"
+            style={{
+              paddingBottom: 'max(1rem, env(safe-area-inset-bottom))',
+              background:
+                'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0) 100%)',
+            }}
+          >
+            <div className="pointer-events-auto">
+              <span className="inline-block bg-[#06B6D4] text-white text-xs font-semibold rounded-full px-2 py-1">
+                {label}
+              </span>
+              <div className="mt-2 text-xl font-bold">{dogName}</div>
+              <div className="mt-1">
+                <StarRow rating={clip.rating} />
               </div>
+              {clip.quote && (
+                <blockquote className="mt-2 text-sm text-white/90 line-clamp-3">
+                  &ldquo;{clip.quote}&rdquo;
+                </blockquote>
+              )}
+              <hr
+                style={{
+                  margin: '16px 0',
+                  border: 'none',
+                  borderTop: '1px solid rgba(255,255,255,0.15)',
+                }}
+              />
+              <p className="text-[13px] text-white/70 mb-2">{productName}</p>
+              <Link
+                to={productHref}
+                onClick={onClose}
+                className="block w-full text-center bg-[#06B6D4] hover:bg-[#0891B2] text-white text-sm font-medium rounded-lg px-5 py-3 transition-colors"
+              >
+                Shop now →
+              </Link>
             </div>
           </div>
         </div>
 
         {/* Desktop meta panel */}
-        <aside className="hidden md:flex md:flex-col md:w-[360px] md:shrink-0 md:p-6 md:overflow-y-auto">
+        <aside className="hidden md:flex md:flex-col md:w-[360px] md:shrink-0 md:p-8 md:overflow-y-auto">
           <span className="self-start bg-[#06B6D4]/10 text-[#06B6D4] text-xs font-semibold rounded-full px-2 py-1">
             {label}
           </span>
@@ -323,4 +324,6 @@ export default function VideoModal({clips, startIndex, onClose}) {
       </div>
     </div>
   );
+
+  return createPortal(modalTree, document.body);
 }
