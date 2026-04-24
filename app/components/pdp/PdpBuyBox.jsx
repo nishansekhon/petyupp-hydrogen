@@ -291,7 +291,7 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
                 // which Hydrogen pre-computes from firstSelectableVariant
                 // and therefore auto-switches the OTHER axis to a valid
                 // pairing (e.g. clicking Strawberry from XL+Plain lands on
-                // Small 3.5oz+Strawberry).
+                // Medium+Strawberry).
                 const hypothetical = {
                   ...currentSelection,
                   [option.name]: name,
