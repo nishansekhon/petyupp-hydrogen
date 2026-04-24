@@ -256,6 +256,24 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
       {/* Variant pickers — visual grid, one per option group */}
       {productOptions?.map((option) => {
         if (option.optionValues.length === 1) return null;
+        // Hide the whole option group when the current selection on the
+        // other axes leaves it with no real choice. Concretely on Himalayan
+        // Cheese: at Size=Medium, only Plain has a flavor variant, so the
+        // Flavor row would render 8 greyed chips + 1 selected — confusing.
+        // Mirror the same mounted-gate used for chip styling: pre-mount we
+        // render all groups so SSR HTML matches the first CSR pass; post-
+        // mount we hide groups with <2 valid combos against current state.
+        const validChipCount = option.optionValues.filter((v) =>
+          validCombos.has(
+            comboKey(
+              Object.entries({
+                ...currentSelection,
+                [option.name]: v.name,
+              }).map(([n, val]) => ({name: n, value: val})),
+            ),
+          ),
+        ).length;
+        if (mounted && validChipCount < 2) return null;
         return (
           <div key={option.name} role="radiogroup" aria-label={option.name}>
             <div className="text-[13px] font-medium text-gray-900 mb-2">
