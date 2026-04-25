@@ -423,7 +423,7 @@ const PRODUCT_FRAGMENT = `#graphql
     description
     encodedVariantExistence
     encodedVariantAvailability
-    images(first: 10) {
+    images(first: 100) {
       nodes {
         id
         url

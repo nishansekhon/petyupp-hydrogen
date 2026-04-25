@@ -4,6 +4,22 @@ import PdpImageLightbox from './PdpImageLightbox';
 
 const RAIL_VISIBLE = 5;
 
+// Order used to sort the per-variant gallery so -main always renders first
+// (rail's primary thumbnail) and the supporting shots follow a stable
+// pedagogical order. Both `guaranted-` (typo) and `guaranteed-` are listed
+// because Cloudinary asset names are inconsistent across flavors.
+const SUFFIX_ORDER = [
+  'main',
+  'features',
+  'description',
+  'lifestyle-multi-view',
+  'process',
+  'size-guide',
+  'breed-chart',
+  'guaranted-analysis',
+  'guaranteed-analysis',
+];
+
 function withWidth(url, width) {
   if (!url || typeof url !== 'string') return url;
   try {
@@ -15,23 +31,63 @@ function withWidth(url, width) {
   }
 }
 
+// Extract the flavor token from a variant.image URL like
+//   .../files/petyupp-4796-blueberry-large-3.5oz-cheese-chew-main.webp?v=...
+// Returns "blueberry". Used to group product.images by the active variant.
+function extractFlavorToken(url) {
+  if (!url || typeof url !== 'string') return null;
+  const m = url.match(/petyupp-\d+-([a-z-]+?)-large-3\.5oz-cheese-chew-/i);
+  return m ? m[1].toLowerCase() : null;
+}
+
+// Suffix appears between "cheese-chew-" and the extension. Used for sort
+// order in the per-variant gallery. Returns null if URL doesn't match.
+function extractSuffix(url) {
+  if (!url || typeof url !== 'string') return null;
+  const m = url.match(/cheese-chew-([a-z-]+?)\.(?:webp|jpg|jpeg|png)/i);
+  return m ? m[1].toLowerCase() : null;
+}
+
+// Build the per-variant gallery by grouping `images` by URL token.
+// Returns a sorted array (main first, supporting after) or null when the
+// token can't be extracted or no matches are found in the image set.
+function buildVariantGallery(variantImageUrl, images) {
+  const token = extractFlavorToken(variantImageUrl);
+  if (!token) return null;
+  const needle = `-${token}-large-3.5oz-cheese-chew-`;
+  const matches = (images ?? []).filter((img) =>
+    img?.url?.toLowerCase().includes(needle),
+  );
+  if (matches.length === 0) return null;
+  return matches.slice().sort((a, b) => {
+    const aIdx = SUFFIX_ORDER.indexOf(extractSuffix(a.url));
+    const bIdx = SUFFIX_ORDER.indexOf(extractSuffix(b.url));
+    // unknown suffixes go after known ones, in original order
+    const aRank = aIdx === -1 ? SUFFIX_ORDER.length : aIdx;
+    const bRank = bIdx === -1 ? SUFFIX_ORDER.length : bIdx;
+    return aRank - bRank;
+  });
+}
+
 // PdpGallery returns a Fragment of two siblings so the parent route's CSS
 // grid receives them as direct grid items: column 1 = vertical thumbnail
 // rail (desktop only), column 2 = hero. On mobile the rail is hidden and
 // the hero section also renders a horizontal-scroll thumbnail strip.
 //
-// Source-of-truth precedence (Phase 5.5b imagery):
-//   1. productHasVariantImagery (multiple variants own distinct images,
-//      detected once in the route) AND selectedVariant.image present →
-//      gallery = [variantImage]. Storefront API does NOT expose
-//      ProductVariant.media (Admin-only), and Phase 5.5b uploaded
-//      exactly one media per flavored variant — so the variant-scoped
-//      gallery is just the single hero per variant. The rail tracks the
-//      active swatch instead of showing every flavor's pack at once.
-//   2. fallback: `images` prop (route-built productImages with b4d0459's
-//      hero-prepend logic). Plain inherits the same hero across all
-//      Size variants, so its gallery should keep the full product-level
-//      image set (lifestyle, breed chart, process shots, etc.).
+// Source-of-truth precedence:
+//   1. productHasVariantImagery true AND token-matched group ≥1 →
+//      gallery = the per-variant group filtered from product.images by the
+//      flavor token in variant.image.url. This gives the rail the full
+//      8-shot variant gallery (main + features/description/lifestyle/
+//      process/size-guide/breed-chart/guaranteed-analysis) instead of a
+//      single thumbnail. Storefront API doesn't expose ProductVariant.media
+//      so we group via URL pattern matching against product.images.
+//   2. productHasVariantImagery true AND token group empty → fallback to
+//      [variantImage] (the original Phase 5.5b behavior; protects against
+//      future variants whose URLs don't match the pattern).
+//   3. productHasVariantImagery false → use the `images` prop (Plain
+//      pattern: Size variants share the same product hero, so the full
+//      product-level image set is the right gallery).
 export default function PdpGallery({
   images,
   selectedVariant,
@@ -39,10 +95,14 @@ export default function PdpGallery({
   title,
 }) {
   const variantImage = selectedVariant?.image;
-  const gallery =
-    productHasVariantImagery && variantImage?.url
-      ? [variantImage]
-      : images ?? [];
+
+  let gallery;
+  if (productHasVariantImagery && variantImage?.url) {
+    const grouped = buildVariantGallery(variantImage.url, images);
+    gallery = grouped && grouped.length > 0 ? grouped : [variantImage];
+  } else {
+    gallery = images ?? [];
+  }
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [lightbox, setLightbox] = useState({open: false, startIndex: 0});

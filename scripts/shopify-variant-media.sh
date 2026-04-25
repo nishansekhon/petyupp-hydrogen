@@ -1,20 +1,27 @@
 #!/usr/bin/env bash
-# Shopify variant-level media attach via direct Admin GraphQL.
+# Shopify product/variant media upload via direct Admin GraphQL.
 #
 # Why this script exists:
-#   The GeLi2001 shopify-mcp tool does not surface productVariantAppendMedia
-#   (or productCreateMedia). Variant-specific imagery — e.g. a flavor-specific
-#   pack photo on himalayan-flavored-variety — requires those mutations to
-#   break a variant out of inheriting the product's primary image. So we hit
-#   the Admin GraphQL directly here.
+#   The GeLi2001 shopify-mcp tool does not surface productCreateMedia or
+#   productVariantAppendMedia. We hit Admin GraphQL directly so we can
+#   (a) attach the first media to a variant for variant-specific imagery
+#   and (b) bulk-add supporting images to a product gallery.
 #
-# Workflow:
-#   1. Resolve product GID from the variant GID (one query).
-#   2. productCreateMedia → upload remote URL onto the product. Returns a
-#      Media GID. Shopify processes the image asynchronously; we poll status
-#      until it leaves PROCESSING (READY or FAILED) before appending.
-#   3. productVariantAppendMedia → associate the new media GID with the
-#      variant. After this the variant's primary image is the new media.
+# Two modes:
+#
+#   1. --variant-id <gid>  (variant-bound mode)
+#      Resolves product from variant, productCreateMedia, then
+#      productVariantAppendMedia. Used for the FIRST media per variant
+#      (e.g. the flavor-specific main pack photo). Subsequent appends to a
+#      variant fail with PRODUCT_VARIANT_ALREADY_HAS_MEDIA — variants are
+#      one-to-one with media in Shopify's data model. Use --product-id
+#      instead for additional supporting shots.
+#
+#   2. --product-id <gid>  (product-only mode)
+#      Just productCreateMedia. The image lands in product.images and is
+#      reachable via Storefront API but is NOT bound to any variant. Use
+#      this for lifestyle / breed-chart / process / etc. shots that the
+#      gallery groups via URL pattern matching rather than variant binding.
 #
 # Auth:
 #   Same client_credentials OAuth flow as scripts/shopify-metafield.sh.
@@ -22,13 +29,20 @@
 #   fresh per run.
 #
 # Usage:
+#   # Variant-bound (initial main pack image)
 #   scripts/shopify-variant-media.sh \
 #     --variant-id gid://shopify/ProductVariant/123 \
 #     --media-url  https://res.cloudinary.com/.../foo.webp \
 #     --alt-text   "Honey Cheese Chew 3.5oz pack"
 #
-# Output: prints JSON for each step (resolve, create, append) to stdout for
-#   easy debugging. Exits non-zero on any userErrors or non-2xx HTTP.
+#   # Product-only (supporting image — no variant attach)
+#   scripts/shopify-variant-media.sh \
+#     --product-id gid://shopify/Product/456 \
+#     --media-url  https://res.cloudinary.com/.../foo-features.webp \
+#     --alt-text   "Honey Cheese Chew 3.5oz features"
+#
+# Output: prints JSON for each step to stdout for easy debugging. Exits
+#   non-zero on any userErrors or non-2xx HTTP.
 
 set -euo pipefail
 
@@ -39,12 +53,14 @@ API_VERSION="${SHOPIFY_API_VERSION:-2026-01}"
 : "${SHOPIFY_CLIENT_SECRET:?SHOPIFY_CLIENT_SECRET not set}"
 
 VARIANT_ID=""
+PRODUCT_ID_ARG=""
 MEDIA_URL=""
 ALT_TEXT=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --variant-id) VARIANT_ID="$2"; shift 2 ;;
+    --product-id) PRODUCT_ID_ARG="$2"; shift 2 ;;
     --media-url)  MEDIA_URL="$2";  shift 2 ;;
     --alt-text)   ALT_TEXT="$2";   shift 2 ;;
     -h|--help)
@@ -55,8 +71,16 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-[[ -n "$VARIANT_ID" && -n "$MEDIA_URL" && -n "$ALT_TEXT" ]] || {
-  echo "missing required args; need --variant-id --media-url --alt-text" >&2
+if [[ -n "$VARIANT_ID" && -n "$PRODUCT_ID_ARG" ]]; then
+  echo "pass either --variant-id or --product-id, not both" >&2
+  exit 2
+fi
+if [[ -z "$VARIANT_ID" && -z "$PRODUCT_ID_ARG" ]]; then
+  echo "missing required arg; need --variant-id OR --product-id" >&2
+  exit 2
+fi
+[[ -n "$MEDIA_URL" && -n "$ALT_TEXT" ]] || {
+  echo "missing required args; need --media-url --alt-text" >&2
   exit 2
 }
 
@@ -77,19 +101,24 @@ gql() {
 
 TOKEN=$(get_token)
 
-# Step 1 — resolve product GID from variant GID.
-echo "==> resolve product from variant: ${VARIANT_ID}"
-RESOLVE_BODY=$(VG_ID="$VARIANT_ID" python3 -c "
+# Step 1 — resolve product GID. Either passed in directly (product-only
+# mode) or derived from the variant GID (variant-bound mode).
+if [[ -n "$PRODUCT_ID_ARG" ]]; then
+  PRODUCT_ID="$PRODUCT_ID_ARG"
+  echo "==> product (from --product-id): ${PRODUCT_ID}"
+else
+  echo "==> resolve product from variant: ${VARIANT_ID}"
+  RESOLVE_BODY=$(VG_ID="$VARIANT_ID" python3 -c "
 import json, os
 print(json.dumps({
   'query': 'query(\$id:ID!){node(id:\$id){... on ProductVariant{id product{id}}}}',
   'variables': {'id': os.environ['VG_ID']},
 }))
 ")
-RESOLVE_RES=$(gql "$TOKEN" "$RESOLVE_BODY")
-echo "$RESOLVE_RES" | python3 -m json.tool
+  RESOLVE_RES=$(gql "$TOKEN" "$RESOLVE_BODY")
+  echo "$RESOLVE_RES" | python3 -m json.tool
 
-PRODUCT_ID=$(echo "$RESOLVE_RES" | python3 -c "
+  PRODUCT_ID=$(echo "$RESOLVE_RES" | python3 -c "
 import sys, json
 d = json.load(sys.stdin)
 node = (d.get('data') or {}).get('node') or {}
@@ -100,7 +129,8 @@ if not pid:
     sys.exit(1)
 print(pid)
 ")
-echo "==> product: ${PRODUCT_ID}"
+  echo "==> product: ${PRODUCT_ID}"
+fi
 
 # Step 2 — productCreateMedia (uploads remote URL onto product).
 echo "==> productCreateMedia url=${MEDIA_URL}"
@@ -171,9 +201,16 @@ print(n.get('status') or 'UNKNOWN')
   esac
 done
 
-# Step 3 — productVariantAppendMedia.
-echo "==> productVariantAppendMedia variant=${VARIANT_ID} media=${MEDIA_ID}"
-APPEND_BODY=$(P_ID="$PRODUCT_ID" V_ID="$VARIANT_ID" M_ID="$MEDIA_ID" python3 -c "
+# Step 3 — productVariantAppendMedia (variant-bound mode only).
+# Skipped in product-only mode because there's no variant to bind to.
+# Also: Shopify rejects appends to a variant that already has media
+# (PRODUCT_VARIANT_ALREADY_HAS_MEDIA) — variants are 1:1 with media.
+# For supporting/lifestyle shots use --product-id instead.
+if [[ -z "$VARIANT_ID" ]]; then
+  echo "OK (product-only mode — variant attach skipped)"
+else
+  echo "==> productVariantAppendMedia variant=${VARIANT_ID} media=${MEDIA_ID}"
+  APPEND_BODY=$(P_ID="$PRODUCT_ID" V_ID="$VARIANT_ID" M_ID="$MEDIA_ID" python3 -c "
 import json, os
 print(json.dumps({
   'query': '''mutation Append(\$pid:ID!, \$variantMedia:[ProductVariantAppendMediaInput!]!){
@@ -191,10 +228,10 @@ print(json.dumps({
   },
 }))
 ")
-APPEND_RES=$(gql "$TOKEN" "$APPEND_BODY")
-echo "$APPEND_RES" | python3 -m json.tool
+  APPEND_RES=$(gql "$TOKEN" "$APPEND_BODY")
+  echo "$APPEND_RES" | python3 -m json.tool
 
-echo "$APPEND_RES" | python3 -c "
+  echo "$APPEND_RES" | python3 -c "
 import sys, json
 d = json.load(sys.stdin)
 pa = (d.get('data') or {}).get('productVariantAppendMedia') or {}
@@ -204,3 +241,4 @@ if errs:
     sys.exit(1)
 print('OK')
 "
+fi
