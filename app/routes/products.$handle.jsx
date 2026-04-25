@@ -22,7 +22,7 @@ import PdpTrustStrip from '~/components/pdp/PdpTrustStrip';
 import PdpReviewsSection from '~/components/pdp/PdpReviewsSection';
 import PdpUgcSection from '~/components/pdp/PdpUgcSection';
 import PdpFaq from '~/components/pdp/PdpFaq';
-import StickyAddToCart from '~/components/pdp/StickyAddToCart';
+import PdpStickyAddToCart from '~/components/pdp/PdpStickyAddToCart';
 
 /**
  * @type {Route.MetaFunction}
@@ -152,6 +152,7 @@ export default function Product() {
   const {product, recommendations} = useLoaderData();
   const [quantity, setQuantity] = useState(1);
   const mobileAddToCartRef = useRef(null);
+  const buyBoxEndRef = useRef(null);
 
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -274,6 +275,11 @@ export default function Product() {
               fullDescriptionHtml={descriptionHtml}
             />
             <PdpBuyBox {...buyBoxProps} ref={mobileAddToCartRef} />
+            {/* Sentinel for PdpStickyAddToCart's IntersectionObserver.
+                Lives directly after the in-flow buy box so the sticky bar
+                slides up only once the user has scrolled the entire buy
+                box (including paired-products card) above the viewport. */}
+            <div ref={buyBoxEndRef} aria-hidden />
             <PdpTrustStrip />
           </div>
 
@@ -315,8 +321,8 @@ export default function Product() {
         }}
       />
 
-      <StickyAddToCart
-        targetRef={mobileAddToCartRef}
+      <PdpStickyAddToCart
+        sentinelRef={buyBoxEndRef}
         product={product}
         selectedVariant={selectedVariant}
         quantity={quantity}
