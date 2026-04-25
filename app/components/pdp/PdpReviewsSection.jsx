@@ -6,7 +6,7 @@ export default function PdpReviewsSection({
   productTitle,
 }) {
   return (
-    <section className="mt-8" aria-label="Reviews">
+    <section id="reviews" className="mt-8 scroll-mt-4" aria-label="Reviews">
       <div className="flex items-baseline gap-3 mb-4">
         <h2 className="text-xl font-medium text-gray-900">Reviews</h2>
         <span className="text-yellow-400" aria-hidden>

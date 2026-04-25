@@ -130,18 +130,23 @@ function TitleStarsBlock({title, level = 'h1'}) {
   const Heading = level;
   return (
     <div>
-      <p className="text-[10px] font-semibold text-[#06B6D4] tracking-widest uppercase mb-1">
+      <p className="text-[11px] uppercase tracking-wider text-gray-500 mb-0.5">
         PetYupp
       </p>
-      <Heading className="text-2xl lg:text-[28px] font-medium text-gray-900 leading-tight mb-2">
+      <Heading className="text-2xl font-medium text-gray-900 leading-tight line-clamp-2 mb-1.5">
         {title}
       </Heading>
-      <div className="flex items-center gap-2 text-sm">
+      <div className="flex items-center gap-1.5 text-sm mb-2">
         <span aria-label="4.8 out of 5 stars" className="text-yellow-400">
           ★★★★★
         </span>
         <span className="font-medium text-gray-900">4.8</span>
-        <span className="text-gray-500">· 234 reviews</span>
+        <a
+          href="#reviews"
+          className="text-gray-500 hover:text-gray-700"
+        >
+          · 234 reviews
+        </a>
       </div>
     </div>
   );
