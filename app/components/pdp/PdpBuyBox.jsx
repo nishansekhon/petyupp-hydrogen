@@ -7,6 +7,12 @@ import PdpPairedProductCard from './PdpPairedProductCard';
 
 const SUBSCRIPTION_DISCOUNT = 0.15;
 
+// Hide the 2-tile One-time/Subscribe radio while subscriptions are not yet
+// live (the second tile reads "Coming soon" → 70px of dead UI on every
+// PDP render). Flip to true to restore the existing toggle JSX. The toggle
+// code stays in place; only its rendering is gated.
+const SUBSCRIBE_LIVE = false;
+
 // Fallback swatch colors used when a Flavor variant has no image attached
 // yet. Names match the option values returned by Shopify (case-sensitive).
 // Phase 5.5b shipped real variant images for all 8 flavors, so these only
@@ -220,8 +226,28 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
       ]
     : [];
 
+  // One-line product meta — replaces the rounded-pill row that used to live
+  // above the price. Reactive on Plain (size value updates with each Size
+  // chip); static on flavored-variety. Other products fall through with no
+  // meta line (no handle-coding for catalog beyond Himalayan today).
+  const handle = product?.handle;
+  const sizeOption = selectedVariant?.selectedOptions?.find(
+    (o) => o.name === 'Size',
+  );
+  let metaLine = null;
+  if (handle === 'himalayan-flavored-variety') {
+    metaLine = 'Yak Milk · 8 Natural Flavors · 3.5oz pack';
+  } else if (handle === 'himalayan-gourmet-cheese-chew' && sizeOption?.value) {
+    metaLine = `Yak Milk · Single Ingredient · ${sizeOption.value}`;
+  }
+
   return (
-    <div className="flex flex-col gap-3.5">
+    <div className="flex flex-col gap-3">
+      {/* Meta line — variant-reactive on Plain */}
+      {metaLine && (
+        <div className="text-xs text-gray-600 leading-snug">{metaLine}</div>
+      )}
+
       {/* Price */}
       <div className="flex items-baseline gap-2.5">
         {price && (
@@ -241,67 +267,77 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
         )}
       </div>
 
-      {/* Purchase-mode toggle */}
-      <div
-        role="radiogroup"
-        aria-label="Purchase type"
-        className="grid grid-cols-2 gap-2"
-      >
-        <button
-          type="button"
-          role="radio"
-          aria-checked={purchaseMode === 'onetime'}
-          onClick={() => setPurchaseMode('onetime')}
-          className={`text-left rounded-lg p-2 border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#06B6D4] ${
-            purchaseMode === 'onetime'
-              ? 'border-[#06B6D4] ring-1 ring-[#06B6D4] ring-inset bg-[#06B6D4]/5'
-              : 'border-gray-300 hover:border-[#06B6D4]'
-          }`}
+      {/* Purchase-mode toggle — gated on SUBSCRIBE_LIVE. Until subscriptions
+          ship, the 2-tile UI is replaced by a single text line so the buy
+          box shifts ~70px upward and Add to cart lands above the fold at
+          1440px. The toggle JSX is preserved verbatim behind the flag for
+          one-flip restoration. */}
+      {SUBSCRIBE_LIVE ? (
+        <div
+          role="radiogroup"
+          aria-label="Purchase type"
+          className="grid grid-cols-2 gap-2"
         >
-          <div className="text-[10px] font-medium text-gray-900">
-            One-time
-          </div>
-          {price && (
-            <div className="mt-0.5 text-[12px] font-medium text-gray-900">
-              <Money data={price} />
+          <button
+            type="button"
+            role="radio"
+            aria-checked={purchaseMode === 'onetime'}
+            onClick={() => setPurchaseMode('onetime')}
+            className={`text-left rounded-lg p-2 border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#06B6D4] ${
+              purchaseMode === 'onetime'
+                ? 'border-[#06B6D4] ring-1 ring-[#06B6D4] ring-inset bg-[#06B6D4]/5'
+                : 'border-gray-300 hover:border-[#06B6D4]'
+            }`}
+          >
+            <div className="text-[10px] font-medium text-gray-900">
+              One-time
             </div>
-          )}
-        </button>
-        <button
-          type="button"
-          role="radio"
-          aria-checked={purchaseMode === 'subscription'}
-          disabled={!FEATURES.SUBSCRIPTIONS_ENABLED}
-          title={
-            !FEATURES.SUBSCRIPTIONS_ENABLED
-              ? 'Subscription delivery launching soon'
-              : undefined
-          }
-          onClick={() => {
-            if (!FEATURES.SUBSCRIPTIONS_ENABLED) return;
-            setPurchaseMode('subscription');
-          }}
-          className={`text-left rounded-lg p-2 border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#06B6D4] ${
-            purchaseMode === 'subscription'
-              ? 'border-[#06B6D4] ring-1 ring-[#06B6D4] ring-inset bg-[#06B6D4]/5'
-              : 'border-gray-300'
-          } ${!FEATURES.SUBSCRIPTIONS_ENABLED ? 'opacity-60 cursor-not-allowed' : ''}`}
-        >
-          <div className="text-[10px] font-medium text-gray-900">
-            Subscribe — save 15%
-          </div>
-          {subscriptionPrice && (
-            <div className="mt-0.5 text-[12px] font-medium text-gray-900">
-              {formatMoney(subscriptionPrice)}
+            {price && (
+              <div className="mt-0.5 text-[12px] font-medium text-gray-900">
+                <Money data={price} />
+              </div>
+            )}
+          </button>
+          <button
+            type="button"
+            role="radio"
+            aria-checked={purchaseMode === 'subscription'}
+            disabled={!FEATURES.SUBSCRIPTIONS_ENABLED}
+            title={
+              !FEATURES.SUBSCRIPTIONS_ENABLED
+                ? 'Subscription delivery launching soon'
+                : undefined
+            }
+            onClick={() => {
+              if (!FEATURES.SUBSCRIPTIONS_ENABLED) return;
+              setPurchaseMode('subscription');
+            }}
+            className={`text-left rounded-lg p-2 border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#06B6D4] ${
+              purchaseMode === 'subscription'
+                ? 'border-[#06B6D4] ring-1 ring-[#06B6D4] ring-inset bg-[#06B6D4]/5'
+                : 'border-gray-300'
+            } ${!FEATURES.SUBSCRIPTIONS_ENABLED ? 'opacity-60 cursor-not-allowed' : ''}`}
+          >
+            <div className="text-[10px] font-medium text-gray-900">
+              Subscribe — save 15%
             </div>
-          )}
-          {!FEATURES.SUBSCRIPTIONS_ENABLED && (
-            <div className="mt-0.5 text-[8px] uppercase tracking-[0.5px] text-gray-500">
-              Coming soon
-            </div>
-          )}
-        </button>
-      </div>
+            {subscriptionPrice && (
+              <div className="mt-0.5 text-[12px] font-medium text-gray-900">
+                {formatMoney(subscriptionPrice)}
+              </div>
+            )}
+            {!FEATURES.SUBSCRIPTIONS_ENABLED && (
+              <div className="mt-0.5 text-[8px] uppercase tracking-[0.5px] text-gray-500">
+                Coming soon
+              </div>
+            )}
+          </button>
+        </div>
+      ) : (
+        <div className="text-xs text-gray-500">
+          One-time purchase · Subscribe coming soon
+        </div>
+      )}
 
       {/* Variant pickers — visual grid, one per option group */}
       {productOptions?.map((option) => {
@@ -337,8 +373,8 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
               {option.name}
             </div>
             <div
-              className={`grid gap-1.5 ${
-                isFlavorImageSwatch ? 'grid-cols-4' : 'grid-cols-3'
+              className={`grid ${
+                isFlavorImageSwatch ? 'grid-cols-4 gap-2' : 'grid-cols-3 gap-1.5'
               }`}
             >
               {option.optionValues.map((value) => {
@@ -405,7 +441,7 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
                     swatchBorder =
                       'border-[0.5px] border-gray-200 opacity-40 cursor-not-allowed';
                   } else if (selected) {
-                    swatchBorder = 'border-[2px] border-[#06B6D4]';
+                    swatchBorder = 'border-2 border-[#06B6D4]';
                   } else {
                     swatchBorder =
                       'border-[0.5px] border-gray-200 hover:border-gray-400';
@@ -420,39 +456,37 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
                       aria-label={`${option.name}: ${name}`}
                       disabled={!exists}
                       onClick={onClick}
-                      className={`relative aspect-square rounded-md overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-[#06B6D4] ${swatchBorder} ${
+                      className={`flex flex-col items-stretch text-left focus:outline-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-[#06B6D4] ${
                         comboValid && !available ? 'opacity-60' : ''
                       }`}
-                      style={{backgroundColor: fallback.bg}}
                     >
-                      {valueImage?.url && (
-                        <img
-                          src={valueImage.url}
-                          srcSet={[200, 400]
-                            .map((w) => {
-                              try {
-                                const u = new URL(valueImage.url);
-                                u.searchParams.set('width', String(w));
-                                return `${u.toString()} ${w}w`;
-                              } catch {
-                                return null;
-                              }
-                            })
-                            .filter(Boolean)
-                            .join(', ')}
-                          sizes="80px"
-                          alt={valueImage.altText || name}
-                          className="absolute inset-0 w-full h-full object-cover"
-                          loading="lazy"
-                        />
-                      )}
                       <span
-                        className="absolute bottom-0.5 left-0.5 right-0.5 px-1 py-[1px] rounded-[2px] text-[8px] font-medium leading-tight text-center truncate"
-                        style={{
-                          backgroundColor: 'rgba(255,255,255,0.85)',
-                          color: fallback.label,
-                        }}
+                        className={`relative aspect-square w-full max-w-[72px] rounded-md overflow-hidden ${swatchBorder}`}
+                        style={{backgroundColor: fallback.bg}}
                       >
+                        {valueImage?.url && (
+                          <img
+                            src={valueImage.url}
+                            srcSet={[200, 400]
+                              .map((w) => {
+                                try {
+                                  const u = new URL(valueImage.url);
+                                  u.searchParams.set('width', String(w));
+                                  return `${u.toString()} ${w}w`;
+                                } catch {
+                                  return null;
+                                }
+                              })
+                              .filter(Boolean)
+                              .join(', ')}
+                            sizes="72px"
+                            alt={valueImage.altText || name}
+                            className="absolute inset-0 w-full h-full object-cover"
+                            loading="lazy"
+                          />
+                        )}
+                      </span>
+                      <span className="text-[11px] mt-1 text-gray-700 leading-tight truncate">
                         {name}
                       </span>
                     </button>
@@ -581,7 +615,7 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
         {TRUST_PILLS.map((label) => (
           <li
             key={label}
-            className="text-[9px] text-gray-500 leading-tight text-center"
+            className="text-[11px] text-gray-500 leading-tight text-center"
           >
             <span aria-hidden className="text-[#06B6D4] mr-0.5">✓</span>
             {label}
