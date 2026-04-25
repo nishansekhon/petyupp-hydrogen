@@ -1,6 +1,7 @@
 import {forwardRef, useEffect, useRef, useState} from 'react';
 import {useNavigate} from 'react-router';
 import {CartForm, Money} from '@shopify/hydrogen';
+import {ChevronDown} from 'lucide-react';
 import {FEATURES} from '~/lib/featureFlags';
 import {PAIRED_PRODUCTS} from '~/lib/pairedProducts';
 import PdpPairedProductCard from './PdpPairedProductCard';
@@ -45,6 +46,38 @@ function formatMoney(money) {
   } catch {
     return `$${money.amount}`;
   }
+}
+
+// Parse a net weight in oz from a variant title like "Small 3.5oz / Plain"
+// or "Nuggets 0.5lb / Plain". Returns the value in oz (lb→oz multiplier 16),
+// or null when the title doesn't encode a weight.
+function parseWeightOz(title) {
+  if (!title || typeof title !== 'string') return null;
+  const m = title.match(/(\d+(?:\.\d+)?)\s*(oz|lb)/i);
+  if (!m) return null;
+  const num = parseFloat(m[1]);
+  if (!Number.isFinite(num) || num <= 0) return null;
+  return m[2].toLowerCase() === 'lb' ? num * 16 : num;
+}
+
+// Static fallback for products whose variant titles don't carry weight
+// (e.g. flavored-variety variants are just "Blueberry"/"Honey" — no oz in
+// title, but the full product line is uniformly 3.5oz).
+const STATIC_OZ_BY_HANDLE = {
+  'himalayan-flavored-variety': 3.5,
+};
+
+function getVariantOz(variant, productHandle) {
+  const fromTitle = parseWeightOz(variant?.title);
+  if (fromTitle) return fromTitle;
+  return STATIC_OZ_BY_HANDLE[productHandle] ?? null;
+}
+
+function formatPerOz(amount, oz) {
+  if (!amount || !oz) return null;
+  const a = parseFloat(amount);
+  if (!Number.isFinite(a)) return null;
+  return `$${(a / oz).toFixed(2)}/oz`;
 }
 
 // Extract a unit count from a variant/option name like "Pack of 10", "5-pack",
@@ -152,6 +185,7 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
 ) {
   const navigate = useNavigate();
   const [purchaseMode, setPurchaseMode] = useState('onetime');
+  const [ingredientsOpen, setIngredientsOpen] = useState(false);
 
   // Pull the selected variant's sellingPlan (for subscriptions preview).
   const allVariants = product?.variants?.nodes ?? [];
@@ -226,34 +260,40 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
       ]
     : [];
 
-  // One-line product meta — replaces the rounded-pill row that used to live
-  // above the price. Reactive on Plain (size value updates with each Size
-  // chip); static on flavored-variety. Other products fall through with no
-  // meta line (no handle-coding for catalog beyond Himalayan today).
+  // Variant context used by the new content blocks (price per-oz suffix,
+  // size line, spec table, ingredients accordion).
   const handle = product?.handle;
   const sizeOption = selectedVariant?.selectedOptions?.find(
     (o) => o.name === 'Size',
   );
-  let metaLine = null;
+  const flavorOption = selectedVariant?.selectedOptions?.find(
+    (o) => o.name === 'Flavor',
+  );
+
+  const variantOz = getVariantOz(selectedVariant, handle);
+  const perOzLabel = formatPerOz(price?.amount, variantOz);
+
+  // Size line copy. Plain inherits the Size selectedOption value
+  // ("Small 3.5oz" / "Medium" / etc.); flavored-variety is uniformly 3.5oz
+  // because all variants on that product are the same Large 3.5oz pack.
+  let sizeLineValue = null;
   if (handle === 'himalayan-flavored-variety') {
-    metaLine = 'Yak Milk · 8 Natural Flavors · 3.5oz pack';
-  } else if (handle === 'himalayan-gourmet-cheese-chew' && sizeOption?.value) {
-    metaLine = `Yak Milk · Single Ingredient · ${sizeOption.value}`;
+    sizeLineValue = '3.5oz Pack';
+  } else if (sizeOption?.value) {
+    sizeLineValue = sizeOption.value;
   }
 
   return (
     <div className="flex flex-col gap-3">
-      {/* Meta line — variant-reactive on Plain */}
-      {metaLine && (
-        <div className="text-xs text-gray-600 leading-snug">{metaLine}</div>
-      )}
-
-      {/* Price */}
-      <div className="flex items-baseline gap-2.5">
+      {/* Price line — augmented with $/oz when weight is parseable */}
+      <div className="flex items-baseline gap-2.5 flex-wrap">
         {price && (
           <span className="text-[22px] font-medium text-gray-900 leading-none">
             <Money data={price} />
           </span>
+        )}
+        {perOzLabel && (
+          <span className="text-sm text-gray-500">· {perOzLabel}</span>
         )}
         {hasCompareAt && (
           <>
@@ -266,6 +306,14 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
           </>
         )}
       </div>
+
+      {/* Size line — variant-reactive on Plain, static on flavored-variety */}
+      {sizeLineValue && (
+        <div className="text-sm text-gray-700 -mt-1">
+          <span className="text-gray-500">Size:</span>{' '}
+          <span className="font-medium text-gray-900">{sizeLineValue}</span>
+        </div>
+      )}
 
       {/* Purchase-mode toggle — gated on SUBSCRIBE_LIVE. Until subscriptions
           ship, the 2-tile UI is replaced by a single text line so the buy
@@ -369,8 +417,11 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
 
         return (
           <div key={option.name} role="radiogroup" aria-label={option.name}>
-            <div className="text-[12px] font-medium text-gray-900 mb-1.5">
-              {option.name}
+            <div className="text-sm mb-2">
+              <span className="text-gray-500">{option.name}:</span>{' '}
+              <span className="font-medium text-gray-900">
+                {currentSelection[option.name] || ''}
+              </span>
             </div>
             <div
               className={`grid ${
@@ -489,6 +540,26 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
                       <span className="text-[11px] mt-1 text-gray-700 leading-tight truncate">
                         {name}
                       </span>
+                      {valuePrice?.amount && (
+                        <span className="text-[11px] text-gray-700 leading-tight">
+                          {formatMoney(valuePrice)}
+                        </span>
+                      )}
+                      {(() => {
+                        const tileOz = getVariantOz(
+                          value.firstSelectableVariant,
+                          handle,
+                        );
+                        const tilePerOz = formatPerOz(
+                          valuePrice?.amount,
+                          tileOz,
+                        );
+                        return tilePerOz ? (
+                          <span className="text-[10px] text-gray-500 leading-tight">
+                            ({tilePerOz})
+                          </span>
+                        ) : null;
+                      })()}
                     </button>
                   );
                 }
@@ -622,6 +693,64 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
           </li>
         ))}
       </ul>
+
+      {/* Product details — 2-col definition list, Amazon-style. Static
+          rows for fields that don't vary by variant; Flavor + Pack Size
+          re-render on swatch click. */}
+      <div>
+        <div className="text-sm font-medium text-gray-900 mb-2">
+          Product details
+        </div>
+        <dl className="text-xs">
+          {[
+            ['Brand', 'PetYupp'],
+            [
+              'Flavor',
+              flavorOption?.value === 'Plain'
+                ? 'Single Ingredient'
+                : flavorOption?.value || '—',
+            ],
+            ['Main Ingredient', 'Yak Milk'],
+            ['Origin', 'Nepal'],
+            ['Item Form', 'Stick'],
+            ['Pack Size', sizeLineValue || '—'],
+            ['For', 'All Life Stages'],
+            ['Best For', 'Treat, Training, Dental Health'],
+          ].map(([label, value]) => (
+            <div
+              key={label}
+              className="flex justify-between gap-3 py-1 border-b border-gray-100 last:border-0"
+            >
+              <dt className="text-gray-500 shrink-0">{label}</dt>
+              <dd className="text-gray-900 text-right">{value}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+
+      {/* Ingredients accordion — useState toggle, dependency-free */}
+      <div className="py-3 border-t border-gray-100">
+        <button
+          type="button"
+          onClick={() => setIngredientsOpen((o) => !o)}
+          aria-expanded={ingredientsOpen}
+          className="flex items-center justify-between w-full text-sm font-medium text-gray-900"
+        >
+          <span>Ingredients</span>
+          <ChevronDown
+            size={16}
+            className={`transition-transform ${
+              ingredientsOpen ? 'rotate-180' : ''
+            }`}
+            strokeWidth={2}
+          />
+        </button>
+        {ingredientsOpen && (
+          <p className="mt-2 text-xs text-gray-600 leading-relaxed">
+            Yak Milk, Cow Milk, Salt, Lime
+          </p>
+        )}
+      </div>
 
       {PAIRED_PRODUCTS[product?.handle] && (
         <PdpPairedProductCard {...PAIRED_PRODUCTS[product.handle]} />
