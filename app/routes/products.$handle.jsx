@@ -170,7 +170,12 @@ export default function Product() {
   });
 
   const {title, descriptionHtml} = product;
-  const productImages = product.images?.nodes ?? [];
+  const baseImages = product.images?.nodes ?? [];
+  const variantImage = selectedVariant?.image;
+  const productImages =
+    variantImage?.url && baseImages[0]?.url !== variantImage.url
+      ? [variantImage, ...baseImages.filter((img) => img?.url !== variantImage.url)]
+      : baseImages;
   const metadata = getProductMetadata(product.handle);
 
   const productJsonLd = {
