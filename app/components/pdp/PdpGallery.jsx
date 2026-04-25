@@ -227,24 +227,41 @@ export default function PdpGallery({
 
       {/* COL 2 — Hero (+ mobile horizontal strip) */}
       <div className="flex flex-col gap-3 min-w-0">
-        {/* Wrapper anchors the hover-zoom panel (positioned right of the
-            hero with `left: calc(100% + 16px)`). Wrapper width matches
-            hero (max-w-[480px]) so the panel lands flush against the
-            hero's right edge instead of the column's. */}
-        <div className="relative w-full max-w-[480px] mx-auto lg:mx-0">
-          <div
-            ref={heroRef}
-            onMouseEnter={handleHeroMouseEnter}
-            onMouseMove={handleHeroMouseMove}
-            onMouseLeave={handleHeroMouseLeave}
-            className="relative aspect-square w-full rounded-lg overflow-hidden bg-[#FDF8F4]"
+        <div
+          ref={heroRef}
+          onMouseEnter={handleHeroMouseEnter}
+          onMouseMove={handleHeroMouseMove}
+          onMouseLeave={handleHeroMouseLeave}
+          className="relative aspect-square w-full max-w-[480px] mx-auto lg:mx-0 rounded-lg overflow-hidden bg-[#FDF8F4]"
+        >
+          <button
+            type="button"
+            onClick={() => openLightbox(safeIndex)}
+            aria-label={`Expand image: ${activeImage.altText || title}`}
+            className="block w-full h-full"
           >
-            <button
-              type="button"
-              onClick={() => openLightbox(safeIndex)}
-              aria-label={`Expand image: ${activeImage.altText || title}`}
-              className="block w-full h-full"
-            >
+            {hoverCapable ? (
+              // Hover-capable client: render as a backgroundImage div so we
+              // can animate background-size between 100% and 200% in place.
+              // Uses the high-res derivative so the zoomed view stays sharp.
+              // backgroundPosition tracks the cursor instantaneously (no
+              // transition) while size animates over 150ms.
+              <div
+                role="img"
+                aria-label={activeImage.altText || title}
+                className="w-full h-full"
+                style={{
+                  backgroundImage: `url("${highResUrl(activeImage.url)}")`,
+                  backgroundSize: zoom.active ? '200%' : '100%',
+                  backgroundPosition: `${zoom.x}% ${zoom.y}%`,
+                  backgroundRepeat: 'no-repeat',
+                  transition: 'background-size 150ms ease-out',
+                  cursor: 'zoom-in',
+                }}
+              />
+            ) : (
+              // SSR + non-hover-capable (touch, no-JS, crawlers): render a
+              // real <img> so alt text and lazy loading work as expected.
               <img
                 src={withWidth(activeImage.url, 1200)}
                 alt={activeImage.altText || title}
@@ -252,65 +269,35 @@ export default function PdpGallery({
                 height={activeImage.height}
                 className="w-full h-full object-contain"
               />
-            </button>
-            <span
-              aria-hidden
-              className="pointer-events-none absolute top-2.5 right-2.5 inline-flex items-center gap-1 bg-white/95 text-gray-700 text-[11px] font-medium px-2.5 py-1 rounded-md border-[0.5px] border-gray-200 shadow-sm"
-            >
-              <ZoomIn size={12} strokeWidth={2} />
-              Click to expand
-            </span>
-
-            {/* Lens — 40% × 40% follows the cursor, centered. Lives inside
-                the hero so its overflow-hidden clips the lens at the edges
-                instead of letting it bleed past. pointer-events-none keeps
-                hover from breaking and lets the underlying button still
-                receive clicks for the lightbox. */}
-            {zoom.active && hoverCapable && (
-              <div
-                aria-hidden
-                className="hidden lg:block pointer-events-none absolute"
-                style={{
-                  left: `${zoom.x}%`,
-                  top: `${zoom.y}%`,
-                  width: '40%',
-                  height: '40%',
-                  transform: 'translate(-50%, -50%)',
-                  backgroundColor: 'rgba(255,255,255,0.35)',
-                  border: '2px solid rgba(0,0,0,0.4)',
-                }}
-              />
             )}
-          </div>
+          </button>
+          <span
+            aria-hidden
+            className="pointer-events-none absolute top-2.5 right-2.5 inline-flex items-center gap-1 bg-white/95 text-gray-700 text-[11px] font-medium px-2.5 py-1 rounded-md border-[0.5px] border-gray-200 shadow-sm"
+          >
+            <ZoomIn size={12} strokeWidth={2} />
+            Click to expand
+          </span>
 
-          {/* Zoom panel — 520×520 to the right of the hero. Sibling of the
-              hero (not child) so the hero's overflow-hidden doesn't clip
-              it. Positioned via `left: calc(100% + 16px)` of the wrapper,
-              which has the hero's width — so the panel lands flush past
-              the hero's right edge. May overlap the 280px buy box on
-              narrow viewports; pointer-events-none keeps that buy box
-              fully interactive underneath. */}
+          {/* Lens — 40% × 40% follows the cursor, centered. Lives inside
+              the hero so its overflow-hidden clips the lens at the edges
+              instead of letting it bleed past. pointer-events-none keeps
+              hover from breaking and lets the underlying button still
+              receive clicks for the lightbox. */}
           {zoom.active && hoverCapable && (
             <div
               aria-hidden
-              className="hidden lg:block pointer-events-none absolute z-50 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden"
+              className="hidden lg:block pointer-events-none absolute"
               style={{
-                left: 'calc(100% + 16px)',
-                top: 0,
-                width: '520px',
-                height: '520px',
+                left: `${zoom.x}%`,
+                top: `${zoom.y}%`,
+                width: '40%',
+                height: '40%',
+                transform: 'translate(-50%, -50%)',
+                backgroundColor: 'rgba(255,255,255,0.35)',
+                border: '2px solid rgba(0,0,0,0.4)',
               }}
-            >
-              <div
-                className="w-full h-full"
-                style={{
-                  backgroundImage: `url("${highResUrl(activeImage.url)}")`,
-                  backgroundSize: '250%',
-                  backgroundPosition: `${zoom.x}% ${zoom.y}%`,
-                  backgroundRepeat: 'no-repeat',
-                }}
-              />
-            </div>
+            />
           )}
         </div>
 
