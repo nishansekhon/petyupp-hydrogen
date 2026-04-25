@@ -1,4 +1,4 @@
-import {Fragment, useState} from 'react';
+import {Fragment, useEffect, useState} from 'react';
 import {ZoomIn} from 'lucide-react';
 import PdpImageLightbox from './PdpImageLightbox';
 
@@ -19,11 +19,43 @@ function withWidth(url, width) {
 // grid receives them as direct grid items: column 1 = vertical thumbnail
 // rail (desktop only), column 2 = hero. On mobile the rail is hidden and
 // the hero section also renders a horizontal-scroll thumbnail strip.
-export default function PdpGallery({images, title}) {
+//
+// Source-of-truth precedence (Phase 5.5b imagery):
+//   1. productHasVariantImagery (multiple variants own distinct images,
+//      detected once in the route) AND selectedVariant.image present →
+//      gallery = [variantImage]. Storefront API does NOT expose
+//      ProductVariant.media (Admin-only), and Phase 5.5b uploaded
+//      exactly one media per flavored variant — so the variant-scoped
+//      gallery is just the single hero per variant. The rail tracks the
+//      active swatch instead of showing every flavor's pack at once.
+//   2. fallback: `images` prop (route-built productImages with b4d0459's
+//      hero-prepend logic). Plain inherits the same hero across all
+//      Size variants, so its gallery should keep the full product-level
+//      image set (lifestyle, breed chart, process shots, etc.).
+export default function PdpGallery({
+  images,
+  selectedVariant,
+  productHasVariantImagery,
+  title,
+}) {
+  const variantImage = selectedVariant?.image;
+  const gallery =
+    productHasVariantImagery && variantImage?.url
+      ? [variantImage]
+      : images ?? [];
+
   const [activeIndex, setActiveIndex] = useState(0);
   const [lightbox, setLightbox] = useState({open: false, startIndex: 0});
 
-  if (!images?.length) {
+  // Reset hero/rail position when the active variant changes. Without this
+  // the index can outrun a smaller variantMedia array (e.g. clicking a
+  // flavor whose media has 1 entry while activeIndex sat at 3 from a
+  // prior product-level fallback).
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [selectedVariant?.id]);
+
+  if (!gallery.length) {
     return (
       <Fragment>
         <div className="hidden lg:block" aria-hidden />
@@ -34,10 +66,10 @@ export default function PdpGallery({images, title}) {
     );
   }
 
-  const safeIndex = Math.min(activeIndex, images.length - 1);
-  const activeImage = images[safeIndex];
-  const railVisible = images.slice(0, RAIL_VISIBLE);
-  const overflowCount = Math.max(0, images.length - RAIL_VISIBLE);
+  const safeIndex = Math.min(activeIndex, gallery.length - 1);
+  const activeImage = gallery[safeIndex];
+  const railVisible = gallery.slice(0, RAIL_VISIBLE);
+  const overflowCount = Math.max(0, gallery.length - RAIL_VISIBLE);
 
   const openLightbox = (idx) => setLightbox({open: true, startIndex: idx});
   const closeLightbox = () => setLightbox((l) => ({...l, open: false}));
@@ -120,7 +152,7 @@ export default function PdpGallery({images, title}) {
               if (idx !== activeIndex) setActiveIndex(idx);
             }}
           >
-            {images.map((img, i) => (
+            {gallery.map((img, i) => (
               <button
                 key={img.id ?? i}
                 type="button"
@@ -136,12 +168,12 @@ export default function PdpGallery({images, title}) {
               </button>
             ))}
           </div>
-          {images.length > 1 && (
+          {gallery.length > 1 && (
             <div
               className="flex justify-center gap-1.5 mt-3"
-              aria-label={`Image ${safeIndex + 1} of ${images.length}`}
+              aria-label={`Image ${safeIndex + 1} of ${gallery.length}`}
             >
-              {images.map((img, i) => (
+              {gallery.map((img, i) => (
                 <span
                   key={img.id ?? `dot-${i}`}
                   aria-hidden
@@ -157,7 +189,7 @@ export default function PdpGallery({images, title}) {
 
       {lightbox.open && (
         <PdpImageLightbox
-          images={images}
+          images={gallery}
           startIndex={lightbox.startIndex}
           title={title}
           onClose={closeLightbox}

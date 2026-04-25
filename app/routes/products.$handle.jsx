@@ -172,6 +172,23 @@ export default function Product() {
   const {title, descriptionHtml} = product;
   const baseImages = product.images?.nodes ?? [];
   const variantImage = selectedVariant?.image;
+
+  // Runtime detect "this product has variant-level imagery" by counting
+  // distinct image URLs across all option values' firstSelectableVariant.
+  // Storefront API doesn't expose ProductVariant.media (Admin-only), so
+  // we use this signal to decide whether the gallery should scope to the
+  // single variant.image (Phase 5.5b flavored-variety pattern) or fall
+  // back to the product-level images array (Plain pattern, where every
+  // variant inherits the same product hero).
+  const variantImageUrls = new Set();
+  productOptions?.forEach((opt) =>
+    opt.optionValues.forEach((v) => {
+      const u = v.firstSelectableVariant?.image?.url;
+      if (u) variantImageUrls.add(u);
+    }),
+  );
+  const productHasVariantImagery = variantImageUrls.size > 1;
+
   const productImages =
     variantImage?.url && baseImages[0]?.url !== variantImage.url
       ? [variantImage, ...baseImages.filter((img) => img?.url !== variantImage.url)]
@@ -229,6 +246,8 @@ export default function Product() {
             Both share the same activeIndex state inside PdpGallery. */}
         <PdpGallery
           images={productImages}
+          selectedVariant={selectedVariant}
+          productHasVariantImagery={productHasVariantImagery}
           title={title}
         />
 
