@@ -157,7 +157,7 @@ function Navbar() {
                       {to: '/collections/natural-treats-and-chews', label: 'Natural Treats and Chews'},
                       {to: '/collections/yak-chews', label: 'Yak Chews'},
                       {to: '/collections/bully-sticks', label: 'Bully Sticks'},
-                      {to: '/collections/wooden-chews', label: 'Wooden Chews'},
+                      {to: '/collections/wooden-chews', label: 'Coffee Wood'},
                       {to: '/collections/dog-toys', label: 'Dog Toys'},
                       {to: '/collections/dog-diners', label: 'Dog Diners'},
                       {to: '/collections/dog-bowls', label: 'Bowls and Buckets'},
