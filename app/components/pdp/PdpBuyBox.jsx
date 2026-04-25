@@ -7,6 +7,28 @@ import PdpPairedProductCard from './PdpPairedProductCard';
 
 const SUBSCRIPTION_DISCOUNT = 0.15;
 
+// Fallback swatch colors used when a Flavor variant has no image attached
+// yet. Names match the option values returned by Shopify (case-sensitive).
+// Phase 5.5b shipped real variant images for all 8 flavors, so these only
+// surface if a future variant is added without imagery.
+const FLAVOR_FALLBACK = {
+  Blueberry: {bg: '#93C5FD', label: '#1E3A8A'},
+  Honey: {bg: '#FCD34D', label: '#92400E'},
+  Mint: {bg: '#86EFAC', label: '#065F46'},
+  'Peanut Butter': {bg: '#D4A574', label: '#78350F'},
+  Pumpkin: {bg: '#FB923C', label: '#7C2D12'},
+  Strawberry: {bg: '#F87171', label: '#991B1B'},
+  'Flax Seed': {bg: '#C7B898', label: '#57534E'},
+  'Turmeric & Ashwagandha': {bg: '#B45309', label: '#FEF3C7'},
+};
+
+const TRUST_PILLS = [
+  'Free ship $49+',
+  'Vet approved',
+  'Ships 1–2 days',
+  '30-day guarantee',
+];
+
 function formatMoney(money) {
   if (!money?.amount) return null;
   try {
@@ -42,7 +64,7 @@ function parseUnitCount(name) {
   return null;
 }
 
-function AddToCartInner({fetcher, disabled, outOfStock, onAfterAdd, priceLabel}) {
+function AddToCartInner({fetcher, disabled, outOfStock, onAfterAdd}) {
   const [justAdded, setJustAdded] = useState(false);
   const wasSubmitting = useRef(false);
 
@@ -68,15 +90,43 @@ function AddToCartInner({fetcher, disabled, outOfStock, onAfterAdd, priceLabel})
     ? 'Adding…'
     : justAdded
     ? 'Added ✓'
-    : priceLabel
-    ? `Add to cart — ${priceLabel}`
     : 'Add to cart';
 
   return (
     <button
       type="submit"
       disabled={disabled || outOfStock || submitting}
-      className="w-full bg-[#06B6D4] hover:bg-[#0891B2] disabled:bg-gray-300 disabled:cursor-not-allowed text-white text-base font-medium rounded-lg py-4 px-6 transition-colors"
+      className="w-full bg-[#06B6D4] hover:bg-[#0891B2] disabled:bg-gray-300 disabled:cursor-not-allowed text-white text-[12px] font-medium rounded-lg py-2.5 px-4 transition-colors"
+    >
+      {label}
+    </button>
+  );
+}
+
+function BuyNowInner({fetcher, disabled, outOfStock}) {
+  const navigate = useNavigate();
+  const wasSubmitting = useRef(false);
+
+  useEffect(() => {
+    if (fetcher.state === 'submitting') wasSubmitting.current = true;
+    if (
+      fetcher.state === 'idle' &&
+      wasSubmitting.current &&
+      fetcher.data?.cart
+    ) {
+      wasSubmitting.current = false;
+      navigate('/cart');
+    }
+  }, [fetcher.state, fetcher.data, navigate]);
+
+  const submitting = fetcher.state !== 'idle';
+  const label = outOfStock ? 'Sold out' : submitting ? 'Loading…' : 'Buy now';
+
+  return (
+    <button
+      type="submit"
+      disabled={disabled || outOfStock || submitting}
+      className="w-full bg-white hover:bg-gray-50 disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-200 disabled:cursor-not-allowed text-[#06B6D4] text-[12px] font-medium rounded-lg py-2 px-4 border-[1.5px] border-[#06B6D4] transition-colors"
     >
       {label}
     </button>
@@ -170,23 +220,21 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
       ]
     : [];
 
-  const priceLabel = price ? formatMoney(price) : null;
-
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-3.5">
       {/* Price */}
-      <div className="flex items-baseline gap-3">
+      <div className="flex items-baseline gap-2.5">
         {price && (
-          <span className="text-2xl font-medium text-gray-900">
+          <span className="text-[22px] font-medium text-gray-900 leading-none">
             <Money data={price} />
           </span>
         )}
         {hasCompareAt && (
           <>
-            <span className="text-gray-400 line-through text-base">
+            <span className="text-gray-400 line-through text-sm">
               <Money data={compareAt} />
             </span>
-            <span className="bg-red-50 text-red-700 text-xs font-medium px-2 py-1 rounded">
+            <span className="bg-red-50 text-red-700 text-[10px] font-medium px-1.5 py-0.5 rounded">
               SAVE ${savings}
             </span>
           </>
@@ -204,17 +252,17 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
           role="radio"
           aria-checked={purchaseMode === 'onetime'}
           onClick={() => setPurchaseMode('onetime')}
-          className={`text-left rounded-lg p-3 border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#06B6D4] ${
+          className={`text-left rounded-lg p-2 border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#06B6D4] ${
             purchaseMode === 'onetime'
               ? 'border-[#06B6D4] ring-1 ring-[#06B6D4] ring-inset bg-[#06B6D4]/5'
               : 'border-gray-300 hover:border-[#06B6D4]'
           }`}
         >
-          <div className="text-[13px] font-medium text-gray-900">
-            One-time purchase
+          <div className="text-[10px] font-medium text-gray-900">
+            One-time
           </div>
           {price && (
-            <div className="mt-1 text-[15px] font-medium text-gray-900">
+            <div className="mt-0.5 text-[12px] font-medium text-gray-900">
               <Money data={price} />
             </div>
           )}
@@ -233,22 +281,22 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
             if (!FEATURES.SUBSCRIPTIONS_ENABLED) return;
             setPurchaseMode('subscription');
           }}
-          className={`text-left rounded-lg p-3 border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#06B6D4] ${
+          className={`text-left rounded-lg p-2 border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#06B6D4] ${
             purchaseMode === 'subscription'
               ? 'border-[#06B6D4] ring-1 ring-[#06B6D4] ring-inset bg-[#06B6D4]/5'
               : 'border-gray-300'
           } ${!FEATURES.SUBSCRIPTIONS_ENABLED ? 'opacity-60 cursor-not-allowed' : ''}`}
         >
-          <div className="text-[13px] font-medium text-gray-900">
-            Subscribe &amp; save 15%
+          <div className="text-[10px] font-medium text-gray-900">
+            Subscribe — save 15%
           </div>
           {subscriptionPrice && (
-            <div className="mt-1 text-[15px] font-medium text-gray-900">
+            <div className="mt-0.5 text-[12px] font-medium text-gray-900">
               {formatMoney(subscriptionPrice)}
             </div>
           )}
           {!FEATURES.SUBSCRIPTIONS_ENABLED && (
-            <div className="mt-1 text-[10px] uppercase tracking-[0.5px] text-gray-500">
+            <div className="mt-0.5 text-[8px] uppercase tracking-[0.5px] text-gray-500">
               Coming soon
             </div>
           )}
@@ -276,12 +324,23 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
           ),
         ).length;
         if (mounted && validChipCount < 2) return null;
+
+        // Image swatches replace text chips for Flavor on flavored-variety.
+        // Size on Plain and any other option group keep the text-chip layout.
+        const isFlavorImageSwatch =
+          option.name === 'Flavor' &&
+          product?.handle === 'himalayan-flavored-variety';
+
         return (
           <div key={option.name} role="radiogroup" aria-label={option.name}>
-            <div className="text-[13px] font-medium text-gray-900 mb-2">
+            <div className="text-[12px] font-medium text-gray-900 mb-1.5">
               {option.name}
             </div>
-            <div className="grid grid-cols-3 gap-2">
+            <div
+              className={`grid gap-1.5 ${
+                isFlavorImageSwatch ? 'grid-cols-4' : 'grid-cols-3'
+              }`}
+            >
               {option.optionValues.map((value) => {
                 const {name, selected, available, exists, variantUriQuery} =
                   value;
@@ -312,6 +371,7 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
                 // a hydration check, so no #418/#423.
                 const comboValid = mounted ? realComboValid : true;
                 const valuePrice = value.firstSelectableVariant?.price;
+                const valueImage = value.firstSelectableVariant?.image;
                 const unitCount = parseUnitCount(name);
                 let perUnitLabel = null;
                 if (comboValid && valuePrice?.amount) {
@@ -326,6 +386,79 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
                     perUnitLabel = formatMoney(valuePrice);
                   }
                 }
+
+                const onClick = () => {
+                  if (!exists || selected) return;
+                  void navigate(`?${variantUriQuery}`, {
+                    replace: true,
+                    preventScrollReset: true,
+                  });
+                };
+
+                if (isFlavorImageSwatch) {
+                  const fallback = FLAVOR_FALLBACK[name] || {
+                    bg: '#E5E7EB',
+                    label: '#1F2937',
+                  };
+                  let swatchBorder;
+                  if (!comboValid) {
+                    swatchBorder =
+                      'border-[0.5px] border-gray-200 opacity-40 cursor-not-allowed';
+                  } else if (selected) {
+                    swatchBorder = 'border-[2px] border-[#06B6D4]';
+                  } else {
+                    swatchBorder =
+                      'border-[0.5px] border-gray-200 hover:border-gray-400';
+                  }
+                  return (
+                    <button
+                      key={option.name + name}
+                      type="button"
+                      role="radio"
+                      aria-checked={selected}
+                      aria-disabled={!comboValid}
+                      aria-label={`${option.name}: ${name}`}
+                      disabled={!exists}
+                      onClick={onClick}
+                      className={`relative aspect-square rounded-md overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-[#06B6D4] ${swatchBorder} ${
+                        comboValid && !available ? 'opacity-60' : ''
+                      }`}
+                      style={{backgroundColor: fallback.bg}}
+                    >
+                      {valueImage?.url && (
+                        <img
+                          src={valueImage.url}
+                          srcSet={[200, 400]
+                            .map((w) => {
+                              try {
+                                const u = new URL(valueImage.url);
+                                u.searchParams.set('width', String(w));
+                                return `${u.toString()} ${w}w`;
+                              } catch {
+                                return null;
+                              }
+                            })
+                            .filter(Boolean)
+                            .join(', ')}
+                          sizes="80px"
+                          alt={valueImage.altText || name}
+                          className="absolute inset-0 w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                      )}
+                      <span
+                        className="absolute bottom-0.5 left-0.5 right-0.5 px-1 py-[1px] rounded-[2px] text-[8px] font-medium leading-tight text-center truncate"
+                        style={{
+                          backgroundColor: 'rgba(255,255,255,0.85)',
+                          color: fallback.label,
+                        }}
+                      >
+                        {name}
+                      </span>
+                    </button>
+                  );
+                }
+
                 let stateClass;
                 if (!comboValid) {
                   stateClass =
@@ -335,7 +468,7 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
                 } else {
                   stateClass = 'border-gray-200 hover:border-gray-300';
                 }
-                const commonClass = `relative p-3 rounded-lg border-2 transition-colors text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#06B6D4] ${stateClass} ${
+                const commonClass = `relative p-2 rounded-lg border-2 transition-colors text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#06B6D4] ${stateClass} ${
                   comboValid && !available ? 'opacity-60' : ''
                 }`;
 
@@ -347,25 +480,19 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
                     aria-checked={selected}
                     aria-disabled={!comboValid}
                     disabled={!exists}
-                    onClick={() => {
-                      if (!exists || selected) return;
-                      void navigate(`?${variantUriQuery}`, {
-                        replace: true,
-                        preventScrollReset: true,
-                      });
-                    }}
+                    onClick={onClick}
                     className={commonClass}
                   >
-                    <div className="text-sm font-medium text-gray-900">
+                    <div className="text-[12px] font-medium text-gray-900">
                       {name}
                     </div>
                     {perUnitLabel && (
-                      <div className="text-[11px] text-gray-500 mt-0.5 tabular-nums">
+                      <div className="text-[10px] text-gray-500 mt-0.5 tabular-nums">
                         {perUnitLabel}
                       </div>
                     )}
                     {comboValid && !available && (
-                      <div className="text-[11px] text-red-600 mt-1">
+                      <div className="text-[10px] text-red-600 mt-0.5">
                         Out of stock
                       </div>
                     )}
@@ -377,24 +504,22 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
         );
       })}
 
-      {/* Quantity stepper */}
-      <div>
-        <div className="text-[13px] font-medium text-gray-900 mb-2">
-          Quantity
-        </div>
-        <div className="inline-flex items-center border border-gray-300 rounded-lg overflow-hidden">
+      {/* Quantity stepper — inline label + compact buttons */}
+      <div className="flex items-center gap-2.5">
+        <span className="text-[12px] font-medium text-gray-900">Qty</span>
+        <div className="inline-flex items-center border border-gray-300 rounded-md overflow-hidden">
           <button
             type="button"
             aria-label="Decrease quantity"
             onClick={() => onQuantityChange?.(Math.max(1, quantity - 1))}
             disabled={quantity <= 1}
-            className="w-10 h-10 flex items-center justify-center text-gray-700 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-[22px] h-6 flex items-center justify-center text-gray-700 text-sm hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed"
           >
             −
           </button>
           <span
             aria-live="polite"
-            className="w-12 h-10 flex items-center justify-center text-sm font-medium text-gray-900 border-x border-gray-300 tabular-nums"
+            className="w-7 h-6 flex items-center justify-center text-[12px] font-medium text-gray-900 border-x border-gray-300 tabular-nums"
           >
             {quantity}
           </span>
@@ -403,7 +528,7 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
             aria-label="Increase quantity"
             onClick={() => onQuantityChange?.(Math.min(10, quantity + 1))}
             disabled={quantity >= 10}
-            className="w-10 h-10 flex items-center justify-center text-gray-700 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-[22px] h-6 flex items-center justify-center text-gray-700 text-sm hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed"
           >
             +
           </button>
@@ -413,7 +538,7 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
       {/* Add to cart */}
       <div ref={addToCartRef}>
         <CartForm
-          key={`${selectedVariant?.id ?? 'none'}-${isSubscription && sellingPlan ? sellingPlan.id : 'otp'}`}
+          key={`${selectedVariant?.id ?? 'none'}-${isSubscription && sellingPlan ? sellingPlan.id : 'otp'}-add`}
           route="/cart"
           action={CartForm.ACTIONS.LinesAdd}
           inputs={{lines}}
@@ -424,21 +549,45 @@ const PdpBuyBox = forwardRef(function PdpBuyBox(
               disabled={!selectedVariant}
               outOfStock={outOfStock}
               onAfterAdd={onAfterAdd}
-              priceLabel={priceLabel}
             />
           )}
         </CartForm>
       </div>
 
+      {/* Buy now — separate CartForm so its own fetcher can navigate to /cart */}
+      <CartForm
+        key={`${selectedVariant?.id ?? 'none'}-${isSubscription && sellingPlan ? sellingPlan.id : 'otp'}-buynow`}
+        route="/cart"
+        action={CartForm.ACTIONS.LinesAdd}
+        inputs={{lines}}
+      >
+        {(fetcher) => (
+          <BuyNowInner
+            fetcher={fetcher}
+            disabled={!selectedVariant}
+            outOfStock={outOfStock}
+          />
+        )}
+      </CartForm>
+
       {isSubscription && (
-        <p className="text-[12px] text-gray-600">
+        <p className="text-[11px] text-gray-600">
           Delivery every 4 weeks — skip or cancel anytime
         </p>
       )}
 
-      <p className="text-xs text-gray-500 text-center">
-        Ships in 1–2 business days
-      </p>
+      {/* Trust pills row — 4-col grid, top divider */}
+      <ul className="grid grid-cols-4 gap-1 pt-2.5 border-t-[0.5px] border-gray-200">
+        {TRUST_PILLS.map((label) => (
+          <li
+            key={label}
+            className="text-[9px] text-gray-500 leading-tight text-center"
+          >
+            <span aria-hidden className="text-[#06B6D4] mr-0.5">✓</span>
+            {label}
+          </li>
+        ))}
+      </ul>
 
       {PAIRED_PRODUCTS[product?.handle] && (
         <PdpPairedProductCard {...PAIRED_PRODUCTS[product.handle]} />

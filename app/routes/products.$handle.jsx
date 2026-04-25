@@ -222,12 +222,31 @@ export default function Product() {
         ]}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_440px] gap-8 lg:gap-12 mt-4">
-        {/* LEFT column */}
-        <div className="flex flex-col gap-8 min-w-0">
-          <PdpGallery images={productImages} title={title} />
+      <div className="grid grid-cols-1 lg:grid-cols-[60px_1fr_280px] gap-4 lg:gap-3.5 mt-4">
+        {/* PdpGallery returns a Fragment of [ThumbRail, HeroSection]:
+              - ThumbRail  → grid col 1 (lg only, hidden on mobile)
+              - HeroSection → grid col 2; on mobile contains the horiz strip too
+            Both share the same activeIndex state inside PdpGallery. */}
+        <PdpGallery
+          images={productImages}
+          title={title}
+        />
 
-          {/* Mobile/tablet in-flow buy area (below gallery, before UGC/reviews) */}
+        {/* RIGHT column — desktop sticky buy-box aside.
+            Spans rows 1+2 so it remains anchored through below-fold sections.
+            Sticky lives on the aside itself with self-start so the aside is
+            content-sized; its containing block is the grid parent. */}
+        <aside className="hidden lg:block lg:row-span-2 lg:col-start-3 lg:sticky lg:top-4 lg:self-start lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto">
+          <div className="flex flex-col gap-3.5">
+            <TitleStarsBlock title={title} level="h1" />
+            <PdpAttributeBadges badges={metadata.badges} />
+            <PdpBuyBox {...buyBoxProps} />
+          </div>
+        </aside>
+
+        {/* Below-the-fold content: spans cols 1+2 on desktop, full-width on mobile. */}
+        <div className="lg:col-span-2 lg:col-start-1 flex flex-col gap-8 min-w-0">
+          {/* Mobile-only in-flow buy area (between hero and UGC). */}
           <div className="lg:hidden flex flex-col gap-5">
             <TitleStarsBlock title={title} level="h1" />
             <PdpAttributeBadges badges={metadata.badges} />
@@ -257,24 +276,6 @@ export default function Product() {
           <PdpReviewsSection productTitle={title} />
           <PdpFaq faqs={metadata.faqs} />
         </div>
-
-        {/* RIGHT column — desktop sticky aside.
-            Sticky lives on the aside itself with self-start so the aside is
-            content-sized; its containing block is then the grid parent,
-            whose height matches the (much taller) left column. That keeps
-            the buy box anchored from gallery through UGC, reviews, and FAQ
-            instead of releasing at the aside's own content bottom. */}
-        <aside className="hidden lg:block lg:sticky lg:top-4 lg:self-start lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto">
-          <div className="flex flex-col gap-5">
-            <TitleStarsBlock title={title} level="h1" />
-            <PdpAttributeBadges badges={metadata.badges} />
-            <p className="text-sm text-gray-700 leading-relaxed">
-              {metadata.shortDescription}
-            </p>
-            <PdpBuyBox {...buyBoxProps} />
-            <PdpTrustStrip />
-          </div>
-        </aside>
       </div>
 
       <RelatedProducts recommendations={recommendations} />
