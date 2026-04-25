@@ -133,7 +133,7 @@ function TitleStarsBlock({title, level = 'h1'}) {
       <p className="text-[11px] uppercase tracking-wider text-gray-500 mb-0.5">
         PetYupp
       </p>
-      <Heading className="text-2xl font-medium text-gray-900 leading-tight line-clamp-2 mb-1.5">
+      <Heading className="text-2xl font-medium text-gray-900 leading-tight mb-1.5">
         {title}
       </Heading>
       <div className="flex items-center gap-1.5 text-sm mb-2">
